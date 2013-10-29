@@ -1,0 +1,66 @@
+
+form#islandora-dss-solr-advanced-search-form div div#islandora-solr-advanced-terms div div.control-group {
+
+    width: 10%;
+}
+
+form#islandora-dss-solr-advanced-search-form div div#islandora-solr-advanced-terms div fieldset.form-wrapper div.fieldset-wrapper div.form-type-textfield {
+
+    width: inherit;
+    margin-left: 12px;
+}
+
+form#islandora-dss-solr-advanced-search-form div div#islandora-solr-advanced-terms div div.form-item {
+
+    
+}
+
+form#islandora-dss-solr-advanced-search-form div div#islandora-solr-advanced-terms div div.form-type-select {
+
+    float: left;
+}
+
+form#islandora-dss-solr-advanced-search-form div div#islandora-solr-advanced-terms div div.form-type-textfield {
+
+    float: left;
+}
+
+div.islandora-solr-advanced-boolean {
+
+    clear: left;
+}
+
+button.islandora-solr-search-remove {
+
+    margin-top: 0px !important;
+    /* margin-left: 12px; */
+    /* margin-left: 4.2%; */
+    margin-left: 2.2%;
+}
+
+form#islandora-dss-solr-advanced-search-form div div#islandora-solr-advanced-terms div.islandora-solr-advanced-term {
+
+    clear: left;
+}
+
+form#islandora-dss-solr-advanced-search-form div div#islandora-solr-advanced-terms div.islandora-solr-advanced-term div.islandora-solr-advanced-boolean div.form-radios div.form-type-radio {
+
+    float: left;
+    margin-left: 32px;
+}
+
+form#islandora-dss-solr-advanced-search-form div div#islandora-solr-advanced-terms button.islandora-solr-search-add {
+
+    float: right;
+}
+
+form#islandora-dss-solr-advanced-search-form div div.islandora-solr-advanced-controls {
+
+    text-align: center;
+}
+
+div#advanced-search-modal.modal.fade.in {
+
+    /* top: 30%; */
+    top: 20%;
+}

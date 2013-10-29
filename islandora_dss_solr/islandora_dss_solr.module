@@ -1,0 +1,31 @@
+<?php
+
+  /**
+   * @file
+   * Core functionality for the Islandora DSS Solr Module
+   *
+   */
+
+// Includes functions to create Islandora Solr blocks.
+require_once dirname(__FILE__) . '/includes/blocks.inc';
+
+  /**
+   * Implements hook_theme_alter().
+   * @author griffinj
+   *
+   * @see islandora_solr_theme()
+   *
+   */
+
+function islandora_dss_solr_theme() {
+  //function islandora_dss_solr_theme_registry_alter(&$theme_registry) {
+
+  // set path
+  $path = drupal_get_path('module', 'islandora_dss_solr');
+  $file = 'theme.inc';
+
+  return array(
+	       // advanced solr search form/block
+	       'islandora_dss_solr_advanced_search_form' => array('variables' => array('form' => NULL,),),
+	       );
+}
