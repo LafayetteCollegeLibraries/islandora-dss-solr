@@ -85,6 +85,7 @@ function islandora_dss_solr_current_collection($path='') {
 
 */
 
+/*
 $ISLANDORA_DSS_FIELDS = array(
 			      array('dc.contributor' => 'Contributor'),
 			      array('dc.creator' => 'Creator'),
@@ -97,9 +98,79 @@ $ISLANDORA_DSS_FIELDS = array(
 			      array('dc.source' => 'Source'),
 			      array('dc.subject' => 'Subject'),
 			      array('dc.title' => 'Title'),
+);
+*/
+
+$ISLANDORA_DSS_FIELDS = array('dc.title' => 'Title',
+			      'dc.contributor' => 'Author',
+			      'foxml.all.text' => 'Full Text',
 			      );
 
 function islandora_dss_fields_map($collection) {
+
+  /*
+			      array('dc.contributor' => 'Contributor'),
+			      array('dc.creator' => 'Creator'),
+			      array('dc.date' => 'Date'),
+			      array('dc.description' => 'Description'),
+			      array('dc.format' => 'Format'),
+			      array('dc.language' => 'Language'),
+			      array('dc.publisher' => 'Publisher'),
+			      array('dc.rights' => 'Rights'),
+			      array('dc.source' => 'Source'),
+			      array('dc.subject' => 'Subject'),
+			      array('dc.title' => 'Title'),
+
+   */
+
+  /*
+
+        # The metadata mapping
+        if metadataField == 'dc.contributor.author'
+        elsif metadataField == 'dc.contributor.other'
+        elsif metadataField == 'dc.title'
+        elsif metadataField == 'dc.date.accessioned'
+        elsif metadataField == 'dc.date.available'
+        elsif metadataField == 'dc.date.issued'
+        elsif metadataField == 'dc.identifier.citation'
+        elsif metadataField == 'dc.identifier.uri'
+        elsif metadataField == 'dc.publisher'
+        elsif metadataField == 'dc.type'
+        elsif metadataField == 'dc.description.abstract'
+        elsif metadataField == 'dc.subject'
+        elsif metadataField == 'dc.identifier.doi'
+        elsif metadataField == 'dc.description.uri'
+        elsif metadataField == 'dc.identifier.issn'
+        elsif metadataField == 'dc.identifier.isbn'
+        elsif metadataField == 'dc.relation.ispartofseries'
+        elsif metadataField == 'dc.description'
+        elsif metadataField == 'dc.language.iso'
+
+   */
+  
+  /*
+
+        if metadataField == 'dc.contributor.author'
+        elsif metadataField == 'dc.contributor.other'
+        elsif metadataField == 'dc.title'
+        elsif metadataField == 'dc.date.accessioned'
+        elsif metadataField == 'dc.date.available'
+        elsif metadataField == 'dc.date.issued'
+        elsif metadataField == 'dc.identifier.citation'
+        elsif metadataField == 'dc.identifier.uri'
+        elsif metadataField == 'dc.publisher'
+        elsif metadataField == 'dc.type'
+        elsif metadataField == 'dc.description.abstract'
+        elsif metadataField == 'dc.subject'
+        elsif metadataField == 'dc.identifier.doi'
+        elsif metadataField == 'dc.description.uri'
+        elsif metadataField == 'dc.identifier.issn'
+        elsif metadataField == 'dc.identifier.isbn'
+        elsif metadataField == 'dc.relation.ispartofseries'
+        elsif metadataField == 'dc.description'
+        elsif metadataField == 'dc.language.iso'
+
+   */
 
   $ISLANDORA_DSS_FIELDS_MAP = array('eastasia' => array(
 							"eastasia.Subject.OCM" => 'Subject.OCM',
@@ -120,16 +191,16 @@ function islandora_dss_fields_map($collection) {
 							"cdm.Relation.IsPartOf" => 'Relation.IsPartOf',
 							),
 				    'academic' => array(
-							'' => 'Full Text',
-							'' => 'Abstract',
-							'' => 'Series',
-							'' => 'Author',
-							'' => 'Title',
-							'' => 'Keyword',
-							'' => 'Language (ISO)',
-							'' => 'MIME-Type',
-							'' => 'Sponsor',
-							'' => 'Identifier',
+							'foxml.all.text' => 'Full Text',
+							'dc.description.abstract' => 'Abstract',
+							'dc.identifier.issn' => 'Series',
+							'dc.contributor.author' => 'Author',
+							'dc.title' => 'Title',
+							'dc.subject' => 'Keyword',
+							'dc.language.iso' => 'Language (ISO)',
+							'dc.type' => 'MIME-Type',
+							'dc.' => 'Sponsor',
+							'dc.identifier.isbn' => 'Identifier',
 							),
 				    'administration' => array(),
 				    'newspaper' => array(),
@@ -142,20 +213,21 @@ function islandora_dss_fields_map($collection) {
 						   'date.range' => 'Dates',
 						   ),
 				    'mdl-prints' => array(
+							  'mdl_prints.creator' => 'Creator',
 							  'mdl_prints.description.note' => 'Note',
 							  'mdl_prints.subject.lcsh' => 'Subject',
-							  'mdl_prints.publisher.original' => 'Subject',
-							  'mdl_prints.date.original' => 'Subject',
-							  'mdl_prints.format.medium' => 'Subject',
-							  'mdl_prints.format.extent' => 'Subject',
+							  'mdl_prints.publisher.original' => 'Publisher',
+							  'mdl_prints.date.original' => 'Date',
+							  'mdl_prints.format.medium' => 'Medium',
+							  'mdl_prints.format.extent' => 'Extent',
 							  'mdl_prints.description.condition' => 'Note',
-							'mdl_prints.description.provenance' => 'Note',
-							'mdl_prints.description.series' => 'Note',
-							'mdl_prints.identifier.itemnumber' => 'Note',
-							'mdl_prints.publisher.digital' => 'Note',
-							'mdl_prints.format.digital' => 'Note',
-							'mdl_prints.rights.digital' => 'Note',
-							'mdl_prints.relation.IsPartOf' => 'Note',
+							  'mdl_prints.description.provenance' => 'Note',
+							  'mdl_prints.description.series' => 'Note',
+							  'mdl_prints.identifier.itemnumber' => 'Note',
+							  'mdl_prints.publisher.digital' => 'Note',
+							  'mdl_prints.format.digital' => 'Note',
+							  'mdl_prints.rights.digital' => 'Note',
+							  'mdl_prints.relation.IsPartOf' => 'Note',
 							),
 				  'mckelvy' => array(
 						     'mckelvy.description.note' => 'Note',
@@ -187,8 +259,6 @@ function islandora_dss_fields_map($collection) {
 
   return $ISLANDORA_DSS_FIELDS_MAP[$collection];
 }
-
-
 
 function islandora_dss_solr_fields_for_path($path='') {
 
@@ -226,6 +296,11 @@ function islandora_dss_solr_get_fields($path='', $field_type = NULL, $filter = T
   return $records;
 }
 
+function islandora_dss_solr_get_fields_for_collection($collection='') {
+
+  
+}
+
 /**
  * Islandora Solr advanced search block form
  * @author griffinj@lafayette.edu
@@ -245,6 +320,9 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 
   global $_islandora_solr_queryclass;
 
+  drupal_load('module', 'search');
+  $search_form = drupal_get_form('search_block_form');
+
   // include common.inc
   module_load_include('inc', 'islandora_solr', 'includes/common');
 
@@ -254,7 +332,8 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
   // 3. anywhere else: empty form
 
   // 1. form update using ajax
-  if (isset($form_state['triggering_element']) && $form_state['triggering_element']['#name'] != 'scoping' ) {
+  if (isset($form_state['triggering_element']) and
+      ($form_state['triggering_element']['#name'] != 'scoping' and $form_state['triggering_element']['#name'] != 'collection')) {
 
     // unset terms from input array
     // http://drupal.stackexchange.com/questions/14855/how-do-i-dynamically-fill-a-textfield-with-ajax/16576#16576
@@ -383,15 +462,32 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 					    '#title' => t(''),
 					    '#type' => 'select',
 					    '#default_value' => isset($value['field']) ? $value['field'] : 'dc.title',
-					    //'#options' => islandora_dss_solr_get_fields('search_fields'),
 					    '#attributes' => array('class' => array('islandora-solr-search-field')));
 
-    if (isset($form_state['triggering_element']) && $form_state['triggering_element']['#name'] == 'scoping' && $form_state['triggering_element']['#value'] == 'COLL' ) {
+    if(isset($form_state['triggering_element']) and $form_state['triggering_element']['#name'] == 'scoping') {
 
-      $term['field-wrapper']['field']['#options'] = islandora_dss_solr_get_fields($form_state['values']['path'], 'search_fields');
+      switch($form_state['triggering_element']['#value']) {
+
+      case 'COLL':
+	//$term['field-wrapper']['field']['#options'] = islandora_dss_solr_get_fields($form_state['values']['collection'], 'search_fields');
+	$term['field-wrapper']['field']['#options'] = islandora_dss_fields_map($form_state['values']['collection']);
+	break;
+
+      case 'REPO':
+	$term['field-wrapper']['field']['#options'] = islandora_solr_get_fields('search_fields');
+	break;
+
+      case 'SITE':
+      default:
+	$term['field-wrapper']['field']['#options'] = array('keywords' => 'Keywords');
+        break;
+      }
+    } elseif(isset($form_state['triggering_element']) and $form_state['triggering_element']['#name'] == 'collection') {
+
+      $term['field-wrapper']['field']['#options'] = islandora_dss_fields_map($form_state['values']['collection']);
     } else {
 
-      $term['field-wrapper']['field']['#options'] = islandora_solr_get_fields('search_fields');
+      $term['field-wrapper']['field']['#options'] = array('keywords' => 'Keywords');
     }
 
     $term['field-wrapper']['search'] = array(
@@ -486,11 +582,17 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
   // For terms...
   if(count($values['terms']) < 5) {
 
+    $classes = array('islandora-solr-search-add');
+    if(count($values['terms']) == 1) {
+
+      $classes[] = 'raised';
+    }
+
     $terms[] = array('add' => array(
 				    '#type' => 'button',
 				    '#value' => '<i class="icon-large icon-plus-sign"></i>',
 				    '#attributes' => array('title' => t('Add a field'),
-							   'class' => array('islandora-solr-search-add')),
+							   'class' => $classes),
 				    '#name' => 'add-field-' . $i,
 				    '#ajax' => array(
 						     'callback' => '_islandora_dss_solr_advanced_search_terms',
@@ -524,8 +626,11 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
        preg_match('/projects\/.+/', drupal_get_path_alias($path)) or
        (preg_match('/islandora\/object\/.+/', $path) and !preg_match('/islandora\/object\/islandora\:root\/?/', $path) )) {
       
-      $scoping_options['COLL'] = 'Search this collection';
+      //$scoping_options['COLL'] = 'Search this collection';
+
     }
+
+    $scoping_options['COLL'] = 'Search this collection:';
 
     // For capturing the path passed via AJAX for form field population
     $form['path'] = array('#type' => 'hidden', '#value' => $path);
@@ -538,7 +643,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 			   '#suffix' => '</div>',
 			   '#default_value' => 'SITE',
 			   '#options' => $scoping_options,
-			   '#attributes' => array('class' => array('islandora-solr-scoping-boolean')),
+			   '#attributes' => array('class' => array('islandora-solr-scoping-button')),
 			   '#ajax' => array(
 					    'wrapper' => 'islandora-solr-advanced-terms',
 					    'callback' => '_islandora_dss_solr_advanced_search_terms_rescope',
@@ -547,6 +652,46 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 					    'progress' => array('type' => 'none'),
 					    ),
 			   );
+
+  /*
+  if(isset($form_state['triggering_element']) && $form_state['triggering_element']['#name'] == 'scoping' and 
+
+     ($form_state['triggering_element']['#value'] == 'COLL' or $form_state['triggering_element']['#value'] == 'REPO') ) {
+
+    $collection_disabled = FALSE;
+  } else {
+
+    $collection_disabled = TRUE;
+  }
+  */
+
+  $form['collection'] = array(
+			      //'#prefix' => '<span>Search: </span>',
+			      '#title' => '',
+			      '#type' => 'select',
+			      '#default_value' => 'eastasia',
+			      '#options' => array(
+						  'eastasia' => 'East Asia Image Collections',
+						  'newspaper' => 'Lafayette Newspaper',
+						  'academic' => 'Academic Publications',
+						  'cap' => 'Historical Photograph Collection',
+						  'mdl-prints' => 'Marquis de Lafayette Print Collection',
+						  'geology-slides' => 'Geology Slides Collection',
+						  'administration' => 'Administration Archives',
+						  'mckelvy' => 'McKelvy House Collection',
+						  'war-casualties' => 'War Casualties Collection',
+						  'presidents' => 'Lafayette Presidents Collection',
+						  ),
+			      '#ajax' => array(
+					       'wrapper' => 'islandora-solr-advanced-terms',
+					       'callback' => '_islandora_dss_solr_advanced_search_terms_rescope',
+					       'method' => 'replace',
+					       'effect' => 'fade',
+					       'progress' => array('type' => 'none'),
+					       'event' => 'change'
+					       ),
+			      //'#disabled' => $collection_disabled
+			      );
 
   /*
         $term['boolean'] = array(
@@ -574,6 +719,8 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 				      '#value' => t('Search')
 				      );
 
+  //dpm($form_state);
+
   return $form;
   }
 
@@ -597,6 +744,13 @@ function islandora_dss_solr_islandora_solr_query_blocks() {
 }
 
 function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
+
+  //$form_state['values']['scoping'];
+
+  if(array_key_exists('scoping', $form_state['values']) and $form_state['values']['scoping'] == 'SITE') {
+
+    return search_box_form_submit();
+  }
 
   // Collect query values
   $query_array = array();

@@ -1,10 +1,12 @@
 name = Islandora Solr for the Lafayette College Libraries
-dependencies[] = islandora
-dependencies[] = islandora_solr
 description = Extended Islandora Solr functionality refactored as a Drupal Module
 package = Islandora Search
 configure = admin/config/islandora_solr
 version = 7.x-1.1
 core = 7.x
+
+dependencies[] = islandora
+dependencies[] = islandora_solr
+dependencies[] = search
 
 stylesheets[all][] = css/islandora_dss_solr.base.css
