@@ -13,7 +13,19 @@ date.original
 coverage.location
   */
 
-
+$ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP = array(
+'Geology Department Slide Collection' => array('dc.title' => 'Title',
+											       'geology_slides_esi.subject ' => 'Subject',
+											       'geology_slides_esi.date.original' => 'Date.Original',
+											       'eastasia.Coverage.Location' => 'Coverage.Location'),
+'East Asia Image Collection' => array('dc.title' => 'Title.English',
+				      'eastasia.Subject.OCM' => 'Subject.OCM',
+				      'eastasia.Date.Artifact.Lower' => 'Date.Artifact.Lower',
+				      'eastasia.Date.Artifact.Upper' => 'Date.Artifact.Upper',
+				      'eastasia.Coverage.Location.Country' => 'Coverage.Location.Country',
+				      'eastasia.Format.Medium' => 'Format.Medium',
+				      'eastasia.Creator.Maker' => 'Creator.Maker')
+				    );
 
 function islandora_dss_solr_dc_label_map($collection, $dc_field) {
 
@@ -27,25 +39,13 @@ Creator.Maker
 
    */
 
-  $COLLECTIONS_DC_LABEL_MAP = array(
-'Geology Department Slide Collection, John S. Shelton Earth Science Image Collection' => array('dc.title' => 'Title',
-											       'geology_slides_esi.subject ' => 'Subject',
-											       'geology_slides_esi.date.original' => 'Date.Original',
-											       'eastasia.Coverage.Location' => 'Coverage.Location'),
-'East Asia Image Collection' => array('dc.title' => 'Title.English',
-				      'eastasia.Subject.OCM' => 'Subject.OCM',
-				      'eastasia.Date.Artifact.Lower' => 'Date.Artifact.Lower',
-				      'eastasia.Date.Artifact.Upper' => 'Date.Artifact.Upper',
-				      'eastasia.Coverage.Location.Country' => 'Coverage.Location.Country',
-				      'eastasia.Format.Medium' => 'Format.Medium',
-				      'eastasia.Creator.Maker' => 'Creator.Maker')
-				    );
+  global $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP;
 
-  if(array_key_exists($collection, $COLLECTIONS_DC_LABEL_MAP)) {
+  if(array_key_exists($collection, $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP)) {
 
-    if(array_key_exists($dc_field, $COLLECTIONS_DC_LABEL_MAP[$collection])) {
+    if(array_key_exists($dc_field, $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP[$collection])) {
 
-      return $COLLECTIONS_DC_LABEL_MAP[$collection][$dc_field];
+      return $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP[$collection][$dc_field];
     }
   }
 
@@ -61,16 +61,48 @@ Creator.Maker
  */
 function islandora_dss_solr_process_islandora_solr(&$vars) {
 
+  global $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP;
+  $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP = array(
+'Geology Department Slide Collection' => array('dc.title' => 'Title',
+											       'geology_slides_esi.subject ' => 'Subject',
+											       'geology_slides_esi.date.original' => 'Date.Original',
+											       'eastasia.Coverage.Location' => 'Coverage.Location'),
+'East Asia Image Collection' => array('dc.title' => 'Title.English',
+				      'eastasia.Subject.OCM' => 'Subject.OCM',
+				      'eastasia.Date.Artifact.Lower' => 'Date.Artifact.Lower',
+				      'eastasia.Date.Artifact.Upper' => 'Date.Artifact.Upper',
+				      'eastasia.Coverage.Location.Country' => 'Coverage.Location.Country',
+				      'eastasia.Format.Medium' => 'Format.Medium',
+				      'eastasia.Creator.Maker' => 'Creator.Maker')
+				    );
+
   foreach($vars['results'] as &$result ) {
+
+    $collections = explode(', ', $result['solr_doc']['cdm.Relation.IsPartOf']['value']);
+    $top_collection = array_shift($collections);
+    $collection_fields = array_keys($ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP[$top_collection]);
+
+    if(count($collection_fields) != count(array_keys($result['solr_doc']))) {
+
+      foreach($collection_fields as $collection_field) {
+
+	if(!array_key_exists($collection_field, $result['solr_doc'])) {
+
+	  $result['solr_doc'][$collection_field] = array('label' => islandora_dss_solr_dc_label_map($top_collection, $collection_field),
+							 'value' => '',
+							 'class' => '');
+	}
+      }
+    }
 
     foreach($result['solr_doc'] as $field => &$value) {
 
-      if(! islandora_dss_solr_dc_label_map($result['solr_doc']['cdm.Relation.IsPartOf']['value'], $field)) {
+      if(! islandora_dss_solr_dc_label_map($top_collection, $field)) {
 
 	unset($result['solr_doc'][$field]);
       } else {
 
-	$value['label'] = islandora_dss_solr_dc_label_map($result['solr_doc']['cdm.Relation.IsPartOf']['value'], $field);
+	$value['label'] = islandora_dss_solr_dc_label_map($top_collection, $field);
       }
     }
   }
