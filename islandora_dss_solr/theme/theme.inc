@@ -52,6 +52,8 @@ Creator.Maker
   return NULL;
 }
 
+$ISLANDORA_DSS_SOLR_TOP_COLLECTION = '';
+
 /**
  * hook_process function for islandora_solr
  *
@@ -94,6 +96,9 @@ date.original.display
 
     $collections = explode(', ', $result['solr_doc']['cdm.Relation.IsPartOf']['value']);
     $top_collection = array_shift($collections);
+    global $ISLANDORA_DSS_SOLR_TOP_COLLECTION;
+    $ISLANDORA_DSS_SOLR_TOP_COLLECTION = $top_collection;
+
     $collection_fields = array_keys($ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP[$top_collection]);
 
     $vars['collection_fields'] = $collection_fields;
@@ -127,13 +132,18 @@ date.original.display
 function islandora_dss_solr_process_islandora_solr_wrapper(&$vars) {
 
   global $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP;
+  global $ISLANDORA_DSS_SOLR_TOP_COLLECTION;
 
   dpm($vars);
 
+  /*
   $result = array_shift($vars['results']);
   $collections = explode(', ', $result['solr_doc']['cdm.Relation.IsPartOf']['value']);
   $top_collection = array_shift($collections);
-  $collection_fields = array_keys($ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP[$top_collection]);
+  */
+
+  $collection_fields = $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP[$ISLANDORA_DSS_SOLR_TOP_COLLECTION];
+  dpm($collection_fields);
 
   $vars['collection_fields'] = $collection_fields;
 }
