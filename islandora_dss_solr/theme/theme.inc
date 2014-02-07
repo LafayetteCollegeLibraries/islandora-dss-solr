@@ -142,7 +142,13 @@ function islandora_dss_solr_process_islandora_solr_wrapper(&$vars) {
   $top_collection = array_shift($collections);
   */
 
-  $collection_fields = $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP[$ISLANDORA_DSS_SOLR_TOP_COLLECTION];
+  if(!$ISLANDORA_DSS_SOLR_TOP_COLLECTION) {
+
+    $collection_fields = array();
+  } else {
+
+    $collection_fields = $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP[$ISLANDORA_DSS_SOLR_TOP_COLLECTION];
+  }
   dpm($collection_fields);
 
   $vars['collection_fields'] = $collection_fields;
