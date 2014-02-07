@@ -73,8 +73,22 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 				      'eastasia.Date.Artifact.Upper' => 'Date.Artifact.Upper',
 				      'eastasia.Coverage.Location.Country' => 'Coverage.Location.Country',
 				      'eastasia.Format.Medium' => 'Format.Medium',
-				      'eastasia.Creator.Maker' => 'Creator.Maker')
+				      'eastasia.Creator.Maker' => 'Creator.Maker'),
+
+'McKelvy House Photograph Collection' => array('dc.title' => 'Title',
+					       'dc.subject' => 'Subject',
+					       'eastasia.Format.Medium' => 'Format.Medium',
+					       'mckelvy.date.original.display' => 'Date')
 				    );
+
+  $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP['Mckelvy House Photograph Collection'] = $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP['McKelvy House Photograph Collection'];
+
+  /*
+dc,title
+dc.subject
+dc.format.medium
+date.original.display
+   */
 
   foreach($vars['results'] as &$result ) {
 
