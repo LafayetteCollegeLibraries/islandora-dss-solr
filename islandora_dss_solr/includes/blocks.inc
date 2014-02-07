@@ -781,6 +781,12 @@ function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
       // add query
       if (!empty($search)) {
 
+	// Ensure that terms are escaped with double quotations
+	if(!preg_match('/^"(.+?)"$/', $search)) {
+
+	  $search = '"' . $search . '"';
+	}
+
 	$query_array[] = array(
 			       'search' => "$field:($search)",
 			       'boolean' => $boolean
@@ -802,7 +808,7 @@ function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
 
   // check if query is empty
   if (empty($query)) {
-    $query = '*:*';
+    $query = 'dc.title:*';
   }
 
   // navigate to results page
