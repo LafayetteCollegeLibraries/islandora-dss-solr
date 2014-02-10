@@ -13,11 +13,26 @@ date.original
 coverage.location
   */
 
+$ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP = array('Geology Department Slide Collection' => array('dc.title' => 'Title',
+												//'geology_slides_esi.subject ' => 'Subject',
+												'geology_slides_esi.date.original' => 'Date.Original',
+												//'eastasia.Coverage.Location' => 'Coverage.Location'
+												),
+						 'East Asia Image Collection' => array('dc.title' => 'Title.English',
+										       //'eastasia.Subject.OCM' => 'Subject.OCM',
+										       'eastasia.Date.Artifact.Lower' => 'Date.Artifact.Lower',
+										       'eastasia.Date.Artifact.Upper' => 'Date.Artifact.Upper',
+										       //'eastasia.Coverage.Location.Country' => 'Coverage.Location.Country',
+										       //'eastasia.Format.Medium' => 'Format.Medium',
+										       //'eastasia.Creator.Maker' => 'Creator.Maker')
+										       )
+						 );
+
 $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP = array(
-'Geology Department Slide Collection' => array('dc.title' => 'Title',
-											       'geology_slides_esi.subject ' => 'Subject',
-											       'geology_slides_esi.date.original' => 'Date.Original',
-											       'eastasia.Coverage.Location' => 'Coverage.Location'),
+						     'Geology Department Slide Collection' => array('dc.title' => 'Title',
+												    'geology_slides_esi.subject ' => 'Subject',
+												    'geology_slides_esi.date.original' => 'Date.Original',
+												    'eastasia.Coverage.Location' => 'Coverage.Location'),
 'East Asia Image Collection' => array('dc.title' => 'Title.English',
 				      'eastasia.Subject.OCM' => 'Subject.OCM',
 				      'eastasia.Date.Artifact.Lower' => 'Date.Artifact.Lower',
@@ -63,12 +78,30 @@ $ISLANDORA_DSS_SOLR_TOP_COLLECTION = '';
  */
 function islandora_dss_solr_process_islandora_solr(&$vars) {
 
+  global $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP;
+  $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP = array('Geology Department Slide Collection' => array('dc.title' => 'Title',
+												  //'geology_slides_esi.subject ' => 'Subject',
+												  'geology_slides_esi.date.original' => 'Date.Original',
+												  //'eastasia.Coverage.Location' => 'Coverage.Location'
+												  ),
+						   'East Asia Image Collection' => array('dc.title' => 'Title.English',
+											 //'eastasia.Subject.OCM' => 'Subject.OCM',
+											 'eastasia.Date.Artifact.Lower' => 'Date.Artifact.Lower',
+											 'eastasia.Date.Artifact.Upper' => 'Date.Artifact.Upper',
+											 //'eastasia.Coverage.Location.Country' => 'Coverage.Location.Country',
+											 //'eastasia.Format.Medium' => 'Format.Medium',
+											 //'eastasia.Creator.Maker' => 'Creator.Maker')
+											 )
+						   );
+
   global $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP;
   $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP = array(
-'Geology Department Slide Collection' => array('dc.title' => 'Title',
-											       'geology_slides_esi.subject ' => 'Subject',
-											       'geology_slides_esi.date.original' => 'Date.Original',
-											       'eastasia.Coverage.Location' => 'Coverage.Location'),
+
+						       // Cannot sort on multivalue fields (e. g. subject)
+						       'Geology Department Slide Collection' => array('dc.title' => 'Title',
+												      'geology_slides_esi.subject' => 'Subject',
+												      'geology_slides_esi.date.original' => 'Date.Original',
+												      'eastasia.Coverage.Location' => 'Coverage.Location'),
 'East Asia Image Collection' => array('dc.title' => 'Title.English',
 				      'eastasia.Subject.OCM' => 'Subject.OCM',
 				      'eastasia.Date.Artifact.Lower' => 'Date.Artifact.Lower',
@@ -101,7 +134,8 @@ date.original.display
 
     $collection_fields = array_keys($ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP[$top_collection]);
 
-    $vars['collection_fields'] = $collection_fields;
+    //$vars['collection_fields'] = $collection_fields;
+    $vars['collection_fields'] = $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP[$top_collection];
 
     if(count($collection_fields) != count(array_keys($result['solr_doc']))) {
 
@@ -131,7 +165,8 @@ date.original.display
 
 function islandora_dss_solr_process_islandora_solr_wrapper(&$vars) {
 
-  global $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP;
+  //global $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP;
+  global $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP;
   global $ISLANDORA_DSS_SOLR_TOP_COLLECTION;
 
   dpm($vars);
@@ -147,7 +182,7 @@ function islandora_dss_solr_process_islandora_solr_wrapper(&$vars) {
     $collection_fields = array();
   } else {
 
-    $collection_fields = $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP[$ISLANDORA_DSS_SOLR_TOP_COLLECTION];
+    $collection_fields = $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP[$ISLANDORA_DSS_SOLR_TOP_COLLECTION];
   }
   dpm($collection_fields);
 
