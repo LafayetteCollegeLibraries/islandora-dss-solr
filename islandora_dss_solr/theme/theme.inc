@@ -13,7 +13,21 @@ date.original
 coverage.location
   */
 
-$ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP = array('Geology Department Slide Collection' => array('dc.title' => 'Title',
+$ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP = array(
+						 'Historical Photograph Collection' => array('dc.title' => 'Title',
+											     'dc.subject' => 'Subject',
+											     'dc.date' => 'Date',
+											     'dc.type' => 'Type'
+											     ),
+
+						 'Marquis de Lafayette Prints Collection' => array('dc.title' => 'Title',
+												   'mdl_prints.creator' => 'Creator',
+												   'mdl_prints.subject.lcsh' => 'Subject.LCSH',
+												   'mdl_prints.format.medium' => 'Format.Medium',
+												   'mdl_prints.description.series' => 'Description.Series',
+												   'mdl_prints.date.original' => 'Date.Original'
+												   ),
+						 'Geology Department Slide Collection' => array('dc.title' => 'Title',
 												//'geology_slides_esi.subject ' => 'Subject',
 												'geology_slides_esi.date.original' => 'Date.Original',
 												//'eastasia.Coverage.Location' => 'Coverage.Location'
@@ -29,6 +43,18 @@ $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP = array('Geology Department Slide Colle
 						 );
 
 $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP = array(
+						     'Historical Photograph Collection' => array('dc.title' => 'Title',
+												 'dc.subject' => 'Subject',
+												 'dc.date' => 'Date',
+												 'dc.type' => 'Type'
+												 ),
+						     'Marquis de Lafayette Prints Collection' => array('dc.title' => 'Title',
+												       'mdl_prints.creator' => 'Creator',
+												       'mdl_prints.subject.lcsh' => 'Subject.LCSH',
+												       'mdl_prints.format.medium' => 'Format.Medium',
+												       'mdl_prints.description.series' => 'Description.Series',
+												       'mdl_prints.date.original' => 'Date.Original'
+												       ),
 						     'Geology Department Slide Collection' => array('dc.title' => 'Title',
 												    'geology_slides_esi.subject ' => 'Subject',
 												    'geology_slides_esi.date.original' => 'Date.Original',
@@ -79,7 +105,21 @@ $ISLANDORA_DSS_SOLR_TOP_COLLECTION = '';
 function islandora_dss_solr_process_islandora_solr(&$vars) {
 
   global $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP;
-  $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP = array('Geology Department Slide Collection' => array('dc.title' => 'Title',
+  $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP = array(
+						   'Historical Photograph Collection' => array('dc.title' => 'Title',
+											       'dc.subject' => 'Subject',
+											       'dc.date' => 'Date',
+											       'dc.type' => 'Type'
+											       ),
+						   'Marquis de Lafayette Prints Collection' => array('dc.title' => 'Title',
+												     'mdl_prints.creator' => 'Creator',
+												     'mdl_prints.subject.lcsh' => 'Subject.LCSH',
+												     'mdl_prints.format.medium' => 'Format.Medium',
+												     'mdl_prints.description.series' => 'Description.Series',
+												     'mdl_prints.date.original' => 'Date.Original'
+												     ),
+
+						   'Geology Department Slide Collection' => array('dc.title' => 'Title',
 												  //'geology_slides_esi.subject ' => 'Subject',
 												  'geology_slides_esi.date.original' => 'Date.Original',
 												  //'eastasia.Coverage.Location' => 'Coverage.Location'
@@ -96,6 +136,18 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 
   global $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP;
   $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP = array(
+						       'Historical Photograph Collection' => array('dc.title' => 'Title',
+												   'dc.subject' => 'Subject',
+												   'dc.date' => 'Date',
+												   'dc.type' => 'Type'
+												   ),
+						       'Marquis de Lafayette Prints Collection' => array('dc.title' => 'Title',
+													 'mdl_prints.creator' => 'Creator',
+													 'mdl_prints.subject.lcsh' => 'Subject.LCSH',
+													 'mdl_prints.format.medium' => 'Format.Medium',
+													 'mdl_prints.description.series' => 'Description.Series',
+													 'mdl_prints.date.original' => 'Date.Original'
+													 ),
 
 						       // Cannot sort on multivalue fields (e. g. subject)
 						       'Geology Department Slide Collection' => array('dc.title' => 'Title',
@@ -127,8 +179,21 @@ date.original.display
 
   foreach($vars['results'] as &$result ) {
 
-    $collections = explode(', ', $result['solr_doc']['cdm.Relation.IsPartOf']['value']);
+    //dpm($result['solr_doc']);
+    dpm($result);
+
+    if(array_key_exists('cdm.Relation.IsPartOf', $result['solr_doc'])) {
+
+      $collections = explode(', ', $result['solr_doc']['cdm.Relation.IsPartOf']['value']);
+    } elseif(array_key_exists('dc.relation', $result['solr_doc'])) {
+
+      $collections = explode(', ', $result['solr_doc']['dc.relation']['value']);
+    } else {
+
+      $collections = array('Historical Photograph Collection');
+    }
     $top_collection = array_shift($collections);
+
     global $ISLANDORA_DSS_SOLR_TOP_COLLECTION;
     $ISLANDORA_DSS_SOLR_TOP_COLLECTION = $top_collection;
 
