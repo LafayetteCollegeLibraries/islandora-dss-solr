@@ -13,7 +13,92 @@ date.original
 coverage.location
   */
 
+  /*
+			<!-- war_casualties.description.cause.death -->
+			<xsl:for-each select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/mods:mods/mods:note[@type='cause-death']">
+			  <field name="war_casualties.description.cause.death">
+
+			    <xsl:apply-templates />
+			  </field>
+			</xsl:for-each>
+
+			<!-- war_casualties.contributor.military.unit -->
+			<xsl:for-each select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/mods:mods/mods:note[@type='military-unit']">
+			  <field name="war_casualties.contributor.military.unit">
+
+			    <xsl:apply-templates />
+			  </field>
+			</xsl:for-each>
+
+			<!-- war_casualties.description.class -->
+			<xsl:for-each select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/mods:mods/mods:note[@type='lafayette-class']">
+			  <field name="war_casualties.description.class">
+
+			    <xsl:apply-templates />
+			  </field>
+			</xsl:for-each>
+
+			<!-- war_casualties.description.honors -->
+			<xsl:for-each select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/mods:mods/mods:note[@type='military-honors']">
+			  <field name="war_casualties.description.honors">
+
+			    <xsl:apply-templates />
+			  </field>
+			</xsl:for-each>
+
+			<!-- war_casualties.description.military.branch -->
+			<xsl:for-each select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/mods:mods/mods:note[@type='military-branch']">
+			  <field name="war_casualties.description.military.branch">
+
+			    <xsl:apply-templates />
+			  </field>
+			</xsl:for-each>
+
+			<!-- war_casualties.description.military.rank -->
+			<xsl:for-each select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/mods:mods/mods:note[@type='military-rank']">
+			  <field name="war_casualties.description.military.rank">
+
+			    <xsl:apply-templates />
+			  </field>
+			</xsl:for-each>
+
+			<!-- war_casualties.coverage.place.birth -->
+			<xsl:for-each select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/mods:mods/mods:note[@type='place-birth']">
+			  <field name="war_casualties.coverage.place.birth">
+
+			    <xsl:apply-templates />
+			  </field>
+			</xsl:for-each>
+
+			<!-- war_casualties.coverage.place.death -->
+			<xsl:for-each select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/mods:mods/mods:note[@type='place-death']">
+			  <field name="war_casualties.coverage.place.death">
+
+			    <xsl:apply-templates />
+			  </field>
+			</xsl:for-each>
+
+			<!-- war_casualties.format.analog -->
+			<xsl:for-each select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/mods:mods/mods:physicalDescription/mods:note[@type='format-analog']">
+			  <field name="war_casualties.format.analog">
+
+			    <xsl:apply-templates />
+			  </field>
+			</xsl:for-each>
+   */
+
 $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP = array(
+						 'McKelvy House Photograph Collection' => array('dc.title' => 'Title',
+												'dc.subject' => 'Subject',
+												'mckelvy.date.original.display' => 'mckelvy.date.original.display',
+												'dc.type' => 'Type'
+											     ),
+						 'Lafayette World War II Casualties' => array(
+											      'dc.title' => 'Title.name',
+											      'war_casualties.description.class' => 'Description.class',
+											      'war_casualties.description.military.branch' => 'Description.military.branch',
+											      'war_casualties.contributor.military.unit' => 'Description.military.unit',
+											      ),
 						 'Historical Photograph Collection' => array('dc.title' => 'Title',
 											     'dc.subject' => 'Subject',
 											     'dc.date' => 'Date',
@@ -43,6 +128,22 @@ $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP = array(
 						 );
 
 $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP = array(
+						     'McKelvy House Photograph Collection' => array('dc.title' => 'Title',
+												    'dc.subject' => 'Subject',
+												    'mckelvy.date.original.display' => 'mckelvy.date.original.display',
+												    'dc.type' => 'Type'
+											     ),
+						 //'McKelvy House Photograph Collection' => array('dc.title' => 'Title',
+						 //'dc.subject' => 'Subject',
+						 //'dc.date' => 'Date',
+						 //'dc.type' => 'Type'
+						 //),
+						     'Lafayette World War II Casualties' => array(
+												  'dc.title' => 'Title.name',
+												  'war_casualties.description.class' => 'Description.class',
+												  'war_casualties.description.military.branch' => 'Description.military.branch',
+												  'war_casualties.contributor.military.unit' => 'Description.military.unit',
+												  ),
 						     'Historical Photograph Collection' => array('dc.title' => 'Title',
 												 'dc.subject' => 'Subject',
 												 'dc.date' => 'Date',
@@ -106,6 +207,22 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 
   global $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP;
   $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP = array(
+						     'McKelvy House Photograph Collection' => array('dc.title' => 'Title',
+												    'dc.subject' => 'Subject',
+												    'mckelvy.date.original.display' => 'mckelvy.date.original.display',
+												    'dc.type' => 'Type'
+											     ),
+						     //'McKelvy House Photograph Collection' => array('dc.title' => 'Title',
+						     //'dc.subject' => 'Subject',
+						     //'dc.date' => 'Date',
+						     //'dc.type' => 'Type'
+						     //),
+						   'Lafayette World War II Casualties' => array(
+												'dc.title' => 'Title.name',
+												'war_casualties.description.class' => 'Description.class',
+												'war_casualties.description.military.branch' => 'Description.military.branch',
+												'war_casualties.contributor.military.unit' => 'Description.military.unit',
+												),
 						   'Historical Photograph Collection' => array('dc.title' => 'Title',
 											       'dc.subject' => 'Subject',
 											       'dc.date' => 'Date',
@@ -131,11 +248,32 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 											 //'eastasia.Coverage.Location.Country' => 'Coverage.Location.Country',
 											 //'eastasia.Format.Medium' => 'Format.Medium',
 											 //'eastasia.Creator.Maker' => 'Creator.Maker')
-											 )
+											 ),
+
+						     'Lafayette Newspaper Collection' => array('dc.title' => 'Title',
+											       'dc.date' => 'Date',
+											       'dc.coverage' => 'Coverage')
 						   );
 
   global $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP;
   $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP = array(
+						       'McKelvy House Photograph Collection' => array('dc.title' => 'Title',
+												      'dc.subject' => 'Subject',
+												      'mckelvy.date.original.display' => 'mckelvy.date.original.display',
+												      'dc.type' => 'Type'
+												      ),
+
+						       //'McKelvy House Photograph Collection' => array('dc.title' => 'Title',
+						       //'dc.subject' => 'Subject',
+						       //'dc.date' => 'Date',
+						       //'dc.type' => 'Type'
+						       //),
+						       'Lafayette World War II Casualties' => array(
+												    'dc.title' => 'Title.name',
+												    'war_casualties.description.class' => 'Description.class',
+												    'war_casualties.description.military.branch' => 'Description.military.branch',
+												    'war_casualties.contributor.military.unit' => 'Description.military.unit',
+												    ),
 						       'Historical Photograph Collection' => array('dc.title' => 'Title',
 												   'dc.subject' => 'Subject',
 												   'dc.date' => 'Date',
@@ -154,19 +292,24 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 												      'geology_slides_esi.subject' => 'Subject',
 												      'geology_slides_esi.date.original' => 'Date.Original',
 												      'eastasia.Coverage.Location' => 'Coverage.Location'),
-'East Asia Image Collection' => array('dc.title' => 'Title.English',
-				      'eastasia.Subject.OCM' => 'Subject.OCM',
-				      'eastasia.Date.Artifact.Lower' => 'Date.Artifact.Lower',
-				      'eastasia.Date.Artifact.Upper' => 'Date.Artifact.Upper',
-				      'eastasia.Coverage.Location.Country' => 'Coverage.Location.Country',
-				      'eastasia.Format.Medium' => 'Format.Medium',
-				      'eastasia.Creator.Maker' => 'Creator.Maker'),
 
-'McKelvy House Photograph Collection' => array('dc.title' => 'Title',
-					       'dc.subject' => 'Subject',
-					       'eastasia.Format.Medium' => 'Format.Medium',
-					       'mckelvy.date.original.display' => 'Date')
-				    );
+						       'East Asia Image Collection' => array('dc.title' => 'Title.English',
+											     'eastasia.Subject.OCM' => 'Subject.OCM',
+											     'eastasia.Date.Artifact.Lower' => 'Date.Artifact.Lower',
+											     'eastasia.Date.Artifact.Upper' => 'Date.Artifact.Upper',
+											     'eastasia.Coverage.Location.Country' => 'Coverage.Location.Country',
+											     'eastasia.Format.Medium' => 'Format.Medium',
+											     'eastasia.Creator.Maker' => 'Creator.Maker'),
+
+						       'McKelvy House Photograph Collection' => array('dc.title' => 'Title',
+												      'dc.subject' => 'Subject',
+												      'eastasia.Format.Medium' => 'Format.Medium',
+												      'mckelvy.date.original.display' => 'Date'),
+
+						       'Lafayette Newspaper Collection' => array('dc.title' => 'Title',
+												 'dc.date' => 'Date',
+												 'dc.coverage' => 'Coverage')
+						       );
 
   $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP['Mckelvy House Photograph Collection'] = $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP['McKelvy House Photograph Collection'];
 
@@ -180,7 +323,7 @@ date.original.display
   foreach($vars['results'] as &$result ) {
 
     //dpm($result['solr_doc']);
-    dpm($result);
+    //dpm($result);
 
     if(array_key_exists('cdm.Relation.IsPartOf', $result['solr_doc'])) {
 

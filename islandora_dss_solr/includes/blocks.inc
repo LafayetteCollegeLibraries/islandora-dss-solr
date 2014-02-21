@@ -108,6 +108,11 @@ $ISLANDORA_DSS_FIELDS = array('dc.title' => 'Title',
 
 function islandora_dss_fields_map($collection) {
 
+  $ISLANDORA_DSS_FIELDS = array('dc.title' => 'Title',
+				'dc.contributor' => 'Author',
+				'foxml.all.text' => 'Full Text',
+				);
+
   /*
 			      array('dc.contributor' => 'Contributor'),
 			      array('dc.creator' => 'Creator'),
@@ -191,7 +196,6 @@ function islandora_dss_fields_map($collection) {
 							"cdm.Relation.IsPartOf" => 'Relation.IsPartOf',
 							),
 				    'academic' => array(
-							'foxml.all.text' => 'Full Text',
 							'dc.description.abstract' => 'Abstract',
 							'dc.identifier.issn' => 'Series',
 							'dc.contributor.author' => 'Author',
@@ -203,8 +207,7 @@ function islandora_dss_fields_map($collection) {
 							'dc.identifier.isbn' => 'Identifier',
 							),
 				    'administration' => array(),
-				    'newspaper' => array('dc.title' => 'Title',
-							 ),
+				    'newspaper' => array(),
 				    'cap' => array(
 						   'cap.subject.LOC' => 'Subject',
 						   'cap.creator.photographer' => 'Photographer',
@@ -257,15 +260,15 @@ function islandora_dss_fields_map($collection) {
 							    'war_casualties.description.cause.death' => 'Cause of Death',
 							    'war_casualties.description.honors' => 'Military Honors',
 							    ),
-				    'presidents' => array('dc.title' => 'Title',
-							  'dc.subject' => 'Subject',
-							  'dc.description' => 'Description',
-							  'dc.date' => 'Date'),
 				    );
 
   $ISLANDORA_DSS_FIELDS_MAP['administration'] = array_merge($ISLANDORA_DSS_FIELDS_MAP['academic'], $ISLANDORA_DSS_FIELDS_MAP['administration']);
 
-  return $ISLANDORA_DSS_FIELDS_MAP[$collection];
+  //return $ISLANDORA_DSS_FIELDS_MAP[$collection];
+
+  $fields = array_merge($ISLANDORA_DSS_FIELDS_MAP[$collection], $ISLANDORA_DSS_FIELDS);
+
+  return $fields;
 }
 
 function islandora_dss_solr_fields_for_path($path='') {
@@ -469,7 +472,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     $term['field-wrapper']['field'] = array(
 					    '#title' => t(''),
 					    '#type' => 'select',
-					    '#default_value' => isset($value['field']) ? $value['field'] : 'dc.title',
+					    '#default_value' => isset($value['field']) ? $value['field'] : 'foxml.all.text',
 					    '#attributes' => array('class' => array('islandora-solr-search-field')));
 
     if(isset($form_state['triggering_element']) and $form_state['triggering_element']['#name'] == 'scoping') {
@@ -677,18 +680,18 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 			      //'#prefix' => '<span>Search: </span>',
 			      '#title' => '',
 			      '#type' => 'select',
-			      '#default_value' => 'eastasia',
+			      '#default_value' => 'default',
 			      '#options' => array(
+						  'default' => 'Select...',
 						  'eastasia' => 'East Asia Image Collections',
 						  'newspaper' => 'Lafayette Newspaper',
 						  'academic' => 'Academic Publications',
 						  'cap' => 'Historical Photograph Collection',
-						  'mdl-prints' => 'Marquis de Lafayette Print Collection',
-						  'geology-slides' => 'Geology Slides Collection',
+						  'mdl-prints' => 'Marquis de Lafayette Prints Collection',
+						  'geology-slides' => 'Geology Slide Collection',
 						  'administration' => 'Administration Archives',
-						  'mckelvy' => 'McKelvy House Collection',
-						  'war-casualties' => 'War Casualties Collection',
-						  'presidents' => 'Lafayette Presidents Collection',
+						  'mckelvy' => 'McKelvy House',
+						  'war-casualties' => 'Lafayette College World War II Casualties',
 						  ),
 			      '#ajax' => array(
 					       'wrapper' => 'islandora-solr-advanced-terms',
