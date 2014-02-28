@@ -87,87 +87,16 @@ coverage.location
 			</xsl:for-each>
    */
 
-$ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP = array(
-						 'McKelvy House Photograph Collection' => array('dc.title' => 'Title',
-												'dc.subject' => 'Subject',
-												'mckelvy.date.original.display' => 'mckelvy.date.original.display',
-												'dc.type' => 'Type'
-											     ),
-						 'Lafayette World War II Casualties' => array(
-											      'dc.title' => 'Title.name',
-											      'war_casualties.description.class' => 'Description.class',
-											      'war_casualties.description.military.branch' => 'Description.military.branch',
-											      'war_casualties.contributor.military.unit' => 'Description.military.unit',
-											      ),
-						 'Historical Photograph Collection' => array('dc.title' => 'Title',
-											     'dc.subject' => 'Subject',
-											     'dc.date' => 'Date',
-											     'dc.type' => 'Type'
-											     ),
+$ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP = array();
 
-						 'Marquis de Lafayette Prints Collection' => array('dc.title' => 'Title',
-												   'mdl_prints.creator' => 'Creator',
-												   'mdl_prints.subject.lcsh' => 'Subject.LCSH',
-												   'mdl_prints.format.medium' => 'Format.Medium',
-												   'mdl_prints.description.series' => 'Description.Series',
-												   'mdl_prints.date.original' => 'Date.Original'
-												   ),
-						 'Geology Department Slide Collection' => array('dc.title' => 'Title',
-												//'geology_slides_esi.subject ' => 'Subject',
-												'geology_slides_esi.date.original' => 'Date.Original',
-												//'eastasia.Coverage.Location' => 'Coverage.Location'
-												),
-						 'East Asia Image Collection' => array('dc.title' => 'Title.English',
-										       //'eastasia.Subject.OCM' => 'Subject.OCM',
-										       'eastasia.Date.Artifact.Lower' => 'Date.Artifact.Lower',
-										       'eastasia.Date.Artifact.Upper' => 'Date.Artifact.Upper',
-										       //'eastasia.Coverage.Location.Country' => 'Coverage.Location.Country',
-										       //'eastasia.Format.Medium' => 'Format.Medium',
-										       //'eastasia.Creator.Maker' => 'Creator.Maker')
-										       )
-						 );
-
-$ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP = array(
-						     'McKelvy House Photograph Collection' => array('dc.title' => 'Title',
-												    'dc.subject' => 'Subject',
-												    'mckelvy.date.original.display' => 'mckelvy.date.original.display',
-												    'dc.type' => 'Type'
-											     ),
-						 //'McKelvy House Photograph Collection' => array('dc.title' => 'Title',
-						 //'dc.subject' => 'Subject',
-						 //'dc.date' => 'Date',
-						 //'dc.type' => 'Type'
-						 //),
-						     'Lafayette World War II Casualties' => array(
-												  'dc.title' => 'Title.name',
-												  'war_casualties.description.class' => 'Description.class',
-												  'war_casualties.description.military.branch' => 'Description.military.branch',
-												  'war_casualties.contributor.military.unit' => 'Description.military.unit',
-												  ),
-						     'Historical Photograph Collection' => array('dc.title' => 'Title',
-												 'dc.subject' => 'Subject',
+/*
+						       'Lafayette Newspaper Collection' => array('dc.title' => 'Title',
 												 'dc.date' => 'Date',
-												 'dc.type' => 'Type'
-												 ),
-						     'Marquis de Lafayette Prints Collection' => array('dc.title' => 'Title',
-												       'mdl_prints.creator' => 'Creator',
-												       'mdl_prints.subject.lcsh' => 'Subject.LCSH',
-												       'mdl_prints.format.medium' => 'Format.Medium',
-												       'mdl_prints.description.series' => 'Description.Series',
-												       'mdl_prints.date.original' => 'Date.Original'
-												       ),
-						     'Geology Department Slide Collection' => array('dc.title' => 'Title',
-												    'geology_slides_esi.subject ' => 'Subject',
-												    'geology_slides_esi.date.original' => 'Date.Original',
-												    'eastasia.Coverage.Location' => 'Coverage.Location'),
-'East Asia Image Collection' => array('dc.title' => 'Title.English',
-				      'eastasia.Subject.OCM' => 'Subject.OCM',
-				      'eastasia.Date.Artifact.Lower' => 'Date.Artifact.Lower',
-				      'eastasia.Date.Artifact.Upper' => 'Date.Artifact.Upper',
-				      'eastasia.Coverage.Location.Country' => 'Coverage.Location.Country',
-				      'eastasia.Format.Medium' => 'Format.Medium',
-				      'eastasia.Creator.Maker' => 'Creator.Maker')
-				    );
+												 'dc.coverage' => 'Coverage')
+ */
+$ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP = array();
+
+
 
 function islandora_dss_solr_dc_label_map($collection, $dc_field) {
 
@@ -206,79 +135,66 @@ $ISLANDORA_DSS_SOLR_TOP_COLLECTION = '';
 function islandora_dss_solr_process_islandora_solr(&$vars) {
 
   global $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP;
-  $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP = array(
-						     'McKelvy House Photograph Collection' => array('dc.title' => 'Title',
-												    'dc.subject' => 'Subject',
-												    'mckelvy.date.original.display' => 'mckelvy.date.original.display',
-												    'dc.type' => 'Type'
-											     ),
-						     //'McKelvy House Photograph Collection' => array('dc.title' => 'Title',
-						     //'dc.subject' => 'Subject',
-						     //'dc.date' => 'Date',
-						     //'dc.type' => 'Type'
-						     //),
-						   'Lafayette World War II Casualties' => array(
-												'dc.title' => 'Title.name',
-												'war_casualties.description.class' => 'Description.class',
-												'war_casualties.description.military.branch' => 'Description.military.branch',
-												'war_casualties.contributor.military.unit' => 'Description.military.unit',
+  $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP = array('McKelvy House Photograph Collection' => array('dc.title' => 'Title',
+												  'geology_slides_esi.subject.sort' => 'Subject',
+												  'dc.type.sort' => 'Format.Medium',
+												  'mckelvy.date.original.display' => 'Date.Original',
+												  ),
+						   
+						   'Lafayette World War II Casualties' => array('dc.title' => 'Name',
+												'war_casualties.description.class.sort' => 'Description.Class',
+												'war_casualties.description.military.branch.sort' => 'Description.Military.Branch',
+												'war_casualties.contributor.military.unit.sort' => 'Description.Military.Unit',
 												),
+
 						   'Historical Photograph Collection' => array('dc.title' => 'Title',
-											       'dc.subject' => 'Subject',
-											       'dc.date' => 'Date',
-											       'dc.type' => 'Type'
+											       'dc.subject.sort' => 'Subject',
+											       'dc.date.sort' => 'Date',
+											       'dc.type.sort' => 'Type'
 											       ),
+
 						   'Marquis de Lafayette Prints Collection' => array('dc.title' => 'Title',
-												     'mdl_prints.creator' => 'Creator',
-												     'mdl_prints.subject.lcsh' => 'Subject.LCSH',
-												     'mdl_prints.format.medium' => 'Format.Medium',
-												     'mdl_prints.description.series' => 'Description.Series',
-												     'mdl_prints.date.original' => 'Date.Original'
+												     'mdl_prints.creator.sort' => 'Creator',
+												     'mdl_prints.subject.lcsh.sort' => 'Subject.LCSH',
+												     'mdl_prints.format.medium.sort' => 'Format.Medium',
+												     'mdl_prints.description.series.sort' => 'Description.Series',
+												     'mdl_prints.date.original.sort' => 'Date.Original'
 												     ),
 
 						   'Geology Department Slide Collection' => array('dc.title' => 'Title',
-												  //'geology_slides_esi.subject ' => 'Subject',
-												  'geology_slides_esi.date.original' => 'Date.Original',
-												  //'eastasia.Coverage.Location' => 'Coverage.Location'
+												  'geology_slides_esi.subject.sort' => 'Subject',
+												  'geology_slides_esi.date.original.sort' => 'Date.Original',
+												  'eastasia.Coverage.Location.sort' => 'Coverage.Location'
 												  ),
+
 						   'East Asia Image Collection' => array('dc.title' => 'Title.English',
-											 //'eastasia.Subject.OCM' => 'Subject.OCM',
-											 'eastasia.Date.Artifact.Lower' => 'Date.Artifact.Lower',
-											 'eastasia.Date.Artifact.Upper' => 'Date.Artifact.Upper',
-											 //'eastasia.Coverage.Location.Country' => 'Coverage.Location.Country',
+											 'eastasia.Subject.OCM.sort' => 'Subject.OCM',
+											 //'eastasia.Date.Artifact.Lower' => 'Date.Artifact.Lower',
+											 //'eastasia.Date.Artifact.Upper' => 'Date.Artifact.Upper',
+											 'eastasia.Coverage.Location.Country.sort' => 'Coverage.Location.Country',
+											 'eastasia.Creator.Maker.sort' => 'Creator.Maker',
+											 'cdm.Relation.IsPartOf.sort' => 'Relation.IsPartOf',
 											 //'eastasia.Format.Medium' => 'Format.Medium',
-											 //'eastasia.Creator.Maker' => 'Creator.Maker')
 											 ),
 
-						     'Lafayette Newspaper Collection' => array('dc.title' => 'Title',
-											       'dc.date' => 'Date',
-											       'dc.coverage' => 'Coverage')
+						   'Lafayette Newspaper Collection' => array('dc.title' => 'Title',
+											     'dc.date.sort' => 'Date',
+											     'dc.coverage.sort' => 'Coverage')
 						   );
 
   global $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP;
-  $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP = array(
-						       'McKelvy House Photograph Collection' => array('dc.title' => 'Title',
-												      'dc.subject' => 'Subject',
-												      'mckelvy.date.original.display' => 'mckelvy.date.original.display',
-												      'dc.type' => 'Type'
-												      ),
-
-						       //'McKelvy House Photograph Collection' => array('dc.title' => 'Title',
-						       //'dc.subject' => 'Subject',
-						       //'dc.date' => 'Date',
-						       //'dc.type' => 'Type'
-						       //),
-						       'Lafayette World War II Casualties' => array(
-												    'dc.title' => 'Title.name',
-												    'war_casualties.description.class' => 'Description.class',
-												    'war_casualties.description.military.branch' => 'Description.military.branch',
-												    'war_casualties.contributor.military.unit' => 'Description.military.unit',
+  $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP = array('Lafayette World War II Casualties' => array('dc.title' => 'Name',
+												    'war_casualties.description.class' => 'Description.Class',
+												    'war_casualties.description.military.branch' => 'Description.Military.Branch',
+												    'war_casualties.contributor.military.unit' => 'Description.Military.Unit',
 												    ),
+
 						       'Historical Photograph Collection' => array('dc.title' => 'Title',
 												   'dc.subject' => 'Subject',
 												   'dc.date' => 'Date',
 												   'dc.type' => 'Type'
 												   ),
+
 						       'Marquis de Lafayette Prints Collection' => array('dc.title' => 'Title',
 													 'mdl_prints.creator' => 'Creator',
 													 'mdl_prints.subject.lcsh' => 'Subject.LCSH',
@@ -295,14 +211,16 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 
 						       'East Asia Image Collection' => array('dc.title' => 'Title.English',
 											     'eastasia.Subject.OCM' => 'Subject.OCM',
-											     'eastasia.Date.Artifact.Lower' => 'Date.Artifact.Lower',
-											     'eastasia.Date.Artifact.Upper' => 'Date.Artifact.Upper',
+											     //'eastasia.Date.Artifact.Lower' => 'Date.Artifact.Lower',
+											     //'eastasia.Date.Artifact.Upper' => 'Date.Artifact.Upper',
 											     'eastasia.Coverage.Location.Country' => 'Coverage.Location.Country',
-											     'eastasia.Format.Medium' => 'Format.Medium',
-											     'eastasia.Creator.Maker' => 'Creator.Maker'),
+											     //'eastasia.Format.Medium' => 'Format.Medium',
+											     'eastasia.Creator.Maker' => 'Creator.Maker',
+											     'cdm.Relation.IsPartOf' => 'Relation.IsPartOf',
+											     ),
 
 						       'McKelvy House Photograph Collection' => array('dc.title' => 'Title',
-												      'dc.subject' => 'Subject',
+												      'geology_slides_esi.subject' => 'Subject',
 												      'eastasia.Format.Medium' => 'Format.Medium',
 												      'mckelvy.date.original.display' => 'Date'),
 
