@@ -184,15 +184,15 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 
   global $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP;
   $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP = array('Lafayette World War II Casualties' => array('dc.title' => 'Name',
-												    'war_casualties.description.class' => 'Description.Class',
-												    'war_casualties.description.military.branch' => 'Description.Military.Branch',
-												    'war_casualties.contributor.military.unit' => 'Description.Military.Unit',
+												    'war_casualties.description.class' => 'Graduating Class',
+												    'war_casualties.description.military.branch' => 'Military Branch',
+												    'war_casualties.contributor.military.unit' => 'Military Unit',
 												    ),
 
 						       'Historical Photograph Collection' => array('dc.title' => 'Title',
 												   'dc.subject' => 'Subject',
-												   'dc.date' => 'Date',
-												   'dc.type' => 'Type'
+												   'dc.date' => 'Publication Date',
+												   'dc.type' => 'Medium'
 												   ),
 
 						       'Marquis de Lafayette Prints Collection' => array('dc.title' => 'Title',
@@ -281,6 +281,9 @@ date.original.display
 
     if(count($collection_fields) != count(array_keys($result['solr_doc']))) {
 
+      // Refactor
+      $ISLANDORA_DSS_SOLR_DATE_FIELDS = array('dc.date', 'geology_slides_esi.date.original', 'mckelvy.date.original.display', 'mdl_prints.date.original');
+
       foreach($collection_fields as $collection_field) {
 
 	if(!array_key_exists($collection_field, $result['solr_doc'])) {
@@ -288,6 +291,12 @@ date.original.display
 	  $result['solr_doc'][$collection_field] = array('label' => islandora_dss_solr_dc_label_map($top_collection, $collection_field),
 							 'value' => '',
 							 'class' => '');
+	} elseif(in_array($collection_field, $ISLANDORA_DSS_SOLR_DATE_FIELDS)) { // Format date field values
+
+	  // Ensure that, if there are multiple dates present, that only the first value is formatted
+	  $result['solr_doc'][$collection_field]['value'] = array_shift(explode(',', $result['solr_doc'][$collection_field]['value']));
+
+	  $result['solr_doc'][$collection_field]['value'] = gmdate('Y-m-d', strtotime($result['solr_doc'][$collection_field]['value']));
 	}
       }
     }
