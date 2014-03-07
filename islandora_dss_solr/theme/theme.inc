@@ -155,7 +155,7 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 
 						   'Marquis de Lafayette Prints Collection' => array('dc.title' => 'Title',
 												     'mdl_prints.creator.sort' => 'Creator',
-												     'mdl_prints.subject.lcsh.sort' => 'Subject.LCSH',
+												     //'mdl_prints.subject.lcsh.sort' => 'Subject.LCSH',
 												     'mdl_prints.format.medium.sort' => 'Format.Medium',
 												     'mdl_prints.description.series.sort' => 'Description.Series',
 												     'mdl_prints.date.original.sort' => 'Date.Original'
@@ -238,7 +238,12 @@ dc.format.medium
 date.original.display
    */
 
+  $vars['restricted_results'] = false;
+  dpm($vars);
+
   foreach($vars['results'] as &$result ) {
+
+    $result['restricted'] = false;
 
     //dpm($result['solr_doc']);
     //dpm($result);
@@ -254,6 +259,17 @@ date.original.display
       $collections = array('Historical Photograph Collection');
     }
     $top_collection = array_shift($collections);
+
+    /**
+     * Hard-coding access control based upon metadata field value
+     * @todo Refactor for XACML integration
+     *
+     */
+    if($top_collection == 'Geology Department Slide Collection') {
+
+      $result['restricted'] = true;
+      $vars['restricted_results'] = true;
+    }
 
     global $ISLANDORA_DSS_SOLR_TOP_COLLECTION;
     $ISLANDORA_DSS_SOLR_TOP_COLLECTION = $top_collection;
