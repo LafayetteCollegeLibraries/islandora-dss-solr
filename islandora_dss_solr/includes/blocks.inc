@@ -531,19 +531,17 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 					    'effect' => 'fade',
 					    'progress' => array('type' => 'none'),
 					    ),
-			   '#suffix' => '<button type="islandora-solr-search-add"><i class="icon-large icon-plus-sign"></i></button>',
 			   );
     }
     */
 
     if (count($values['terms']) > 1) {
-
-      //$term['remove'] = array(
+      
       $term['field-wrapper']['remove'] = array(
 
         '#type' => 'button',
         '#field' => $i,
-        '#value' => '<i class="icon-large icon-minus-sign"></i>',
+	'#value' => '<i class="icon-large"></i>',
         '#attributes' => array(
 			       'title' => t('Remove field'),
 			       'class' => array('islandora-solr-search-remove')),
@@ -555,7 +553,6 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 			 'effect' => 'fade',
 			 'progress' => array('type' => 'none'),
 			 ),
-	//'#suffix' => '<button type="islandora-solr-search-remove"><i class="icon-large icon-minus-sign"></i></button>'
       );
 
       if ((variable_get('islandora_solr_search_boolean', 'user') == 'user') && ((count($values['terms']) -1) != $i)) {
@@ -601,7 +598,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 
     $terms[] = array('add' => array(
 				    '#type' => 'button',
-				    '#value' => '<i class="icon-large icon-plus-sign"></i>',
+				    '#value' => '<i class="icon-large"></i>',
 				    '#attributes' => array('title' => t('Add a field'),
 							   'class' => $classes),
 				    '#name' => 'add-field-' . $i,
@@ -612,7 +609,6 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 						     'effect' => 'fade',
 						     'progress' => array('type' => 'none'),
 						     ),
-				    //'#suffix' => '<button type="islandora-solr-search-add"><i class="icon-large icon-plus-sign"></i></button>',
 				    ));
   }
 

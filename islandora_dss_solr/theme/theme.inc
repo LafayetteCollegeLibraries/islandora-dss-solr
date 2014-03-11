@@ -293,6 +293,7 @@ date.original.display
 							 'class' => '');
 	} elseif(in_array($collection_field, $ISLANDORA_DSS_SOLR_DATE_FIELDS)) { // Format date field values
 
+	  dpm($result['solr_doc'][$collection_field]['value']);
 	  // Ensure that, if there are multiple dates present, that only the first value is formatted
 	  $result['solr_doc'][$collection_field]['value'] = array_shift(explode(',', $result['solr_doc'][$collection_field]['value']));
 
