@@ -265,7 +265,7 @@ date.original.display
      * @todo Refactor for XACML integration
      *
      */
-    if($top_collection == 'Geology Department Slide Collection') {
+    if($top_collection == 'Geology Department Slide Collection' && !user_is_logged_in()) {
 
       $result['restricted'] = true;
       $vars['restricted_results'] = true;
