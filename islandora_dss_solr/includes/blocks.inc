@@ -794,6 +794,12 @@ function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
     }
   }
 
+  /**
+   * Scope the query based upon the collection selected
+   * Resolves DSSSM-306
+   *
+   */
+
   // create query
   $query = '';
   $i = 0;
@@ -806,12 +812,40 @@ function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
   }
 
   // check if query is empty
+  /**
+   * This ensures that, by default, only all titles are returned
+   * (Otherwise, Solr can behave unpredictably due to the stress introduced by the query *:*
+   *
+   */
   if (empty($query)) {
     $query = 'dc.title:*';
   }
 
+  /**
+   * @todo Refactor
+   *
+   */
+  $ISLANDORA_DSS_SOLR_RELATION_MAP = array('eastasia' => 'East Asia Image Collection',
+					   'newspaper' => 'Lafayette Newspaper Collection',
+					   'academic' => 'Academic Publications',
+					   'cap' => 'Historical Photograph Collection',
+					   'mdl-prints' => 'Marquis de Lafayette Prints Collection',
+					   'geology-slides' => 'Geology Slide Collection',
+					   'administration' => 'Administration Archives',
+					   'mckelvy' => 'McKelvy House Photograph Collection',
+					   'war-casualties' => 'Lafayette World War II Casualties',
+					   );
+
+  dpm($form_state['values']);
+  if(array_key_exists('scoping', $form_state['values']) and $form_state['values']['scoping'] == 'COLL') {
+
+    //return search_box_form_submit();
+    // dpm($form_state['values']);
+    $params = array('f[0]' => 'cdm.Relation.IsPartOf:"' . $ISLANDORA_DSS_SOLR_RELATION_MAP[$form_state['values']['collection']] . '"');
+  }
+
   // navigate to results page
-  drupal_goto('islandora/search/' . $query);
+  drupal_goto('islandora/search/' . $query, array('query' => $params));
 }
 
 /**
