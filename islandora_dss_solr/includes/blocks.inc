@@ -786,10 +786,83 @@ function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
 	  $search = '"' . $search . '"';
 	}
 
-	$query_array[] = array(
-			       'search' => "$field:($search)",
-			       'boolean' => $boolean
-			       );
+	/**
+	 * Work-around for case sensitivity
+	 * Resolves DSS-208
+	 *
+	 */
+	if(ctype_upper($search)) {
+
+	  if(preg_match('/"(.+?)"/', $search, $m)) {
+
+	    $search = "($search OR " . '"' . strtolower($m[1]) . '"' . ")";
+	  } else {
+
+	    $search = "($search OR " . strtolower($search) . ")";
+	  }
+	} elseif(ctype_lower($search)) {
+
+	  if(preg_match('/"(.+?)"/', $search, $m)) {
+
+	    $search = "($search OR \"" . strtoupper($m[1]) . "\")";
+	  } else {
+
+	    $search = "($search OR " . strtoupper($search) . ")";
+	  }
+	} elseif(preg_match('/[A-Z]/', $search)) {
+
+	  if(preg_match('/"(.+?)"/', $search, $m)) {
+
+	    $search = "($search OR \"" . lcfirst($m[1]) . "\")";
+	  } else {
+	  
+	    $search = "($search OR " . lcfirst($search) . ")";
+	  }
+	} else {
+
+	  if(preg_match('/"(.+?)"/', $search, $m)) {
+
+	    $search = "($search OR \"" . mb_convert_case($m[1], MB_CASE_TITLE, "UTF-8") . "\")";
+
+	    //$search_case_title = mb_strtoupper(substr($m[1], 0, 1)) . substr($m[1], 1);
+	    //$search = "($search OR \"" . $search_case_title . "\")";
+	  } else {
+
+	    $search = "($search OR " . mb_convert_case($search, MB_CASE_TITLE, "UTF-8") . ")";
+
+	    //$search_case_title = mb_strtoupper(substr($search, 0, 1)) . substr($search, 1);
+	    //$search = "($search OR " . $search_case_title . ")";
+	  }
+	}
+
+	/**
+	 * Special handling for foxml.all.text
+	 * Work-around resolving DSS-207
+	 *
+	 */
+
+	if($field == 'foxml.all.text') {
+
+	  $collection_fields = array_keys(islandora_dss_fields_map($form_state['values']['collection']));
+	  foreach($collection_fields as $collection_field) {
+
+	    if(!preg_match('/Date\./', $collection_field)) {
+
+	      $query_array[] = array(
+				     //'search' => "$collection_field:($search or )",
+				     'search' => "$collection_field:$search",
+				     'boolean' => 'OR'
+				     );
+	    }
+	  }
+	} else {
+
+	  $query_array[] = array(
+				 //'search' => "$field:($search)",
+				 'search' => "$field:$search",
+				 'boolean' => $boolean
+				 );
+	}
       }
     }
   }
