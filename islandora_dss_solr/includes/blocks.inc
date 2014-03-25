@@ -377,6 +377,69 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     // explode on space
     $query_explode = explode(' ', $query);
 
+    /**
+     * Handle the parsing of the query for the work-around
+     * This resolves DSS-210
+     *
+     */
+
+    /**
+     * @todo Refactor
+     *
+     */
+
+    //if(preg_match('/cdm.Relation.IsPartOf:"(.+)"/', $collection, $m)) {
+    //if(array_key_exists('foxml.all.text', $query_explode)) {
+    if(preg_match('/foxml\.all\.text/', $query)) {
+
+      // Url parameters.
+      $params = $_GET;
+      $collection = $params['f']['0'];
+      $collection = array_pop(explode(':', $collection));
+      preg_match('/"(.+?)"/', $collection, $m);
+      $collection = $m[1];
+
+      $ISLANDORA_DSS_SOLR_RELATION_MAP = array('East Asia Image Collection'=> 'eastasia',
+					       'Lafayette Newspaper Collection'=> 'newspaper',
+					       'Academic Publications' => 'academic',
+					       'Historical Photograph Collection' => 'cap',
+					       'Marquis de Lafayette Prints Collection' => 'mdl-prints',
+					       'Geology Slide Collection' => 'geology-slides',
+					       'Administration Archives' => 'administration',
+					       'McKelvy House Photograph Collection' => 'mckelvy',
+					       'Lafayette World War II Casualties' => 'war-casualties',
+					       );
+
+      $collection_fields = array_keys(islandora_dss_fields_map( $ISLANDORA_DSS_SOLR_RELATION_MAP[$collection] ));
+
+      dpm($query);
+      foreach($collection_fields as $collection_field) {
+
+	//eastasia.Subject.OCM:("taiwan" OR "Taiwan") OR 
+	$query = preg_replace("/$collection_field\:\(.+?\) OR /", '', $query);
+
+
+
+	if(!preg_match('/Date\./', $collection_field)) {
+
+	  /*
+	  $query_array[] = array(
+				 //'search' => "$collection_field:($search or )",
+				 'search' => "$collection_field:$search",
+				 'boolean' => 'OR'
+				 );
+	  */
+	}
+      }
+      dpm($query);
+    }
+
+    $query = preg_replace("/\:\(\"(.+?)\" OR \".+?\"\)/", ':("\1")', $query);
+    dpm($query);
+
+    // explode on space
+    $query_explode = explode(' ', $query);
+    
     // break up the solr query to populate the advanced search form
     $i = 0;
     foreach ($query_explode as $key => $value) {

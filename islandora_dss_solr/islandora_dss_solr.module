@@ -69,6 +69,8 @@ function islandora_dss_solr($query = NULL) {
     unset($params['display']);
   }
 
+  $query_array = array();
+
   /**
    * @todo Refactor
    *
@@ -91,7 +93,11 @@ function islandora_dss_solr($query = NULL) {
 
   foreach(preg_split('/(?<=\)) /', $query) as $search) {
 
-    preg_match('/(.+?)\:\((.+?)\)/', $search, $m);
+    if(!preg_match('/(.+?)\:\((.+?)\)/', $search, $m)) {
+
+      continue;
+    }
+
     $field = $m[1];
     $search = $m[2];
 
@@ -172,9 +178,6 @@ function islandora_dss_solr($query = NULL) {
 			   'boolean' => $boolean
 			   );
   }
-  }
-
-  dpm($query);
 
   // create query
   $query = '';
@@ -186,6 +189,7 @@ function islandora_dss_solr($query = NULL) {
     }
     $i++;
   }
+}
 
   // Build and execute Apache Solr query.
   // this populates the GLOBAL!!!!!!!
