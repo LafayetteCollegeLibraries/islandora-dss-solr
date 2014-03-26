@@ -453,12 +453,12 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
         // split the filter into field and value
         $value_split = explode(':', $value, 2);
         // set field
-        $values['terms'][$i]['field'] = $value_split[0];
+        $values['terms'][$i]['field-wrapper']['field'] = $value_split[0];
 
         // second part of the split is the query value (or first part of it)
         $value_split[1] = str_replace(array('(', ')'), '', $value_split[1]);
         // add search string
-        $values['terms'][$i]['search'] = $value_split[1];
+        $values['terms'][$i]['field-wrapper']['search'] = $value_split[1];
       }
       // if the string does not include a colon or AND/OR/NOT, then it is a
       // part of the query value
@@ -466,22 +466,31 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
         // trim brackets
         $value = str_replace(array('(', ')'), '', $value);
 
-        if (isset($values['terms'][$i]['search'])) {
+        if (isset($values['terms'][$i]['field-wrapper']['search'])) {
           // append to search string
-          $values['terms'][$i]['search'] .= ' ' . $value;
+          $values['terms'][$i]['field-wrapper']['search'] .= ' ' . $value;
         }
         else {
           // search field is not set, so create new search value
-          $values['terms'][$i]['search'] = $value;
+          $values['terms'][$i]['field-wrapper']['search'] = $value;
         }
       }
       // if it matches AND/OR/NOT, then we have the boolean operator
       else {
         // set boolean operator
-        $values['terms'][$i]['boolean'] = $value;
+        $values['terms'][$i]['field-wrapper']['boolean'] = $value;
 
         // increment to next field
         $i++;
+      }
+
+      /**
+       * Remove quotes
+       *
+       */
+      if(array_key_exists('search', $values['terms'][$i]['field-wrapper'])) {
+
+	$values['terms'][$i]['field-wrapper']['search'] = preg_replace('/"(.+?)"/', '$1', $values['terms'][$i]['field-wrapper']['search']);
       }
     }
   }
@@ -499,6 +508,9 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     '#suffix' => '</div>',
     '#tree' => TRUE,
   );
+
+  //dpm(array('trace'));
+  //dpm($values);
 
   // loop over each term
   foreach ($values['terms'] as $i => $value) {
@@ -536,7 +548,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     $term['field-wrapper']['field'] = array(
 					    '#title' => t(''),
 					    '#type' => 'select',
-					    '#default_value' => isset($value['field']) ? $value['field'] : 'foxml.all.text',
+					    '#default_value' => isset($value['field-wrapper']['field']) ? $value['field-wrapper']['field'] : 'foxml.all.text',
 					    '#attributes' => array('class' => array('islandora-solr-search-field')));
 
     if(isset($form_state['triggering_element']) and $form_state['triggering_element']['#name'] == 'scoping') {
@@ -592,11 +604,13 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
       $term['field-wrapper']['field']['#options'] = islandora_solr_get_fields('search_fields');
     }
 
+    //dpm($value);
+
     $term['field-wrapper']['search'] = array(
 					     '#title' => t(''),
 					     '#type' => 'textfield',
 					     '#size' => 80,
-					     '#default_value' => isset($value['search']) ? $value['search'] : '',
+					     '#default_value' => isset($value['field-wrapper']['search']) ? $value['field-wrapper']['search'] : '',
 					     );
     
     // Used for when the user presses enter on the search field.
@@ -665,7 +679,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
           '#type' => 'radios',
           '#prefix' => '<div class="islandora-solr-advanced-boolean">',
           '#suffix' => '</div>',
-          '#default_value' => isset($value['boolean']) ? $value['boolean'] : 'AND',
+          '#default_value' => isset($value['field-wrapper']['boolean']) ? $value['field-wrapper']['boolean'] : 'AND',
           '#options' => array(
             'AND' => 'And',
             'OR' => 'Or',
@@ -817,7 +831,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 
   $current_path = current_path();
 
-  dpm(array($current_path));
+  //dpm(array($current_path));
 
   if(array_key_exists($current_path, $collection_node_map)) {
     
@@ -837,7 +851,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     }
   }
 
-  dpm(array($default_collection_value));
+  //dpm(array($default_collection_value));
 
   $form['collection'] = array(
 			      //'#prefix' => '<span>Search: </span>',
