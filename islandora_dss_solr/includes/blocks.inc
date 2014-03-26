@@ -390,7 +390,8 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 
     //if(preg_match('/cdm.Relation.IsPartOf:"(.+)"/', $collection, $m)) {
     //if(array_key_exists('foxml.all.text', $query_explode)) {
-    if(preg_match('/foxml\.all\.text/', $query)) {
+    //if(preg_match('/foxml\.all\.text/', $query)) {
+    if(false) {
 
       // Url parameters.
       $params = $_GET;
@@ -401,11 +402,11 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 
       $ISLANDORA_DSS_SOLR_RELATION_MAP = array('East Asia Image Collection'=> 'eastasia',
 					       'Lafayette Newspaper Collection'=> 'newspaper',
-					       'Academic Publications' => 'academic',
+					       //'Academic Publications' => 'academic',
 					       'Historical Photograph Collection' => 'cap',
 					       'Marquis de Lafayette Prints Collection' => 'mdl-prints',
 					       'Geology Slide Collection' => 'geology-slides',
-					       'Administration Archives' => 'administration',
+					       //'Administration Archives' => 'administration',
 					       'McKelvy House Photograph Collection' => 'mckelvy',
 					       'Lafayette World War II Casualties' => 'war-casualties',
 					       );
@@ -540,6 +541,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 
     if(isset($form_state['triggering_element']) and $form_state['triggering_element']['#name'] == 'scoping') {
 
+      /*
       switch($form_state['triggering_element']['#value']) {
 
       case 'COLL':
@@ -551,17 +553,43 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 	$term['field-wrapper']['field']['#options'] = islandora_solr_get_fields('search_fields');
 	break;
 
-      case 'SITE':
+	case 'SITE':
       default:
-	$term['field-wrapper']['field']['#options'] = array('keywords' => 'Keywords');
+	$term['field-wrapper']['field']['#options'] = array('keywords' => 'DSS Pages');
         break;
       }
+      */
+
+      if($form_state['triggering_element']['#value'] == 'COLL') {
+
+	if($form_state['values']['collection'] == 'global') {
+
+	  $term['field-wrapper']['field']['#options'] = islandora_solr_get_fields('search_fields');
+	} else {
+
+	  //$term['field-wrapper']['field']['#options'] = islandora_dss_solr_get_fields($form_state['values']['collection'], 'search_fields');
+	  $term['field-wrapper']['field']['#options'] = islandora_dss_fields_map($form_state['values']['collection']);
+	}
+      } else {
+
+	$term['field-wrapper']['field']['#options'] = array('keywords' => 'DSS Pages');
+	//$form_state['values']['collection'] = 'global';
+	//$default_collection_value = 'global';
+      }
+
     } elseif(isset($form_state['triggering_element']) and $form_state['triggering_element']['#name'] == 'collection') {
 
-      $term['field-wrapper']['field']['#options'] = islandora_dss_fields_map($form_state['values']['collection']);
+      if($form_state['values']['collection'] == 'global') {
+
+	$term['field-wrapper']['field']['#options'] = islandora_solr_get_fields('search_fields');
+      } else {
+
+	$term['field-wrapper']['field']['#options'] = islandora_dss_fields_map($form_state['values']['collection']);
+      }
     } else {
 
-      $term['field-wrapper']['field']['#options'] = array('keywords' => 'Keywords');
+      //$term['field-wrapper']['field']['#options'] = array('keywords' => 'DSS Pages');
+      $term['field-wrapper']['field']['#options'] = islandora_solr_get_fields('search_fields');
     }
 
     $term['field-wrapper']['search'] = array(
@@ -686,8 +714,11 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     $form['path'] = array('#type' => 'hidden', '#value' => $form_state['values']['path']);
   } else {
 
+    /*
     $scoping_options = array('SITE' => 'Search the DSS Site',
 			     'REPO' => 'Search all collections');
+    */
+    $scoping_options = array('SITE' => 'Search the DSS Site');
 
     // Add collection-level scoping for individual collections
     $path = current_path();
@@ -711,7 +742,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 			   //'#prefix' => '<div class="islandora-solr-advanced-scoping">',
 			   '#prefix' => '<div id="islandora-solr-advanced-scoping">',
 			   '#suffix' => '</div>',
-			   '#default_value' => 'SITE',
+			   '#default_value' => 'COLL',
 			   '#options' => $scoping_options,
 			   '#attributes' => array('class' => array('islandora-solr-scoping-button')),
 			   '#ajax' => array(
@@ -734,14 +765,15 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     $collection_disabled = TRUE;
   }
   */
+  $default_collection_value = 'global';
 
   $form['collection'] = array(
 			      //'#prefix' => '<span>Search: </span>',
 			      '#title' => '',
 			      '#type' => 'select',
-			      '#default_value' => 'default',
+			      '#default_value' => $default_collection_value,
 			      '#options' => array(
-						  'default' => 'Select...',
+						  'global' => 'All',
 						  'eastasia' => 'East Asia Image Collections',
 						  'newspaper' => 'Lafayette Newspaper',
 						  'academic' => 'Academic Publications',

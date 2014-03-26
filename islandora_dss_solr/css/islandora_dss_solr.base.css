@@ -64,3 +64,10 @@ div#advanced-search-modal.modal.fade.in {
     /* top: 30%; */
     top: 20%;
 }
+
+form#islandora-dss-solr-advanced-search-form div div.control-group.form-type-select.form-item-collection.form-item {
+
+    float: left;
+    padding-left: 12px;
+    padding-top: 20px;
+}

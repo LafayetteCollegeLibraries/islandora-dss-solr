@@ -91,6 +91,14 @@ function islandora_dss_solr($query = NULL) {
 						      ));
   $collection = $ISLANDORA_DSS_SOLR_RELATION_MAP[$collection];
 
+  /**
+   * foxml.all.text is functioning (without case sensitivity issues) for the cap and mdl-prints collections
+   * Resolves DSS-207
+   *
+   */
+  if(false) {
+  //if(!in_array($collection, array('cap', 'mdl-prints'))) {
+
   foreach(preg_split('/(?<=\)) /', $query) as $search) {
 
     if(!preg_match('/(.+?)\:\((.+?)\)/', $search, $m)) {
@@ -149,47 +157,51 @@ function islandora_dss_solr($query = NULL) {
       //$search = "($search OR " . $search_case_title . ")";
     }
   }
+  }
 
   /**
    * Special handling for foxml.all.text
    * Work-around resolving DSS-207
    *
    */
+  if($query != '*:*') {
   
-  if($field == 'foxml.all.text') {
+    if($field == 'foxml.all.text' and !in_array($collection, array('cap', 'mdl-prints'))) {
     
-    $collection_fields = array_keys(islandora_dss_fields_map($collection));
-    foreach($collection_fields as $collection_field) {
+      $collection_fields = array_keys(islandora_dss_fields_map($collection));
+      foreach($collection_fields as $collection_field) {
       
-      if(!preg_match('/Date\./', $collection_field)) {
+	if(!preg_match('/Date\./', $collection_field)) {
 
-	$query_array[] = array(
-			       //'search' => "$collection_field:($search or )",
-			       'search' => "$collection_field:$search",
-			       'boolean' => 'OR'
-			       );
+	  $query_array[] = array(
+				 //'search' => "$collection_field:($search or )",
+				 'search' => "$collection_field:$search",
+				 'boolean' => 'OR'
+				 );
+	}
       }
-    }
-  } else {
+    } else {
     
-    $query_array[] = array(
-			   //'search' => "$field:($search)",
-			   'search' => "$field:$search",
-			   'boolean' => $boolean
-			   );
-  }
-
-  // create query
-  $query = '';
-  $i = 0;
-  foreach ($query_array as $term) {
-    $query .= $term['search'];
-    if (count($query_array) -1 != $i) {
-      $query .= ' ' . $term['boolean'] . ' ';
+      $query_array[] = array(
+			     //'search' => "$field:($search)",
+			     'search' => "$field:$search",
+			     'boolean' => $boolean
+			     );
     }
-    $i++;
+
+    // create query
+    $query = '';
+    $i = 0;
+    foreach ($query_array as $term) {
+      
+      $query .= $term['search'];
+      if (count($query_array) -1 != $i) {
+	$query .= ' ' . $term['boolean'] . ' ';
+      }
+      $i++;
+    }
   }
-}
+  }
 
   // Build and execute Apache Solr query.
   // this populates the GLOBAL!!!!!!!
@@ -217,7 +229,6 @@ function islandora_dss_solr($query = NULL) {
   // Get display class and function from current display
   $solr_class = $profile['class'];
   $solr_function = $profile['function'];
-
 
   // check if the display's class exists
   $use_default_display = TRUE;
