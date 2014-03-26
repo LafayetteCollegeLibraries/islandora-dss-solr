@@ -765,7 +765,79 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     $collection_disabled = TRUE;
   }
   */
+
   $default_collection_value = 'global';
+  /**
+   * Retrieve this from the path being browsed
+   *
+   */
+  $collection_node_map = array(
+			       'node/26' => 'eastasia',
+			       'node/21' => 'newspaper',
+			       //'academic' => 'Academic Publications',
+			       'node/20' => 'cap',
+			       'node/27' => 'mdl-prints',
+			       'node/19' => 'geology-slides',
+			       //'administration' => 'Administration Archives',
+			       'node/42' => 'mckelvy',
+			       'node/43' => 'war-casualties',
+			       );
+
+  $cdm_relation_collection_map = array(
+				       'Japanese Imperial House Postcard Album'  => 'eastasia',
+				       'T.W. Ingersoll Co. Stereoviews of the Siege of Port Arthur'  => 'eastasia',
+				       'Imperial Postcard Collection'  => 'eastasia',
+				       'Tsubokura Russo-Japanese War Postcard Album'  => 'eastasia',
+				       'Sino-Japanese War Postcard Album 01'  => 'eastasia',
+				       'Sino-Japanese War Postcard Album 02'  => 'eastasia',
+				       'Lin Chia-Feng Family Postcard Collection'  => 'eastasia',
+				       'Japanese History Study Cards'  => 'eastasia',
+				       'Pacific War Postcard Collection'  => 'eastasia',
+				       'Michael Lewis Taiwan Postcard Collection'  => 'eastasia',
+				       'Gerald & Rella Warner Taiwan Postcard Collection'  => 'eastasia',
+				       'Gerald & Rella Warner Dutch East Indies Negative Collection'  => 'eastasia',
+				       'Japanese Imperial House Postcard Album'  => 'eastasia',
+				       'Gerald & Rella Warner Manchuria Negative Collection'  => 'eastasia',
+				       'Gerald & Rella Warner Taiwan Negative Collection'  => 'eastasia',
+				       'Gerald & Rella Warner Japan Slide Collection'  => 'eastasia',
+				       'Gerald & Rella Warner Souvenirs of Beijing and Tokyo'  => 'eastasia',
+				       'Woodsworth Taiwan Image Collection'  => 'eastasia',
+				       'Scenic Taiwan'  => 'eastasia',
+				       'Taiwan Photographic Monthly'  => 'eastasia',
+
+				       'East Asia Image Collection' => 'eastasia',
+
+				       'Geology Department Slide Collection' => 'geology-slides',
+				       'Historical Photograph Collection' => 'cap',
+				       'Lafayette Newspaper Collection' => 'newspaper',
+				       'Marquis de Lafayette Prints Collection' => 'mdl-prints',
+				       'McKelvy House Photograph Collection' => 'mckelvy',
+				       'Lafayette World War II Casualties' => 'war-casualties',
+				       );
+
+  $current_path = current_path();
+
+  dpm(array($current_path));
+
+  if(array_key_exists($current_path, $collection_node_map)) {
+    
+    $default_collection_value = $collection_node_map[$current_path];
+  } elseif(array_key_exists('f', $_GET)) {
+
+    $facets = $_GET['f'];
+    foreach($facets as $facet) {
+
+      if(preg_match('/cdm\.Relation\.IsPartOf\:"(.+?)"/', $facet, $collection_m)) {
+
+	if(array_key_exists($collection_m[1], $cdm_relation_collection_map)) {
+
+	  $default_collection_value = $cdm_relation_collection_map[$collection_m[1]];
+	}
+      }
+    }
+  }
+
+  dpm(array($default_collection_value));
 
   $form['collection'] = array(
 			      //'#prefix' => '<span>Search: </span>',
@@ -776,11 +848,11 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 						  'global' => 'All',
 						  'eastasia' => 'East Asia Image Collections',
 						  'newspaper' => 'Lafayette Newspaper',
-						  'academic' => 'Academic Publications',
+						  //'academic' => 'Academic Publications',
 						  'cap' => 'Historical Photograph Collection',
 						  'mdl-prints' => 'Marquis de Lafayette Prints Collection',
 						  'geology-slides' => 'Geology Slide Collection',
-						  'administration' => 'Administration Archives',
+						  //'administration' => 'Administration Archives',
 						  'mckelvy' => 'McKelvy House',
 						  'war-casualties' => 'Lafayette College World War II Casualties',
 						  ),
