@@ -374,6 +374,15 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     // set value variable
     $values['terms'] = array();
 
+    /**
+     * Ensure that global searches are not parsed
+     *
+     */
+    if($query == '*:*') {
+
+      $query = '';
+    }
+
     // explode on space
     $query_explode = explode(' ', $query);
 
@@ -780,11 +789,12 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
   }
   */
 
-  $default_collection_value = 'global';
   /**
    * Retrieve this from the path being browsed
+   * This resolves DSSSM-618
    *
    */
+  $default_collection_value = 'global';
   $collection_node_map = array(
 			       'node/26' => 'eastasia',
 			       'node/21' => 'newspaper',
@@ -831,11 +841,19 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 
   $current_path = current_path();
 
-  //dpm(array($current_path));
-
   if(array_key_exists($current_path, $collection_node_map)) {
-    
+
     $default_collection_value = $collection_node_map[$current_path];
+
+    /**
+     * If this is a new search, then update the term field with respect to the collection being browsed
+     * This resolves DSSSM-621
+     *
+     */
+    if(!array_key_exists('field-wrapper', $terms[1]) and $terms[0]['field-wrapper']['search']['#default_value'] == '') {
+
+      $terms[0]['field-wrapper']['field']['#options'] = islandora_dss_fields_map($default_collection_value);
+    }
   } elseif(array_key_exists('f', $_GET)) {
 
     $facets = $_GET['f'];
@@ -846,6 +864,16 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 	if(array_key_exists($collection_m[1], $cdm_relation_collection_map)) {
 
 	  $default_collection_value = $cdm_relation_collection_map[$collection_m[1]];
+
+	  /**
+	   * If this is a new search, then update the term field with respect to the collection being browsed
+	   * This resolves DSSSM-621
+	   *
+	   */
+	  if(!array_key_exists('field-wrapper', $terms[1]) and $terms[0]['field-wrapper']['search']['#default_value'] == '') {
+
+	    $terms[0]['field-wrapper']['field']['#options'] = islandora_dss_fields_map($default_collection_value);
+	  }
 	}
       }
     }
