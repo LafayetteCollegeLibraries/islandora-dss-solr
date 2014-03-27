@@ -534,7 +534,8 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 	//$default_collection_value = 'global';
       }
 
-    } elseif(isset($form_state['triggering_element']) and $form_state['triggering_element']['#name'] == 'collection') {
+    } elseif(isset($form_state['triggering_element']) and
+	     ($form_state['triggering_element']['#name'] == 'collection' or ($form_state['triggering_element']['#type'] == 'button' and $form_state['triggering_element']['#value'] == '<i class="icon-large"></i>'))) {
 
       if($form_state['values']['collection'] == 'global') {
 
