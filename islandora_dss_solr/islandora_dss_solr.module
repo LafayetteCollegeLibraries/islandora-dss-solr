@@ -203,6 +203,16 @@ function islandora_dss_solr($query = NULL) {
   }
   }
 
+  /**
+   * Ensure that all queries are sorted by the value of dc.title in ascending order
+   * Resolves DSSSM-623
+   *
+   */
+  if(!array_key_exists('sort', $params)) {
+
+    $params['sort'] = 'dc.title asc';
+  }
+
   // Build and execute Apache Solr query.
   // this populates the GLOBAL!!!!!!!
   $_islandora_solr_queryclass = new IslandoraSolrQueryProcessor();
