@@ -113,70 +113,6 @@ function islandora_dss_fields_map($collection) {
 				'foxml.all.text' => 'Full Text',
 				);
 
-  /*
-			      array('dc.contributor' => 'Contributor'),
-			      array('dc.creator' => 'Creator'),
-			      array('dc.date' => 'Date'),
-			      array('dc.description' => 'Description'),
-			      array('dc.format' => 'Format'),
-			      array('dc.language' => 'Language'),
-			      array('dc.publisher' => 'Publisher'),
-			      array('dc.rights' => 'Rights'),
-			      array('dc.source' => 'Source'),
-			      array('dc.subject' => 'Subject'),
-			      array('dc.title' => 'Title'),
-
-   */
-
-  /*
-
-        # The metadata mapping
-        if metadataField == 'dc.contributor.author'
-        elsif metadataField == 'dc.contributor.other'
-        elsif metadataField == 'dc.title'
-        elsif metadataField == 'dc.date.accessioned'
-        elsif metadataField == 'dc.date.available'
-        elsif metadataField == 'dc.date.issued'
-        elsif metadataField == 'dc.identifier.citation'
-        elsif metadataField == 'dc.identifier.uri'
-        elsif metadataField == 'dc.publisher'
-        elsif metadataField == 'dc.type'
-        elsif metadataField == 'dc.description.abstract'
-        elsif metadataField == 'dc.subject'
-        elsif metadataField == 'dc.identifier.doi'
-        elsif metadataField == 'dc.description.uri'
-        elsif metadataField == 'dc.identifier.issn'
-        elsif metadataField == 'dc.identifier.isbn'
-        elsif metadataField == 'dc.relation.ispartofseries'
-        elsif metadataField == 'dc.description'
-        elsif metadataField == 'dc.language.iso'
-
-   */
-  
-  /*
-
-        if metadataField == 'dc.contributor.author'
-        elsif metadataField == 'dc.contributor.other'
-        elsif metadataField == 'dc.title'
-        elsif metadataField == 'dc.date.accessioned'
-        elsif metadataField == 'dc.date.available'
-        elsif metadataField == 'dc.date.issued'
-        elsif metadataField == 'dc.identifier.citation'
-        elsif metadataField == 'dc.identifier.uri'
-        elsif metadataField == 'dc.publisher'
-        elsif metadataField == 'dc.type'
-        elsif metadataField == 'dc.description.abstract'
-        elsif metadataField == 'dc.subject'
-        elsif metadataField == 'dc.identifier.doi'
-        elsif metadataField == 'dc.description.uri'
-        elsif metadataField == 'dc.identifier.issn'
-        elsif metadataField == 'dc.identifier.isbn'
-        elsif metadataField == 'dc.relation.ispartofseries'
-        elsif metadataField == 'dc.description'
-        elsif metadataField == 'dc.language.iso'
-
-   */
-
   $ISLANDORA_DSS_FIELDS_MAP = array('eastasia' => array(
 							"eastasia.Subject.OCM" => 'Subject.OCM',
 							"eastasia.Date.Image.Lower" => 'Date.Image.Lower',
@@ -557,7 +493,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     $term['field-wrapper']['field'] = array(
 					    '#title' => t(''),
 					    '#type' => 'select',
-					    '#default_value' => isset($value['field-wrapper']['field']) ? $value['field-wrapper']['field'] : 'foxml.all.text',
+					    '#default_value' => isset($value['field-wrapper']) and array_key_exists('field', $value['field-wrapper']) ? $value['field-wrapper']['field'] : 'foxml.all.text',
 					    '#attributes' => array('class' => array('islandora-solr-search-field')));
 
     if(isset($form_state['triggering_element']) and $form_state['triggering_element']['#name'] == 'scoping') {
@@ -619,7 +555,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 					     '#title' => t(''),
 					     '#type' => 'textfield',
 					     '#size' => 80,
-					     '#default_value' => isset($value['field-wrapper']['search']) ? $value['field-wrapper']['search'] : '',
+					     '#default_value' => isset($value['field-wrapper']) ? $value['field-wrapper']['search'] : '',
 					     );
     
     // Used for when the user presses enter on the search field.
@@ -726,6 +662,9 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 				    ));
   }
 
+  // Retrieve and store the current path
+  $current_path = current_path();
+
   // set form
   $form = array();
 
@@ -737,27 +676,11 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     $form['path'] = array('#type' => 'hidden', '#value' => $form_state['values']['path']);
   } else {
 
-    /*
-    $scoping_options = array('SITE' => 'Search the DSS Site',
-			     'REPO' => 'Search all collections');
-    */
     $scoping_options = array('SITE' => 'Search the DSS Site');
-
-    // Add collection-level scoping for individual collections
-    $path = current_path();
-
-    if(preg_match('/collections\/.+/', drupal_get_path_alias($path)) or
-       preg_match('/projects\/.+/', drupal_get_path_alias($path)) or
-       (preg_match('/islandora\/object\/.+/', $path) and !preg_match('/islandora\/object\/islandora\:root\/?/', $path) )) {
-      
-      //$scoping_options['COLL'] = 'Search this collection';
-
-    }
-
-    $scoping_options['COLL'] = 'Search this collection:';
+    $scoping_options['COLL'] = 'Search within collections:';
 
     // For capturing the path passed via AJAX for form field population
-    $form['path'] = array('#type' => 'hidden', '#value' => $path);
+    $form['path'] = array('#type' => 'hidden', '#value' => $current_path);
   }
 
   // Set the scoping controls
@@ -776,18 +699,6 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 					    'progress' => array('type' => 'none'),
 					    ),
 			   );
-
-  /*
-  if(isset($form_state['triggering_element']) && $form_state['triggering_element']['#name'] == 'scoping' and 
-
-     ($form_state['triggering_element']['#value'] == 'COLL' or $form_state['triggering_element']['#value'] == 'REPO') ) {
-
-    $collection_disabled = FALSE;
-  } else {
-
-    $collection_disabled = TRUE;
-  }
-  */
 
   /**
    * Retrieve this from the path being browsed
@@ -838,8 +749,6 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 				       'McKelvy House Photograph Collection' => 'mckelvy',
 				       'Lafayette World War II Casualties' => 'war-casualties',
 				       );
-
-  $current_path = current_path();
 
   if(array_key_exists($current_path, $collection_node_map)) {
 
