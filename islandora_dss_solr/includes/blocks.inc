@@ -278,9 +278,18 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
   // 2. populate with current query on search results page
   // 3. anywhere else: empty form
 
+  if(isset($form_state['triggering_element'])) {
+
+    dpm($form_state['triggering_element']);
+  }
+
   // 1. form update using ajax
+  /*
   if (isset($form_state['triggering_element']) and
       ($form_state['triggering_element']['#name'] != 'scoping' and $form_state['triggering_element']['#name'] != 'collection')) {
+  */
+  if (isset($form_state['triggering_element']) and
+      ($form_state['triggering_element']['#name'] != 'scoping')) {
 
     // unset terms from input array
     // http://drupal.stackexchange.com/questions/14855/how-do-i-dynamically-fill-a-textfield-with-ajax/16576#16576
