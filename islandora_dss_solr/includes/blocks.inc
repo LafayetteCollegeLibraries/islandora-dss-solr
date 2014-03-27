@@ -278,16 +278,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
   // 2. populate with current query on search results page
   // 3. anywhere else: empty form
 
-  if(isset($form_state['triggering_element'])) {
-
-    dpm($form_state['triggering_element']);
-  }
-
   // 1. form update using ajax
-  /*
-  if (isset($form_state['triggering_element']) and
-      ($form_state['triggering_element']['#name'] != 'scoping' and $form_state['triggering_element']['#name'] != 'collection')) {
-  */
   if (isset($form_state['triggering_element']) and
       ($form_state['triggering_element']['#name'] != 'scoping')) {
 
@@ -450,6 +441,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
   }
   // 3. anywhere else: empty form
   else {
+
     //Need at least one term to draw the search box.
     $values = array(
       'terms' => array(''),
@@ -463,8 +455,14 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     '#tree' => TRUE,
   );
 
-  //dpm(array('trace'));
-  //dpm($values);
+  /**
+   * Ensure that additional fields are not added when the collection field is modified
+   *
+   */
+  if(array_key_exists('triggering_element', $form_state) and $form_state['triggering_element']['#name'] == 'collection') {
+
+    $values['terms'] = array_slice($values['terms'], 0, -1);
+  }
 
   // loop over each term
   foreach ($values['terms'] as $i => $value) {
@@ -647,7 +645,10 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     $terms[] = $term;
   }
 
-  // For terms...
+  /**
+   * If there are less than 6 fields, permit the user to add a field
+   *
+   */
   if(count($values['terms']) < 5) {
 
     $classes = array('islandora-solr-search-add');
