@@ -100,16 +100,6 @@ $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP = array();
 
 function islandora_dss_solr_dc_label_map($collection, $dc_field) {
 
-  /*
-Subject.OCM
-Date.Artifact.Lower
-Date.Artifact.Upper
-Coverage.Location.Country
-Format.Medium
-Creator.Maker
-
-   */
-
   global $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP;
 
   if(array_key_exists($collection, $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP)) {
@@ -124,6 +114,18 @@ Creator.Maker
 }
 
 $ISLANDORA_DSS_SOLR_TOP_COLLECTION = '';
+
+/**
+ * Please see http://www.php.net/manual/en/function.ip2long.php#82397
+ *
+ * This assumes a subnet of 139.147.0.0/16 for Lafayette College servers
+ * This assumes a subnet of 192.168.101.0/24 for the VPN
+ */
+function islandora_dss_solr_net_match($CIDR, $IP) {
+
+  list($net, $mask) = explode('/', $CIDR);
+  return ( ip2long ($IP) & ~((1 << (32 - $mask)) - 1) ) == ip2long ($net);
+} 
 
 /**
  * hook_process function for islandora_solr
@@ -232,21 +234,23 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
   $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP['Mckelvy House Photograph Collection'] = $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP['McKelvy House Photograph Collection'];
 
   /*
-dc,title
-dc.subject
-dc.format.medium
-date.original.display
+   * Hard-coding for IP-based restrictions for Solr results
+   * @todo Refactor with XACML policy restrictions (extend for integrating permitted roles)
+   * @todo Integrate with admin. menus
+   * This assumes a subnet of 139.147.0.0/16 for Lafayette College servers
+   * This assumes a subnet of 192.168.101.0/24 for the VPN
+   *
    */
-
   $vars['restricted_results'] = false;
-  dpm($vars);
+
+  $client_ip = ip_address();
+  $is_anon_non_lafayette_user = !islandora_dss_solr_net_match('192.168.101.0/24', $client_ip) and // Not on the VPN...
+    !islandora_dss_solr_net_match('139.147.0.0/16', $client_ip) and // ...not within the campus network...
+    !user_is_logged_in(); // ...and not authenticated.
 
   foreach($vars['results'] as &$result ) {
 
     $result['restricted'] = false;
-
-    //dpm($result['solr_doc']);
-    //dpm($result);
 
     if(array_key_exists('cdm.Relation.IsPartOf', $result['solr_doc'])) {
 
@@ -265,8 +269,8 @@ date.original.display
      * @todo Refactor for XACML integration
      *
      */
-    if($top_collection == 'Geology Department Slide Collection' && !user_is_logged_in()) {
-
+    if($top_collection == 'Geology Department Slide Collection' and $is_anon_non_lafayette_user) {
+	 
       $result['restricted'] = true;
       $vars['restricted_results'] = true;
     }
@@ -293,7 +297,6 @@ date.original.display
 							 'class' => '');
 	} elseif(in_array($collection_field, $ISLANDORA_DSS_SOLR_DATE_FIELDS)) { // Format date field values
 
-	  dpm($result['solr_doc'][$collection_field]['value']);
 	  // Ensure that, if there are multiple dates present, that only the first value is formatted
 	  $result['solr_doc'][$collection_field]['value'] = array_shift(explode(',', $result['solr_doc'][$collection_field]['value']));
 
@@ -321,8 +324,6 @@ function islandora_dss_solr_process_islandora_solr_wrapper(&$vars) {
   global $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP;
   global $ISLANDORA_DSS_SOLR_TOP_COLLECTION;
 
-  dpm($vars);
-
   /*
   $result = array_shift($vars['results']);
   $collections = explode(', ', $result['solr_doc']['cdm.Relation.IsPartOf']['value']);
@@ -336,7 +337,6 @@ function islandora_dss_solr_process_islandora_solr_wrapper(&$vars) {
 
     $collection_fields = $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP[$ISLANDORA_DSS_SOLR_TOP_COLLECTION];
   }
-  dpm($collection_fields);
 
   $vars['collection_fields'] = $collection_fields;
 }

@@ -101,37 +101,43 @@ $ISLANDORA_DSS_FIELDS = array(
 );
 */
 
-$ISLANDORA_DSS_FIELDS = array('dc.title' => 'Title',
-			      'dc.contributor' => 'Author',
-			      'foxml.all.text' => 'Full Text',
-			      );
+$ISLANDORA_DSS_FIELDS = array('foxml.all.text' => 'Full Text',
+				'dc.title' => 'Title',
+				'dc.contributor' => 'Author',
+				);
 
 function islandora_dss_fields_map($collection) {
 
-  $ISLANDORA_DSS_FIELDS = array('dc.title' => 'Title',
-				'dc.contributor' => 'Author',
-				'foxml.all.text' => 'Full Text',
-				);
-
   $ISLANDORA_DSS_FIELDS_MAP = array('eastasia' => array(
-							"eastasia.Subject.OCM" => 'Subject.OCM',
-							"eastasia.Date.Image.Lower" => 'Date.Image.Lower',
-							"eastasia.Date.Image.Upper" => 'Date.Image.Upper',
+							'foxml.all.text' => 'Full Text',
+							'dc.title' => 'Title.English',
+							'' => 'Title.Japanese',
+							'' => 'Title.Chinese',
+							'' => 'Title.Korean',
+							"eastasia.Contributors.Digital" => 'Contributor',
+							"eastasia.Coverage.Location" => 'Coverage.Location',
+							"eastasia.Coverage.Location.Country" => 'Coverage.Location.Country',
+							"eastasia.Creator.Company" => 'Creator.Company',
+							"eastasia.Creator.Maker" => 'Creator.Maker',
 							"eastasia.Date.Artifact.Lower" => 'Date.Artifact.Lower',
 							"eastasia.Date.Artifact.Upper" => 'Date.Artifact.Upper',
+							"eastasia.Date.Image.Lower" => 'Date.Image.Lower',
+							"eastasia.Date.Image.Upper" => 'Date.Image.Upper',
 							"eastasia.Date.Original" => 'Date.Original',
-							"eastasia.Date.Search" => 'Date.Search',
+							'' => 'Description.Caption.English',
+							'' => 'Description.Caption.Japanese',
+							'' => 'Description.Citation',
+							'geology_slides.description.critical' => 'Description.Critical',
 							"eastasia.Description.Ethnicity" => 'Description.Ethnicity',
-							"eastasia.Coverage.Location.Country" => 'Coverage.Location.Country',
-							"eastasia.Coverage.Location" => 'Coverage.Location',
-							"eastasia.Format.Medium" => 'Format.Medium',
 							"eastasia.Description.Indicia" => 'Description.Indicia',
-							"eastasia.Creator.Maker" => 'Creator.Maker',
-							"eastasia.Contributors.Digital" => 'Contributors.Digital',
-							"eastasia.Creator.Company" => 'Creator.Company',
+							'' => 'Format.Extent',
+							"eastasia.Format.Medium" => 'Format.Medium',
 							"cdm.Relation.IsPartOf" => 'Relation.IsPartOf',
+							"eastasia.Subject.OCM" => 'Subject.OCM',
 							),
+				    /*
 				    'academic' => array(
+							'foxml.all.text' => 'Full Text',
 							'dc.description.abstract' => 'Abstract',
 							'dc.identifier.issn' => 'Series',
 							'dc.contributor.author' => 'Author',
@@ -142,69 +148,93 @@ function islandora_dss_fields_map($collection) {
 							'dc.' => 'Sponsor',
 							'dc.identifier.isbn' => 'Identifier',
 							),
-				    'administration' => array(),
-				    'newspaper' => array(),
+				    */
+				    //'administration' => array(),
+				    'newspaper' => array(
+				    		'foxml.all.text' => 'Full Text',
+							'' => 'Publication Date'
+							),
 				    'cap' => array(
-						   'cap.subject.LOC' => 'Subject',
-						   'cap.creator.photographer' => 'Photographer',
-						   'cap.format.medium' => 'Format',
-						   'cap.format.size' => 'Physical Size',
-						   'date.approximate' => 'Date',
-						   'date.range' => 'Dates',
+				    		'foxml.all.text' => 'Full Text',
+				    		'dc.title' => 'Title',
+						   	'dc.description' => 'Description',
+						   	'dc.type' => 'Medium',
+						   	'mdl_prints.date.original' => 'Publication Date',
+						   	'geology_slides_esi.subject' => 'Subject',
 						   ),
 				    'mdl-prints' => array(
-							  'mdl_prints.creator' => 'Creator',
-							  'mdl_prints.description.note' => 'Note',
-							  'mdl_prints.subject.lcsh' => 'Subject',
-							  'mdl_prints.publisher.original' => 'Publisher',
-							  'mdl_prints.date.original' => 'Date',
-							  'mdl_prints.format.medium' => 'Medium',
-							  'mdl_prints.format.extent' => 'Extent',
-							  'mdl_prints.description.condition' => 'Condition',
-							  'mdl_prints.description.provenance' => 'Provenance',
-							  'mdl_prints.description.series' => 'Series',
-							  'mdl_prints.identifier.itemnumber' => 'Item Number',
-							  'mdl_prints.format.digital' => 'Digital Format',
-							  ),
+							'foxml.all.text' => 'Full Text',
+							'' => 'title',
+							'mdl_prints.creator' => 'creator',
+							'mdl_prints.date.original' => 'date.original',
+							'' => 'description',
+							'mdl_prints.description.condition' => 'description.condition',
+							'mdl_prints.description.note' => 'description.note',
+							'mdl_prints.description.provenance' => 'description.provenance',
+							'mdl_prints.description.series' => 'description.series',
+							'mdl_prints.format.digital' => 'format.digital',
+							'mdl_prints.format.extent' => 'format.extent',
+							'mdl_prints.format.medium' => 'format.medium',
+							'mdl_prints.identifier.itemnumber' => 'identifier.item.number',
+							'mdl_prints.publisher.digital' => 'publisher.digital',
+							'mdl_prints.publisher.original' => 'publisher.original',
+							'' => 'relation.IsPartOf',
+							'mdl_prints.rights.digital' => 'rights.digital',
+							'' => 'source',
+							'mdl_prints.subject.lcsh' => 'subject.lcsh',
+							),
 				    'geology-slides' => array(
-							      'geology_slides_esi.subject' => 'Subject',
-							      'geology_slides_esi.description.vantagepoint' => 'Vantage Point',
-							      'geology_slides_esi.date.original' => 'Date',
-							      'geology_slides_esi.description' => 'Description',
-							      'geology_slides_esi.coverage.location' => 'Location',
-							      'geology_slides_esi.relation.seealso.image' => 'Related Image',
-							      'geology_slides_esi.relation.seealso.book' => 'Related Book',
-							      'geology_slides_esi.identifier.dmrecord' => 'DM Record',
-							      ),
+							'foxml.all.text' => 'Full Text',
+							'' => 'Title',
+							'geology_slides_esi.coverage.location' => 'Coverage',
+							'geology_slides_esi.description' => 'Description',
+							'geology_slides_esi.date.original' => 'Publication Date',
+							'geology_slides_esi.relation.seealso.book' => 'Related Book',
+							'geology_slides_esi.relation.seealso.image' => 'Related Image',
+							'geology_slides_esi.subject' => 'Subject',
+							'geology_slides_esi.description.vantagepoint' => 'Vantage Point',
+							),
 				  'mckelvy' => array(
-						     'mckelvy.description.note' => 'Description',
-						     'mckelvy.creator.maker' => 'Creator',
-						     'mckelvy.format.medium' => 'Format',
-						     'mckelvy.date.original.search' => 'Date',
-						     'mckelvy.description.size' => 'Size',
-						     ),
+							'foxml.all.text' => 'Full Text',
+							'' => 'Title',
+							'mckelvy.creator.maker' => 'Creator',
+							'' => 'Description',
+							'mckelvy.description.size' => 'Dimensions',
+							'mckelvy.format.medium' => 'Medium',
+							'mckelvy.description.note' => 'Note',
+							'mckelvy.date.original.search' => 'Publication Date',
+							'' => 'Subject',
+							),
 				  'war-casualties' => array(
-							    'war_casualties.title.name' => 'Name',
-							    'war_casualties.description.class' => 'Graduating Class',
-							    'war_casualties.date.birth.search' => 'Date of Birth',
-							    'war_casualties.coverage.place.birth' => 'Place of Birth',
-							    'war_casualties.description.military.branch' => 'Military Branch',
-							    'war_casualties.description.military.rank' => 'Military Rank',
-							    'war_casualties.contributor.military.unit' => 'Military Unit',
-							    'war_casualties.date.death.search' => 'Date of Death',
-							    'war_casualties.coverage.place.death' => 'Place of Death',
-							    'war_casualties.description.cause.death' => 'Cause of Death',
-							    'war_casualties.description.honors' => 'Military Honors',
+				  			'foxml.all.text' => 'Full Text',
+							'war_casualties.title.name' => 'Name',
+							'war_casualties.description.cause.death' => 'Cause of Death',
+							'war_casualties.date.birth.search' => 'Date of Birth',
+							'war_casualties.date.death.search' => 'Date of Death',
+							'war_casualties.description.class' => 'Graduating Class',
+							'war_casualties.description.military.branch' => 'Military Branch',
+							'war_casualties.description.honors' => 'Military Honors',
+							'war_casualties.description.military.rank' => 'Military Rank',
+							'war_casualties.contributor.military.unit' => 'Military Unit',
+							'war_casualties.coverage.place.birth' => 'Place of Birth',
+							'war_casualties.coverage.place.death' => 'Place of Death',
 							    ),
 				    );
 
-  $ISLANDORA_DSS_FIELDS_MAP['administration'] = array_merge($ISLANDORA_DSS_FIELDS_MAP['academic'], $ISLANDORA_DSS_FIELDS_MAP['administration']);
+  //$ISLANDORA_DSS_FIELDS_MAP['administration'] = array_merge($ISLANDORA_DSS_FIELDS_MAP['academic'], $ISLANDORA_DSS_FIELDS_MAP['administration']);
+  
+  // Ensure that the merge isn't performed for certain collections
+  
+  // Thom: It seems none of the collections should have the merge performed
+  
+  /*if(!in_array($collection, array('eastasia', 'mdl-prints', 'newspaper', 'cap', 'geology-slides', 'mckelvy', 'war-casualties',))) {
 
-  //return $ISLANDORA_DSS_FIELDS_MAP[$collection];
+    global $ISLANDORA_DSS_FIELDS;
+    $fields = array_merge($ISLANDORA_DSS_FIELDS_MAP[$collection], $ISLANDORA_DSS_FIELDS);
+  }*/
 
-  $fields = array_merge($ISLANDORA_DSS_FIELDS_MAP[$collection], $ISLANDORA_DSS_FIELDS);
-
-  return $fields;
+  //return $fields;
+  return $ISLANDORA_DSS_FIELDS_MAP[$collection];
 }
 
 function islandora_dss_solr_fields_for_path($path='') {
@@ -960,7 +990,7 @@ function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
 					   'academic' => 'Academic Publications',
 					   'cap' => 'Historical Photograph Collection',
 					   'mdl-prints' => 'Marquis de Lafayette Prints Collection',
-					   'geology-slides' => 'Geology Slide Collection',
+					   'geology-slides' => 'Geology Department Slide Collection',
 					   'administration' => 'Administration Archives',
 					   'mckelvy' => 'McKelvy House Photograph Collection',
 					   'war-casualties' => 'Lafayette World War II Casualties',
