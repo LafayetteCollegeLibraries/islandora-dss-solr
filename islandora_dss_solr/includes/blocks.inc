@@ -388,7 +388,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 
       $collection_fields = array_keys(islandora_dss_fields_map( $ISLANDORA_DSS_SOLR_RELATION_MAP[$collection] ));
 
-      dpm($query);
+      //dpm($query);
       foreach($collection_fields as $collection_field) {
 
 	//eastasia.Subject.OCM:("taiwan" OR "Taiwan") OR 
@@ -407,11 +407,13 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 	  */
 	}
       }
-      dpm($query);
+      //dpm($query);
     }
 
+    //dpm(array($query));
     $query = preg_replace("/\:\(\"(.+?)\" OR \".+?\"\)/", ':("\1")', $query);
-    dpm($query);
+    $query = preg_replace("/\:\((.+?) OR .+?\)/", ':(\1)', $query);
+    //dpm(array($query));
 
     // explode on space
     $query_explode = explode(' ', $query);
@@ -421,6 +423,8 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     foreach ($query_explode as $key => $value) {
 
       $term = array();
+
+      //dpm(array($value));
 
       // check for first colon to split the string
       if (strpos($value, ':') != FALSE) {
@@ -434,6 +438,15 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
         $value_split[1] = str_replace(array('(', ')'), '', $value_split[1]);
         // add search string
         $values['terms'][$i]['field-wrapper']['search'] = $value_split[1];
+
+	/**
+	 * Remove quotes
+	 * @todo Refactor
+	 */
+	if(array_key_exists('search', $values['terms'][$i]['field-wrapper'])) {
+
+	  $values['terms'][$i]['field-wrapper']['search'] = preg_replace('/"(.+?)"/', '$1', $values['terms'][$i]['field-wrapper']['search']);
+	}
       }
       // if the string does not include a colon or AND/OR/NOT, then it is a
       // part of the query value
@@ -449,23 +462,23 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
           // search field is not set, so create new search value
           $values['terms'][$i]['field-wrapper']['search'] = $value;
         }
+
+	/**
+	 * Remove quotes
+	 * @todo Refactor
+	 */
+	if(array_key_exists('search', $values['terms'][$i]['field-wrapper'])) {
+
+	  $values['terms'][$i]['field-wrapper']['search'] = preg_replace('/"(.+?)"/', '$1', $values['terms'][$i]['field-wrapper']['search']);
+	}
       }
       // if it matches AND/OR/NOT, then we have the boolean operator
       else {
         // set boolean operator
         $values['terms'][$i]['field-wrapper']['boolean'] = $value;
 
-        // increment to next field
-        $i++;
-      }
-
-      /**
-       * Remove quotes
-       *
-       */
-      if(array_key_exists('search', $values['terms'][$i]['field-wrapper'])) {
-
-	$values['terms'][$i]['field-wrapper']['search'] = preg_replace('/"(.+?)"/', '$1', $values['terms'][$i]['field-wrapper']['search']);
+	// increment to next field
+	$i++;
       }
     }
   }
@@ -493,6 +506,40 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 
     $values['terms'] = array_slice($values['terms'], 0, -1);
   }
+
+  $cdm_relation_collection_map = array(
+				       'Japanese Imperial House Postcard Album'  => 'eastasia',
+				       'T.W. Ingersoll Co. Stereoviews of the Siege of Port Arthur'  => 'eastasia',
+				       'Imperial Postcard Collection'  => 'eastasia',
+				       'Tsubokura Russo-Japanese War Postcard Album'  => 'eastasia',
+				       'Sino-Japanese War Postcard Album 01'  => 'eastasia',
+				       'Sino-Japanese War Postcard Album 02'  => 'eastasia',
+				       'Lin Chia-Feng Family Postcard Collection'  => 'eastasia',
+				       'Japanese History Study Cards'  => 'eastasia',
+				       'Pacific War Postcard Collection'  => 'eastasia',
+				       'Michael Lewis Taiwan Postcard Collection'  => 'eastasia',
+				       'Gerald & Rella Warner Taiwan Postcard Collection'  => 'eastasia',
+				       'Gerald & Rella Warner Dutch East Indies Negative Collection'  => 'eastasia',
+				       'Japanese Imperial House Postcard Album'  => 'eastasia',
+				       'Gerald & Rella Warner Manchuria Negative Collection'  => 'eastasia',
+				       'Gerald & Rella Warner Taiwan Negative Collection'  => 'eastasia',
+				       'Gerald & Rella Warner Japan Slide Collection'  => 'eastasia',
+				       'Gerald & Rella Warner Souvenirs of Beijing and Tokyo'  => 'eastasia',
+				       'Woodsworth Taiwan Image Collection'  => 'eastasia',
+				       'Scenic Taiwan'  => 'eastasia',
+				       'Taiwan Photographic Monthly'  => 'eastasia',
+
+				       'East Asia Image Collection' => 'eastasia',
+
+				       'Geology Department Slide Collection' => 'geology-slides',
+				       'Historical Photograph Collection' => 'cap',
+				       'Lafayette Newspaper Collection' => 'newspaper',
+				       'Marquis de Lafayette Prints Collection' => 'mdl-prints',
+				       'McKelvy House Photograph Collection' => 'mckelvy',
+				       'Lafayette World War II Casualties' => 'war-casualties',
+				       );
+
+  dpm($values);
 
   // loop over each term
   foreach ($values['terms'] as $i => $value) {
@@ -527,11 +574,15 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     );
     */
 
+    dpm(array($value['field-wrapper']['field']));
+
     $term['field-wrapper']['field'] = array(
 					    '#title' => t(''),
 					    '#type' => 'select',
-					    '#default_value' => isset($value['field-wrapper']) and array_key_exists('field', $value['field-wrapper']) ? $value['field-wrapper']['field'] : 'foxml.all.text',
+					    '#default_value' => ((isset($value['field-wrapper']) and array_key_exists('field', $value['field-wrapper'])) ? $value['field-wrapper']['field'] : 'Full Text'),
 					    '#attributes' => array('class' => array('islandora-solr-search-field')));
+
+    dpm(array($term));
 
     if(isset($form_state['triggering_element']) and $form_state['triggering_element']['#name'] == 'scoping') {
 
@@ -583,8 +634,42 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
       }
     } else {
 
-      //$term['field-wrapper']['field']['#options'] = array('keywords' => 'DSS Pages');
-      $term['field-wrapper']['field']['#options'] = islandora_solr_get_fields('search_fields');
+      /*
+      $path = current_path();
+      dpm(array($path));
+      */
+
+      if(array_key_exists('f', $_GET)) {
+
+	$facets = $_GET['f'];
+	foreach($facets as $facet) {
+
+	  if(preg_match('/cdm\.Relation\.IsPartOf\:"(.+?)"/', $facet, $collection_m)) {
+
+	    if(array_key_exists($collection_m[1], $cdm_relation_collection_map)) {
+
+	      $default_collection_value = $cdm_relation_collection_map[$collection_m[1]];
+
+	      /**
+	       * If this is an active search, then update the term field with respect to the collection being browsed
+	       * This resolves DSSSM-621
+	       *
+	       */
+	      $term['field-wrapper']['field']['#options'] = islandora_dss_fields_map($default_collection_value);
+	    }
+	  }
+	}
+      }
+
+      //dpm(array( array_keys($term['field-wrapper']['field'] )));
+
+      if(!array_key_exists('#options', $term['field-wrapper']['field'])) {
+
+	//$term['field-wrapper']['field']['#options'] = array('keywords' => 'DSS Pages');
+	$term['field-wrapper']['field']['#options'] = islandora_solr_get_fields('search_fields');
+      }
+
+      dpm($term);
     }
 
     //dpm($value);
@@ -759,37 +844,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 			       'node/43' => 'war-casualties',
 			       );
 
-  $cdm_relation_collection_map = array(
-				       'Japanese Imperial House Postcard Album'  => 'eastasia',
-				       'T.W. Ingersoll Co. Stereoviews of the Siege of Port Arthur'  => 'eastasia',
-				       'Imperial Postcard Collection'  => 'eastasia',
-				       'Tsubokura Russo-Japanese War Postcard Album'  => 'eastasia',
-				       'Sino-Japanese War Postcard Album 01'  => 'eastasia',
-				       'Sino-Japanese War Postcard Album 02'  => 'eastasia',
-				       'Lin Chia-Feng Family Postcard Collection'  => 'eastasia',
-				       'Japanese History Study Cards'  => 'eastasia',
-				       'Pacific War Postcard Collection'  => 'eastasia',
-				       'Michael Lewis Taiwan Postcard Collection'  => 'eastasia',
-				       'Gerald & Rella Warner Taiwan Postcard Collection'  => 'eastasia',
-				       'Gerald & Rella Warner Dutch East Indies Negative Collection'  => 'eastasia',
-				       'Japanese Imperial House Postcard Album'  => 'eastasia',
-				       'Gerald & Rella Warner Manchuria Negative Collection'  => 'eastasia',
-				       'Gerald & Rella Warner Taiwan Negative Collection'  => 'eastasia',
-				       'Gerald & Rella Warner Japan Slide Collection'  => 'eastasia',
-				       'Gerald & Rella Warner Souvenirs of Beijing and Tokyo'  => 'eastasia',
-				       'Woodsworth Taiwan Image Collection'  => 'eastasia',
-				       'Scenic Taiwan'  => 'eastasia',
-				       'Taiwan Photographic Monthly'  => 'eastasia',
 
-				       'East Asia Image Collection' => 'eastasia',
-
-				       'Geology Department Slide Collection' => 'geology-slides',
-				       'Historical Photograph Collection' => 'cap',
-				       'Lafayette Newspaper Collection' => 'newspaper',
-				       'Marquis de Lafayette Prints Collection' => 'mdl-prints',
-				       'McKelvy House Photograph Collection' => 'mckelvy',
-				       'Lafayette World War II Casualties' => 'war-casualties',
-				       );
 
   if(array_key_exists($current_path, $collection_node_map)) {
 

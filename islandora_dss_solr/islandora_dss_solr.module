@@ -96,7 +96,7 @@ function islandora_dss_solr($query = NULL) {
    * Resolves DSS-207
    *
    */
-  if(false) {
+  //if(true) {
   //if(!in_array($collection, array('cap', 'mdl-prints'))) {
 
   foreach(preg_split('/(?<=\)) /', $query) as $search) {
@@ -109,54 +109,95 @@ function islandora_dss_solr($query = NULL) {
     $field = $m[1];
     $search = $m[2];
 
-  /**
-   * Work-around for case sensitivity
-   * Resolves DSS-208
-   *
-   */
-  if(ctype_upper($search)) {
-    
-    if(preg_match('/"(.+?)"/', $search, $m)) {
-      
-      $search = "($search OR " . '"' . strtolower($m[1]) . '"' . ")";
+    /**
+     * Work-around for case sensitivity
+     * Resolves DSS-208
+     *
+     */
+
+    // Special handling for capitalized subject headings
+    if(in_array($field, array('eastasia.Subject.OCM'))) {
+
+      // Quotation marks are applied to all queries
+      preg_match('/"(.+?)"/', $search, $m);
+      $search = $m[1];
+
+      if(!preg_match('/\*/', $search)) {
+
+	$search = "($search OR *" . strtoupper($search) . "*)";
+      } else {
+
+	$search = "($search OR " . strtoupper($search) . ")";
+      }
     } else {
+
+      // Quotation marks are applied to all queries
+      preg_match('/"(.+?)"/', $search, $m);
+      $search = $m[1];
+
+      if(ctype_upper($search)) {
+
+	/*
+	if(preg_match('/"(.+?)"/', $search, $m)) {
       
-      $search = "($search OR " . strtolower($search) . ")";
+	  $search = "($search OR " . '"' . strtolower($m[1]) . '"' . ")";
+	} else {
+      
+	  $search = "($search OR " . strtolower($search) . ")";
+	}
+	*/
+
+	$search = "(*$search* OR *" . strtolower($search) . "*)";
+      } elseif(ctype_lower($search)) {
+
+	/*
+	if(preg_match('/"(.+?)"/', $search, $m)) {
+      
+	  $search = "($search OR \"" . strtoupper($m[1]) . "\")";
+	} else {
+      
+	  $search = "($search OR " . strtoupper($search) . ")";
+	}
+	*/
+
+	//$search = "(*$search* OR *" . strtoupper($search) . "*)";
+	$search = "(*$search* OR *" . mb_convert_case($search, MB_CASE_TITLE, "UTF-8") . "*)";
+      } elseif(preg_match('/[A-Z]/', $search)) {
+	
+	// Quotation marks are applied to all queries
+	/*
+	if(preg_match('/"(.+?)"/', $search, $m)) {
+      
+	  $search = "($search OR \"" . lcfirst($m[1]) . "\")";
+	} else {
+      
+	  $search = "($search OR " . lcfirst($search) . ")";
+	}
+	*/
+
+	$search = "(*$search* OR *" . lcfirst($search) . "*)";
+      } else {
+
+	// Quotation marks are applied to all queries
+	/*
+	if(preg_match('/"(.+?)"/', $search, $m)) {
+	
+	  $search = "($search OR \"" . mb_convert_case($m[1], MB_CASE_TITLE, "UTF-8") . "\")";
+	
+	  //$search_case_title = mb_strtoupper(substr($m[1], 0, 1)) . substr($m[1], 1);
+	  //$search = "($search OR \"" . $search_case_title . "\")";
+	} else {
+	
+	  $search = "($search OR " . mb_convert_case($search, MB_CASE_TITLE, "UTF-8") . ")";
+	
+	  //$search_case_title = mb_strtoupper(substr($search, 0, 1)) . substr($search, 1);
+	  //$search = "($search OR " . $search_case_title . ")";
+	}
+	*/
+
+	$search = "(*$search* OR *" . mb_convert_case($search, MB_CASE_TITLE, "UTF-8") . "*)";
+      }
     }
-  } elseif(ctype_lower($search)) {
-    
-    if(preg_match('/"(.+?)"/', $search, $m)) {
-      
-      $search = "($search OR \"" . strtoupper($m[1]) . "\")";
-    } else {
-      
-      $search = "($search OR " . strtoupper($search) . ")";
-    }
-  } elseif(preg_match('/[A-Z]/', $search)) {
-    
-    if(preg_match('/"(.+?)"/', $search, $m)) {
-      
-      $search = "($search OR \"" . lcfirst($m[1]) . "\")";
-    } else {
-      
-      $search = "($search OR " . lcfirst($search) . ")";
-    }
-  } else {
-    
-    if(preg_match('/"(.+?)"/', $search, $m)) {
-      
-      $search = "($search OR \"" . mb_convert_case($m[1], MB_CASE_TITLE, "UTF-8") . "\")";
-      
-      //$search_case_title = mb_strtoupper(substr($m[1], 0, 1)) . substr($m[1], 1);
-      //$search = "($search OR \"" . $search_case_title . "\")";
-    } else {
-      
-      $search = "($search OR " . mb_convert_case($search, MB_CASE_TITLE, "UTF-8") . ")";
-      
-      //$search_case_title = mb_strtoupper(substr($search, 0, 1)) . substr($search, 1);
-      //$search = "($search OR " . $search_case_title . ")";
-    }
-  }
   }
 
   /**
@@ -166,11 +207,17 @@ function islandora_dss_solr($query = NULL) {
    */
   if($query != '*:*') {
   
+    /**
+     * Deprecated by reindexing
+     *
+     */
+    /*
     if($field == 'foxml.all.text' and !in_array($collection, array('cap', 'mdl-prints'))) {
     
       $collection_fields = array_keys(islandora_dss_fields_map($collection));
       foreach($collection_fields as $collection_field) {
       
+	// Do not transform queries for any date fields
 	if(!preg_match('/Date\./', $collection_field)) {
 
 	  $query_array[] = array(
@@ -185,9 +232,15 @@ function islandora_dss_solr($query = NULL) {
       $query_array[] = array(
 			     //'search' => "$field:($search)",
 			     'search' => "$field:$search",
-			     'boolean' => $boolean
+			     //'boolean' => $boolean
 			     );
     }
+    */
+    $query_array[] = array(
+			   //'search' => "$field:($search)",
+			   'search' => "$field:$search",
+			   //'boolean' => $boolean
+			   );
 
     // create query
     $query = '';
@@ -201,7 +254,9 @@ function islandora_dss_solr($query = NULL) {
       $i++;
     }
   }
-  }
+  //}
+
+  dpm(array($query));
 
   /**
    * Ensure that all queries are sorted by the value of dc.title in ascending order
