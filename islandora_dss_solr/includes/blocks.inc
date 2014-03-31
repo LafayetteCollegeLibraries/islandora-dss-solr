@@ -366,6 +366,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     //if(preg_match('/cdm.Relation.IsPartOf:"(.+)"/', $collection, $m)) {
     //if(array_key_exists('foxml.all.text', $query_explode)) {
     //if(preg_match('/foxml\.all\.text/', $query)) {
+    /*
     if(false) {
 
       // Url parameters.
@@ -394,26 +395,26 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 	//eastasia.Subject.OCM:("taiwan" OR "Taiwan") OR 
 	$query = preg_replace("/$collection_field\:\(.+?\) OR /", '', $query);
 
-
-
 	if(!preg_match('/Date\./', $collection_field)) {
 
-	  /*
 	  $query_array[] = array(
 				 //'search' => "$collection_field:($search or )",
 				 'search' => "$collection_field:$search",
 				 'boolean' => 'OR'
 				 );
-	  */
 	}
       }
-      //dpm($query);
-    }
 
-    //dpm(array($query));
+    }
+    */
+
+    /**
+     * Remove the query work-arounds for case-insensitive searches
+     * @todo Resolve by reindexing Solr
+     *
+     */
     $query = preg_replace("/\:\(\"(.+?)\" OR \".+?\"\)/", ':("\1")', $query);
     $query = preg_replace("/\:\((.+?) OR .+?\)/", ':(\1)', $query);
-    //dpm(array($query));
 
     // explode on space
     $query_explode = explode(' ', $query);
@@ -423,8 +424,6 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     foreach ($query_explode as $key => $value) {
 
       $term = array();
-
-      //dpm(array($value));
 
       // check for first colon to split the string
       if (strpos($value, ':') != FALSE) {
@@ -574,15 +573,11 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     );
     */
 
-    dpm(array($value['field-wrapper']['field']));
-
     $term['field-wrapper']['field'] = array(
 					    '#title' => t(''),
 					    '#type' => 'select',
 					    '#default_value' => ((isset($value['field-wrapper']) and array_key_exists('field', $value['field-wrapper'])) ? $value['field-wrapper']['field'] : 'Full Text'),
 					    '#attributes' => array('class' => array('islandora-solr-search-field')));
-
-    dpm(array($term));
 
     if(isset($form_state['triggering_element']) and $form_state['triggering_element']['#name'] == 'scoping') {
 
@@ -634,11 +629,11 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
       }
     } else {
 
-      /*
-      $path = current_path();
-      dpm(array($path));
-      */
-
+      /**
+       * Seek to populate the individual field options based upon the collection being browsed
+       * Resolves DSS-226
+       *
+       */
       if(array_key_exists('f', $_GET)) {
 
 	$facets = $_GET['f'];
@@ -661,21 +656,15 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 	}
       }
 
-      //dpm(array( array_keys($term['field-wrapper']['field'] )));
-
       if(!array_key_exists('#options', $term['field-wrapper']['field'])) {
 
 	//$term['field-wrapper']['field']['#options'] = array('keywords' => 'DSS Pages');
 	$term['field-wrapper']['field']['#options'] = islandora_solr_get_fields('search_fields');
       }
-
-      dpm($term);
     }
 
-    //dpm($value);
-
-    $term['field-wrapper']['search'] = array(
-					     '#title' => t(''),
+    // Initialize the form field for a specific search term
+    $term['field-wrapper']['search'] = array('#title' => t(''),
 					     '#type' => 'textfield',
 					     '#size' => 80,
 					     '#default_value' => isset($value['field-wrapper']) ? $value['field-wrapper']['search'] : '',
@@ -884,8 +873,6 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     }
   }
 
-  //dpm(array($default_collection_value));
-
   $form['collection'] = array(
 			      //'#prefix' => '<span>Search: </span>',
 			      '#title' => '',
@@ -939,8 +926,6 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
   $form['controls']['submit'] = array('#type' => 'submit',
 				      '#value' => t('Search')
 				      );
-
-  //dpm($form_state);
 
   return $form;
   }
