@@ -257,6 +257,7 @@ function islandora_dss_solr($query = NULL) {
   //}
 
   dpm(array($query));
+  dpm($params);
 
   /**
    * Ensure that all queries are sorted by the value of dc.title in ascending order
@@ -267,6 +268,8 @@ function islandora_dss_solr($query = NULL) {
 
     $params['sort'] = 'dc.title asc';
   }
+
+  dpm($params);
 
   // Build and execute Apache Solr query.
   // this populates the GLOBAL!!!!!!!
