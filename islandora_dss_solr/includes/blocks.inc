@@ -115,6 +115,7 @@ function islandora_dss_fields_map($collection) {
 							'' => 'Title.Chinese',
 							'' => 'Title.Korean',
 							"eastasia.Contributors.Digital" => 'Contributor',
+							"eastasia.Contributor.Donor" => 'Contributor.Donor',
 							"eastasia.Coverage.Location" => 'Coverage.Location',
 							"eastasia.Coverage.Location.Country" => 'Coverage.Location.Country',
 							"eastasia.Creator.Company" => 'Creator.Company',
@@ -880,7 +881,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 			      '#default_value' => $default_collection_value,
 			      '#options' => array(
 						  'global' => 'All',
-						  'eastasia' => 'East Asia Image Collections',
+						  'eastasia' => 'East Asia Image Collection',
 						  'newspaper' => 'Lafayette Newspaper',
 						  //'academic' => 'Academic Publications',
 						  'cap' => 'Historical Photograph Collection',
