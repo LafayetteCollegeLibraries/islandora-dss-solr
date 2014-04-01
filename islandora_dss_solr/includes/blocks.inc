@@ -539,8 +539,6 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 				       'Lafayette World War II Casualties' => 'war-casualties',
 				       );
 
-  dpm($values);
-
   // loop over each term
   foreach ($values['terms'] as $i => $value) {
 
@@ -881,15 +879,15 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 			      '#default_value' => $default_collection_value,
 			      '#options' => array(
 						  'global' => 'All',
-						  'eastasia' => 'East Asia Image Collection',
-						  'newspaper' => 'Lafayette Newspaper',
 						  //'academic' => 'Academic Publications',
-						  'cap' => 'Historical Photograph Collection',
-						  'mdl-prints' => 'Marquis de Lafayette Prints Collection',
-						  'geology-slides' => 'Geology Slide Collection',
 						  //'administration' => 'Administration Archives',
-						  'mckelvy' => 'McKelvy House',
+						  'eastasia' => 'East Asia Image Collection',
+						  'geology-slides' => 'Geology Slide Collection',
+						  'cap' => 'Historical Photograph Collection',
 						  'war-casualties' => 'Lafayette College World War II Casualties',
+						  'newspaper' => 'Lafayette Newspaper',
+						  'mdl-prints' => 'Marquis de Lafayette Prints Collection',
+						  'mckelvy' => 'McKelvy House',
 						  ),
 			      '#ajax' => array(
 					       'wrapper' => 'islandora-solr-advanced-terms',
