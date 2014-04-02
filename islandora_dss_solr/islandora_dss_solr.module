@@ -109,7 +109,15 @@ function islandora_dss_solr($query = NULL) {
       continue;
     }
 
-    $field = $m[1];
+    $prefix = $m[1];
+
+    if(preg_match('/(?:AND|OR|NOT) (.+)/', $prefix, $prefix_match)) {
+
+      $field = $prefix_match[1];
+    } else {
+
+      $field = $prefix;
+    }
     $search = $m[2];
 
     dpm(array($field,$search));
@@ -119,6 +127,10 @@ function islandora_dss_solr($query = NULL) {
      * Resolves DSS-208
      *
      */
+    $SOLR_FULLTEXT_FIELDS = array(
+				  'foxml.all.text'
+				  );
+
     $SOLR_INDEXED_FIELDS = array(
 				 //'dc.title',
 				 'eastasia.Title.Japanese',
@@ -142,15 +154,19 @@ function islandora_dss_solr($query = NULL) {
 				 'eastasia.Contributor.Donor',
 				 );
 
-    // For Solr-indexed fields
-    if(in_array($field, $SOLR_INDEXED_FIELDS)) {
 
-      $field = 'c_' . $field;
+    if(in_array($field, $SOLR_FULLTEXT_FIELDS)) { // For Solr-indexed fields supporting full-text indexing (i. e. not tokenized)
 
       // Quotation marks are applied to all queries
       preg_match('/"(.+?)"/', $search, $m);
-      $search = $m[1];
+      $search = '(' . $m[1] . ')';
+    } elseif(in_array($field, $SOLR_INDEXED_FIELDS)) { // For Solr-indexed fields with specific Analyzers (i. e. not optimized for tokenization of contents)
 
+      $prefix = str_replace($field, 'c_' . $field, $prefix);
+
+      // Quotation marks are applied to all queries
+      preg_match('/"(.+?)"/', $search, $m);
+      $search = '(' . $m[1] . ')';
     } elseif($field == 'geology_slides_esi.subject') {
 
       // Quotation marks are applied to all queries
@@ -237,7 +253,7 @@ function islandora_dss_solr($query = NULL) {
     }
 
     //dpm(array($search));
-    $internal_solr_query .= "$field:$search" . ' ';
+    $internal_solr_query .= "$prefix:$search" . ' ';
   }
 
   /**
