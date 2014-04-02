@@ -414,17 +414,25 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
      * @todo Resolve by reindexing Solr
      *
      */
+    dpm(array($query));
+
     $query = preg_replace("/\:\(\"(.+?)\" OR \".+?\"\)/", ':("\1")', $query);
     $query = preg_replace("/\:\((.+?) OR .+?\)/", ':(\1)', $query);
 
+    dpm(array($query));
+
     // explode on space
     $query_explode = explode(' ', $query);
+
+    dpm($query_explode);
     
     // break up the solr query to populate the advanced search form
     $i = 0;
     foreach ($query_explode as $key => $value) {
 
       $term = array();
+
+      dpm(array($value));
 
       // check for first colon to split the string
       if (strpos($value, ':') != FALSE) {

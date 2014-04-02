@@ -99,6 +99,9 @@ function islandora_dss_solr($query = NULL) {
   //if(true) {
   //if(!in_array($collection, array('cap', 'mdl-prints'))) {
 
+  // create query
+  $internal_solr_query = '';
+
   foreach(preg_split('/(?<=\)) /', $query) as $search) {
 
     if(!preg_match('/(.+?)\:\((.+?)\)/', $search, $m)) {
@@ -109,31 +112,65 @@ function islandora_dss_solr($query = NULL) {
     $field = $m[1];
     $search = $m[2];
 
+    dpm(array($field,$search));
+
     /**
      * Work-around for case sensitivity
      * Resolves DSS-208
      *
      */
+    $SOLR_INDEXED_FIELDS = array(
+				 //'dc.title',
+				 'eastasia.Title.Japanese',
+				 'eastasia.Title.Chinese',
+				 'eastasia.Title.Korean',
+				 'eastasia.Subject.OCM',
+				 'eastasia.Description.Critical',
+				 'eastasia.Description.Caption.English',
+				 'eastasia.Description.Caption.Japanese',
+				 'eastasia.Description.Indicia',
+				 'eastasia.Coverage.Location',
+				 'eastasia.Coverage.Location.Country',
+				 'eastasia.Description.Ethnicity',
+				 'eastasia.Contributors.Digital',
+				 'cdm.Relation.IsPartOf',
+				 'eastasia.Description.Citation',
+				 'eastasia.Format.Medium',
+				 'eastasia.Creator.Company',
+				 'eastasia.Creator.Maker',
+				 'eastasia.Format.Extent',
+				 'eastasia.Contributor.Donor',
+				 );
 
-    // Special handling for capitalized subject headings
-    if(in_array($field, array('eastasia.Subject.OCM'))) {
+    // For Solr-indexed fields
+    if(in_array($field, $SOLR_INDEXED_FIELDS)) {
+
+      $field = 'c_' . $field;
 
       // Quotation marks are applied to all queries
       preg_match('/"(.+?)"/', $search, $m);
       $search = $m[1];
 
-      if(!preg_match('/\*/', $search)) {
+    } elseif($field == 'geology_slides_esi.subject') {
 
-	$search = "($search OR *" . strtoupper($search) . "*)";
-      } else {
+      // Quotation marks are applied to all queries
+      preg_match('/"(.+?)"/', $search, $m);
+      $search = $m[1];
 
-	$search = "($search OR " . strtoupper($search) . ")";
-      }
+      // Escape spaces
+      $search = preg_replace('/ /', '\ ', $search);
+
+      $search = "(*" . strtoupper($search) . "*)";
     } else {
 
       // Quotation marks are applied to all queries
       preg_match('/"(.+?)"/', $search, $m);
       $search = $m[1];
+
+      // Escape spaces
+      $search = preg_replace('/ /', '\ ', $search);
+
+      dpm(array($search));
 
       if(ctype_upper($search)) {
 
@@ -198,6 +235,9 @@ function islandora_dss_solr($query = NULL) {
 	$search = "(*$search* OR *" . mb_convert_case($search, MB_CASE_TITLE, "UTF-8") . "*)";
       }
     }
+
+    //dpm(array($search));
+    $internal_solr_query .= "$field:$search" . ' ';
   }
 
   /**
@@ -236,27 +276,40 @@ function islandora_dss_solr($query = NULL) {
 			     );
     }
     */
+
+    /*
     $query_array[] = array(
 			   //'search' => "$field:($search)",
 			   'search' => "$field:$search",
 			   //'boolean' => $boolean
 			   );
+    */
 
-    // create query
-    $query = '';
+    /*
+    dpm($query_array);
+
     $i = 0;
     foreach ($query_array as $term) {
       
-      $query .= $term['search'];
+      $internal_solr_query .= $term['search'];
       if (count($query_array) -1 != $i) {
-	$query .= ' ' . $term['boolean'] . ' ';
+	$internal_solr_query .= ' ' . $term['boolean'] . ' ';
       }
       $i++;
     }
+    */
   }
   //}
 
-  dpm(array($query));
+  if($query != '*:*') {
+
+    $params['q'] = $internal_solr_query;
+  } else {
+
+    $internal_solr_query = $query;
+  }
+
+  dpm(array($internal_solr_query));
   dpm($params);
 
   /**
@@ -274,7 +327,7 @@ function islandora_dss_solr($query = NULL) {
   // Build and execute Apache Solr query.
   // this populates the GLOBAL!!!!!!!
   $_islandora_solr_queryclass = new IslandoraSolrQueryProcessor();
-  $_islandora_solr_queryclass->buildAndExecuteQuery($query, $params);
+  $_islandora_solr_queryclass->buildAndExecuteQuery($internal_solr_query, $params);
 
   if (empty($_islandora_solr_queryclass->islandoraSolrResult)) {
     return t('Error searching solr index.');
