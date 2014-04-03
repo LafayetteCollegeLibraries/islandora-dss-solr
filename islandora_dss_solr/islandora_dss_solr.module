@@ -102,23 +102,31 @@ function islandora_dss_solr($query = NULL) {
   // create query
   $internal_solr_query = '';
 
+  dpm(preg_split('/(?<=\)) /', $query));
+
   foreach(preg_split('/(?<=\)) /', $query) as $search) {
 
-    if(!preg_match('/(.+?)\:\((.+?)\)/', $search, $m)) {
+    if(preg_match('/(.+?)\:(\[.+?\])/', $search, $range_match)) { // Handling also for ranges
+
+      $prefix = $range_match[1];
+      $search = $range_match[2];
+    } elseif(preg_match('/(.+?)\:\((.+?)\)/', $search, $m)) {
+
+      $prefix = $m[1];
+      $search = $m[2];
+    } else { //if(!preg_match('/(.+?)\:\((.+?)\)/', $search, $m)) {
 
       continue;
     }
 
-    $prefix = $m[1];
-
+    // Handling for boolean operators
     if(preg_match('/(?:AND|OR|NOT) (.+)/', $prefix, $prefix_match)) {
-
+      
       $field = $prefix_match[1];
     } else {
 
       $field = $prefix;
     }
-    $search = $m[2];
 
     dpm(array($field,$search));
 
@@ -154,8 +162,29 @@ function islandora_dss_solr($query = NULL) {
 				 'eastasia.Contributor.Donor',
 				 );
 
+    //global $ISLANDORA_DSS_SOLR_DATE_FIELDS;
+    $ISLANDORA_DSS_SOLR_DATE_FIELDS = array(
+					    'dc.date',
+					    "eastasia.Date.Artifact.Lower",
+					    "eastasia.Date.Artifact.Upper",
+					    "eastasia.Date.Image.Lower",
+					    "eastasia.Date.Image.Upper",
+					    "eastasia.Date.Original",
+					    'mdl_prints.date.original',
+					    'geology_slides_esi.date.original',
+					    'mckelvy.date.original.search',
+					    'war_casualties.date.birth.search',
+					    'war_casualties.date.death.search'
+					    );
 
-    if(in_array($field, $SOLR_FULLTEXT_FIELDS)) { // For Solr-indexed fields supporting full-text indexing (i. e. not tokenized)
+    dpm(array($field));
+
+    if(in_array($field, $ISLANDORA_DSS_SOLR_DATE_FIELDS)) {
+
+      //$search = "[$search]";
+      dpm(array($search));
+
+    } elseif(in_array($field, $SOLR_FULLTEXT_FIELDS)) { // For Solr-indexed fields supporting full-text indexing (i. e. not tokenized)
 
       // Quotation marks are applied to all queries
       preg_match('/"(.+?)"/', $search, $m);

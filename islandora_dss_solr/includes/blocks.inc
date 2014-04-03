@@ -111,9 +111,9 @@ function islandora_dss_fields_map($collection) {
   $ISLANDORA_DSS_FIELDS_MAP = array('eastasia' => array(
 							'foxml.all.text' => 'Full Text',
 							'dc.title' => 'Title.English',
-							'' => 'Title.Japanese',
-							'' => 'Title.Chinese',
-							'' => 'Title.Korean',
+							//'foxml.all.text' => 'Title.Japanese', // Resolve with re-indexing (DSSSM-175 )
+							//'foxml.all.text' => 'Title.Chinese', // DSSSM-175
+							//'foxml.all.text' => 'Title.Korean', // DSSSM-175
 							"eastasia.Contributors.Digital" => 'Contributor',
 							"eastasia.Contributor.Donor" => 'Contributor.Donor',
 							"eastasia.Coverage.Location" => 'Coverage.Location',
@@ -125,13 +125,13 @@ function islandora_dss_fields_map($collection) {
 							"eastasia.Date.Image.Lower" => 'Date.Image.Lower',
 							"eastasia.Date.Image.Upper" => 'Date.Image.Upper',
 							"eastasia.Date.Original" => 'Date.Original',
-							'' => 'Description.Caption.English',
-							'' => 'Description.Caption.Japanese',
-							'' => 'Description.Citation',
+							//'foxml.all.text' => 'Description.Caption.English', // DSSSM-175
+							//'foxml.all.text' => 'Description.Caption.Japanese', // DSSSM-175
+							//'foxml.all.text' => 'Description.Citation', // DSSSM-175
 							'geology_slides.description.critical' => 'Description.Critical',
 							"eastasia.Description.Ethnicity" => 'Description.Ethnicity',
 							"eastasia.Description.Indicia" => 'Description.Indicia',
-							'' => 'Format.Extent',
+							//'foxml.all.text' => 'Format.Extent', // DSSSM-175
 							"eastasia.Format.Medium" => 'Format.Medium',
 							"cdm.Relation.IsPartOf" => 'Relation.IsPartOf',
 							"eastasia.Subject.OCM" => 'Subject.OCM',
@@ -153,7 +153,7 @@ function islandora_dss_fields_map($collection) {
 				    //'administration' => array(),
 				    'newspaper' => array(
 							 'foxml.all.text' => 'Full Text',
-							 '' => 'Publication Date'
+							 'dc.date' => 'Publication Date'
 							 ),
 				    'cap' => array(
 						   'foxml.all.text' => 'Full Text',
@@ -298,6 +298,21 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 
   global $_islandora_solr_queryclass;
 
+  // Refactor for the administrative interface
+  $ISLANDORA_DSS_SOLR_DATE_FIELDS = array(
+					  'dc.date',
+					  "eastasia.Date.Artifact.Lower",
+					  "eastasia.Date.Artifact.Upper",
+					  "eastasia.Date.Image.Lower",
+					  "eastasia.Date.Image.Upper",
+					  "eastasia.Date.Original",
+					  'mdl_prints.date.original',
+					  'geology_slides_esi.date.original',
+					  'mckelvy.date.original.search',
+					  'war_casualties.date.birth.search',
+					  'war_casualties.date.death.search'
+					  );
+
   drupal_load('module', 'search');
   $search_form = drupal_get_form('search_block_form');
 
@@ -416,8 +431,18 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
      */
     dpm(array($query));
 
+    // For boolean-based overrides at the field-level
     $query = preg_replace("/\:\(\"(.+?)\" OR \".+?\"\)/", ':("\1")', $query);
     $query = preg_replace("/\:\((.+?) OR .+?\)/", ':(\1)', $query);
+
+    // For range overrides at the field-level
+    //$query = preg_replace("/\:\[(.+?) TO .+?\]/", ':(\1)', $query);
+
+    // For range overrides at the field-level
+    if(preg_match('/\:\[(.+?) TO (.+?)\]/', $query, $range_match)) {
+
+      $query = preg_replace("/\:\[(.+?) TO .+?\]/", ':(\1)', $query);
+    }
 
     dpm(array($query));
 
@@ -444,8 +469,50 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 
         // second part of the split is the query value (or first part of it)
         $value_split[1] = str_replace(array('(', ')'), '', $value_split[1]);
-        // add search string
-        $values['terms'][$i]['field-wrapper']['search'] = $value_split[1];
+
+	/**
+	 * Handling for datestamps
+	 *
+	 */
+	if(in_array($value_split[0], $ISLANDORA_DSS_SOLR_DATE_FIELDS)) {
+
+	  if(isset($range_match) and count($range_match) > 2) {
+
+	    /*
+	    dpm($range_match[2]);
+
+	    // Please see http://us3.php.net/manual/en/function.strtotime.php#87900
+
+	    dpm(strtotime($value_split[1] . ' UTC'));
+	    //$date_u = DateTime::createFromFormat('s', strtotime($value_split[1] . ' UTC'));
+	    $date_u = new DateTime(strtotime($value_split[1] . ' UTC'));
+	    //$date_v = DateTime::createFromFormat('s', strtotime($range_match[2] . ' UTC'));
+
+	    dpm($value_split[1]);
+	    dpm($range_match[2]);
+	    //$date_v = new DateTime(strtotime($range_match[2] . ' UTC'));
+	    $date_v = new DateTime('10440323');
+
+	    dpm(gettype($date_u));
+
+	    //$date_diff = $date_v->diff($date_u);
+	    */
+
+	    if(true) {
+
+	      $values['terms'][$i]['field-wrapper']['search'] = gmdate('Y-m', $date_u);
+	      //$values['terms'][$i]['field-wrapper']['search'] = $date_u->format('Y-m');
+	    } else {
+
+	      $values['terms'][$i]['field-wrapper']['search'] = gmdate('Y', $date_u);
+	      //$values['terms'][$i]['field-wrapper']['search'] = $date_u->format('Y');
+	    }
+	  }
+	} else {
+
+	  // add search string
+	  $values['terms'][$i]['field-wrapper']['search'] = $value_split[1];
+	}
 
 	/**
 	 * Remove quotes
@@ -965,6 +1032,21 @@ function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
     return search_box_form_submit();
   }
 
+  // Refactor for the administrative interface
+  $ISLANDORA_DSS_SOLR_DATE_FIELDS = array(
+					  'dc.date',
+					  "eastasia.Date.Artifact.Lower",
+					  "eastasia.Date.Artifact.Upper",
+					  "eastasia.Date.Image.Lower",
+					  "eastasia.Date.Image.Upper",
+					  "eastasia.Date.Original",
+					  'mdl_prints.date.original',
+					  'geology_slides_esi.date.original',
+					  'mckelvy.date.original.search',
+					  'war_casualties.date.birth.search',
+					  'war_casualties.date.death.search'
+					  );
+
   // Collect query values
   $query_array = array();
   foreach ($form_state['values']['terms'] as $term) {
@@ -986,17 +1068,52 @@ function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
       // add query
       if (!empty($search)) {
 
-	// Ensure that terms are escaped with double quotations
-	if(!preg_match('/^"(.+?)"$/', $search)) {
+	/**
+	 * Handling for date strings
+	 * Resolves DSSSM-656
+	 *
+	 */
+	if(in_array($field, $ISLANDORA_DSS_SOLR_DATE_FIELDS)) {
 
-	  $search = '"' . $search . '"';
+	  if(preg_match('/(\d{4})\-(\d{2})/', $search, $m)) {
+
+	    // Refactor
+	    $search_time_u = gmmktime(0, 0, 0, (int) $m[2], 1, (int) $m[1]);
+	    $search_time_v = gmmktime(11, 59, 59, (int) $m[2], cal_days_in_month(CAL_GREGORIAN, (int) $m[2], (int) $m[1]), (int) $m[1]);
+
+	  } elseif(preg_match('/(\d{4})/', $search, $m)) {
+
+	    $search_time_u = gmmktime(0, 0, 0, 1, 1, (int) $m[1]);
+	    $search_time_v = gmmktime(11, 59, 59, 12, 31, (int) $m[1]);
+	  } else {
+
+	    // No Objects should bear this time
+	    $search_time_u = gmmktime(0, 0, 0, 1, 1, 0);
+	    $search_time_v = gmmktime(11, 59, 59, 12, 31, 0);
+	  }
+
+	  // All dates must be passed as ranges
+	  $search = str_replace('+00:00', '', gmdate('c', $search_time_u)) . 'Z TO ' . str_replace('+00:00', '', gmdate('c', $search_time_v)) . 'Z';
+
+	  $query_array[] = array(
+				 'search' => "$field:[$search]",
+				 //'search' => "$field:$search",
+				 'boolean' => $boolean
+				 );
+	} else {
+
+	  // Ensure that terms are escaped with double quotations
+	  if(!preg_match('/^"(.+?)"$/', $search)) {
+
+	    $search = '"' . $search . '"';
+	  }
+
+	  $query_array[] = array(
+				 'search' => "$field:($search)",
+				 //'search' => "$field:$search",
+				 'boolean' => $boolean
+				 );
 	}
-
-	$query_array[] = array(
-			       'search' => "$field:($search)",
-			       //'search' => "$field:$search",
-			       'boolean' => $boolean
-			       );
       }
     }
   }
