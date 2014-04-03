@@ -9,4 +9,5 @@ dependencies[] = islandora
 dependencies[] = islandora_solr
 dependencies[] = search
 
+scripts[] = 'js/islandora_dss_solr_helper.js'
 stylesheets[all][] = css/islandora_dss_solr.base.css
