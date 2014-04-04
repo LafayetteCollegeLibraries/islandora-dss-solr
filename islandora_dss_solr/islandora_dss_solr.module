@@ -203,9 +203,15 @@ function islandora_dss_solr($query = NULL) {
       $search = $m[1];
 
       // Escape spaces
+      // Refactor
       $search = preg_replace('/ /', '\ ', $search);
+      // Escape brackets
+      // Refactor
+      $search = preg_replace('/\\[/', '\[', $search);
+      $search = preg_replace('/\\]/', '\]', $search);
 
-      $search = "(*" . strtoupper($search) . "*)";
+      //$search = "(*" . strtoupper($search) . "*)";
+      $search = "(*$search* OR *" . strtoupper($search) . "*)";
     } else {
 
       // Quotation marks are applied to all queries
@@ -213,7 +219,12 @@ function islandora_dss_solr($query = NULL) {
       $search = $m[1];
 
       // Escape spaces
+      // Refactor
       $search = preg_replace('/ /', '\ ', $search);
+      // Escape brackets
+      // Refactor
+      $search = preg_replace('/\\[/', '\[', $search);
+      $search = preg_replace('/\\]/', '\]', $search);
 
       dpm(array($search));
 

@@ -485,8 +485,22 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 	  }
 	} else {
 
+	  /**
+	   * Handling for specially formatted query strings
+	   * Resolves DSS-242
+	   *
+	   */
+	  $query_segment = $value_split[1];
+	  // Remove asterisks
+	  $query_segment = preg_replace('/\*(.+?)\*/', '$1', $query_segment);
+
+	  dpm(array($query_segment));
+
+	  // Remove escaped whitespace
+	  $query_segment = preg_replace('/\\ /', ' ', $query_segment);
+
 	  // add search string
-	  $values['terms'][$i]['field-wrapper']['search'] = $value_split[1];
+	  $values['terms'][$i]['field-wrapper']['search'] = $query_segment;
 	}
 
 	/**
@@ -529,6 +543,32 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 
 	// increment to next field
 	$i++;
+      }
+
+      /**
+       * Handling for specially formatted query strings
+       * Resolves DSS-242
+       *
+       */
+
+      if(array_key_exists('search', $values['terms'][$i]['field-wrapper'])) {
+
+	$term_query = $values['terms'][$i]['field-wrapper']['search'];
+
+	// Remove wildcards
+	$term_query = preg_replace('/\*(.+?)\*/', '$1', $term_query);
+	// Remove escaped whitespace
+	//$term_query = preg_replace('/\\\ /', ' ', $term_query);
+	$term_query = str_replace('\ ', ' ', $term_query);
+	// Remove escaped brackets
+	//$term_query = preg_replace('/\\\\\[/', '[', $term_query);
+	//$term_query = preg_replace('/\\\\\]/', ']', $term_query);
+	$term_query = str_replace('\[', '[', $term_query);
+	$term_query = str_replace('\]', ']', $term_query);
+	
+
+	// add search string
+	$values['terms'][$i]['field-wrapper']['search'] = $term_query;
       }
     }
   }
