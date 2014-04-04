@@ -233,19 +233,23 @@ function islandora_dss_solr($query = NULL) {
       if(ctype_upper($search)) { // Search segment characters are all in the upper case
 
 	$search = "(*$search* OR *" . strtolower($search) . "* OR *" . mb_convert_case($search, MB_CASE_TITLE, "UTF-8") . "*)";
+	//$search = "(\"*$search*\" OR \"*" . strtolower($search) . "*\" OR \"*" . mb_convert_case($search, MB_CASE_TITLE, "UTF-8") . "*\")";
       } elseif(ctype_lower($search)) { // Search segment characters are all in the lower case
 
 	//$search = "(*$search* OR *" . strtoupper($search) . "*)";
 	//$search = "(*$search* OR *" . mb_convert_case($search, MB_CASE_TITLE, "UTF-8") . "*)";
 	$search = "(*$search* OR *" . strtoupper($search) . "* OR *" . mb_convert_case($search, MB_CASE_TITLE, "UTF-8") . "*)";
+	//$search = "(\"*$search*\" OR \"*" . strtoupper($search) . "*\" OR \"*" . mb_convert_case($search, MB_CASE_TITLE, "UTF-8") . "*\")";
       } elseif(preg_match('/[A-Z]/', $search)) { // Initial search segment character is in the upper case
 	
 	//$search = "(*$search* OR *" . lcfirst($search) . "*)";
 	$search = "(*$search* OR *" . lcfirst($search) . "* OR *" . strtoupper($search) . "*)";
+	//$search = "(\"*$search*\" OR \"*" . lcfirst($search) . "*\" OR \"*" . strtoupper($search) . "*\")";
       } else {
 
 	//$search = "(*$search* OR *" . mb_convert_case($search, MB_CASE_TITLE, "UTF-8") . "*)";
 	$search = "(*$search* OR *" . mb_convert_case($search, MB_CASE_TITLE, "UTF-8") . "* OR *" . strtoupper($search) . "*)";
+	//$search = "(\"*$search*\" OR \"*" . mb_convert_case($search, MB_CASE_TITLE, "UTF-8") . "*\" OR \"*" . strtoupper($search) . "*\")";
       }
     }
 

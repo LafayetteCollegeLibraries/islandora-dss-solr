@@ -433,8 +433,11 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 
     // For boolean-based overrides at the field-level
     $query = preg_replace("/\:\(\"(.+?)\" OR \".+?\" OR \".+?\"\)/", ':("\1")', $query);
+    // For queries without quotations
+    $query = preg_replace("/\:\((.+?) OR .+? OR .+?\)/", ':(\1)', $query);
     // This should be deprecated
     $query = preg_replace("/\:\(\"(.+?)\" OR \".+?\"\)/", ':("\1")', $query);
+
 
     //$query = preg_replace("/\:\((.+?) OR .+?\)/", ':(\1)', $query);
 
@@ -485,7 +488,22 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 	    $date_u = strtotime($value_split[1] . ' UTC');
 	    $date_v = strtotime($range_match[2] . ' UTC');
 
-	    $values['terms'][$i]['field-wrapper']['search'] = gmdate('Y-m-d', $date_u);
+	    // Refactor using DateInterval and DateTime Classes (?)
+	    // (Might consume more resources)
+	    // Year: 31492799
+	    // Month: 2635199
+	    // Day: 43199
+	    $date_diff = $date_v - $date_u;
+	    if($date_diff >= 30000000) {
+
+	      $values['terms'][$i]['field-wrapper']['search'] = gmdate('Y', $date_u);
+	    } elseif($date_diff >= 2000000) {
+
+	      $values['terms'][$i]['field-wrapper']['search'] = gmdate('Y-m', $date_u);
+	    } else {
+
+	      $values['terms'][$i]['field-wrapper']['search'] = gmdate('Y-m-d', $date_u);
+	    }
 	  }
 	} else {
 
