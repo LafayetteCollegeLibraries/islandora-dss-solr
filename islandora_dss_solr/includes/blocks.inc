@@ -125,13 +125,13 @@ function islandora_dss_fields_map($collection) {
 							"eastasia.Date.Image.Lower" => 'Date.Image.Lower',
 							"eastasia.Date.Image.Upper" => 'Date.Image.Upper',
 							"eastasia.Date.Original" => 'Date.Original',
-							//'foxml.all.text' => 'Description.Caption.English', // DSSSM-175
-							//'foxml.all.text' => 'Description.Caption.Japanese', // DSSSM-175
+							'mdl_prints.description' => 'Description.Caption.English',
+							'mdl_prints.description' => 'Description.Caption.Japanese',
 							//'foxml.all.text' => 'Description.Citation', // DSSSM-175
 							'geology_slides.description.critical' => 'Description.Critical',
 							"eastasia.Description.Ethnicity" => 'Description.Ethnicity',
 							"eastasia.Description.Indicia" => 'Description.Indicia',
-							//'foxml.all.text' => 'Format.Extent', // DSSSM-175
+							'mdl_prints.format.extent' => 'Format.Extent',
 							"eastasia.Format.Medium" => 'Format.Medium',
 							"cdm.Relation.IsPartOf" => 'Relation.IsPartOf',
 							"eastasia.Subject.OCM" => 'Subject.OCM',
@@ -828,8 +828,6 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 	$term['field-wrapper']['field']['#options'] = islandora_dss_fields_map($form_state['values']['collection']);
       }
     } else {
-
-      dpm('trace3');
 
       /**
        * Seek to populate the individual field options based upon the collection being browsed
