@@ -116,6 +116,7 @@ function islandora_dss_solr($query = NULL) {
       $search = $m[2];
     } else { //if(!preg_match('/(.+?)\:\((.+?)\)/', $search, $m)) {
 
+      dpm($search);
       continue;
     }
 
@@ -183,6 +184,7 @@ function islandora_dss_solr($query = NULL) {
 
       //$search = "[$search]";
       dpm(array($search));
+      //$search = "($search)";
 
     } elseif(in_array($field, $SOLR_FULLTEXT_FIELDS)) { // For Solr-indexed fields supporting full-text indexing (i. e. not tokenized)
 
@@ -228,67 +230,22 @@ function islandora_dss_solr($query = NULL) {
 
       dpm(array($search));
 
-      if(ctype_upper($search)) {
+      if(ctype_upper($search)) { // Search segment characters are all in the upper case
 
-	/*
-	if(preg_match('/"(.+?)"/', $search, $m)) {
-      
-	  $search = "($search OR " . '"' . strtolower($m[1]) . '"' . ")";
-	} else {
-      
-	  $search = "($search OR " . strtolower($search) . ")";
-	}
-	*/
-
-	$search = "(*$search* OR *" . strtolower($search) . "*)";
-      } elseif(ctype_lower($search)) {
-
-	/*
-	if(preg_match('/"(.+?)"/', $search, $m)) {
-      
-	  $search = "($search OR \"" . strtoupper($m[1]) . "\")";
-	} else {
-      
-	  $search = "($search OR " . strtoupper($search) . ")";
-	}
-	*/
+	$search = "(*$search* OR *" . strtolower($search) . "* OR *" . mb_convert_case($search, MB_CASE_TITLE, "UTF-8") . "*)";
+      } elseif(ctype_lower($search)) { // Search segment characters are all in the lower case
 
 	//$search = "(*$search* OR *" . strtoupper($search) . "*)";
-	$search = "(*$search* OR *" . mb_convert_case($search, MB_CASE_TITLE, "UTF-8") . "*)";
-      } elseif(preg_match('/[A-Z]/', $search)) {
+	//$search = "(*$search* OR *" . mb_convert_case($search, MB_CASE_TITLE, "UTF-8") . "*)";
+	$search = "(*$search* OR *" . strtoupper($search) . "* OR *" . mb_convert_case($search, MB_CASE_TITLE, "UTF-8") . "*)";
+      } elseif(preg_match('/[A-Z]/', $search)) { // Initial search segment character is in the upper case
 	
-	// Quotation marks are applied to all queries
-	/*
-	if(preg_match('/"(.+?)"/', $search, $m)) {
-      
-	  $search = "($search OR \"" . lcfirst($m[1]) . "\")";
-	} else {
-      
-	  $search = "($search OR " . lcfirst($search) . ")";
-	}
-	*/
-
-	$search = "(*$search* OR *" . lcfirst($search) . "*)";
+	//$search = "(*$search* OR *" . lcfirst($search) . "*)";
+	$search = "(*$search* OR *" . lcfirst($search) . "* OR *" . strtoupper($search) . "*)";
       } else {
 
-	// Quotation marks are applied to all queries
-	/*
-	if(preg_match('/"(.+?)"/', $search, $m)) {
-	
-	  $search = "($search OR \"" . mb_convert_case($m[1], MB_CASE_TITLE, "UTF-8") . "\")";
-	
-	  //$search_case_title = mb_strtoupper(substr($m[1], 0, 1)) . substr($m[1], 1);
-	  //$search = "($search OR \"" . $search_case_title . "\")";
-	} else {
-	
-	  $search = "($search OR " . mb_convert_case($search, MB_CASE_TITLE, "UTF-8") . ")";
-	
-	  //$search_case_title = mb_strtoupper(substr($search, 0, 1)) . substr($search, 1);
-	  //$search = "($search OR " . $search_case_title . ")";
-	}
-	*/
-
-	$search = "(*$search* OR *" . mb_convert_case($search, MB_CASE_TITLE, "UTF-8") . "*)";
+	//$search = "(*$search* OR *" . mb_convert_case($search, MB_CASE_TITLE, "UTF-8") . "*)";
+	$search = "(*$search* OR *" . mb_convert_case($search, MB_CASE_TITLE, "UTF-8") . "* OR *" . strtoupper($search) . "*)";
       }
     }
 

@@ -432,13 +432,17 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     dpm(array($query));
 
     // For boolean-based overrides at the field-level
+    $query = preg_replace("/\:\(\"(.+?)\" OR \".+?\" OR \".+?\"\)/", ':("\1")', $query);
+    // This should be deprecated
     $query = preg_replace("/\:\(\"(.+?)\" OR \".+?\"\)/", ':("\1")', $query);
-    $query = preg_replace("/\:\((.+?) OR .+?\)/", ':(\1)', $query);
+
+    //$query = preg_replace("/\:\((.+?) OR .+?\)/", ':(\1)', $query);
 
     // For range overrides at the field-level
     //$query = preg_replace("/\:\[(.+?) TO .+?\]/", ':(\1)', $query);
 
     // For range overrides at the field-level
+    // Need to break more complex queries
     if(preg_match('/\:\[(.+?) TO (.+?)\]/', $query, $range_match)) {
 
       $query = preg_replace("/\:\[(.+?) TO .+?\]/", ':(\1)', $query);
@@ -551,7 +555,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
        *
        */
 
-      if(array_key_exists('search', $values['terms'][$i]['field-wrapper'])) {
+      if(count($values['terms']) > $i and array_key_exists('search', $values['terms'][$i]['field-wrapper'])) {
 
 	$term_query = $values['terms'][$i]['field-wrapper']['search'];
 
@@ -1117,7 +1121,7 @@ function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
 	  $search = str_replace('+00:00', '', gmdate('c', $search_time_u)) . 'Z TO ' . str_replace('+00:00', '', gmdate('c', $search_time_v)) . 'Z';
 
 	  $query_array[] = array(
-				 'search' => "$field:[$search]",
+				 'search' => "$field:([$search])",
 				 //'search' => "$field:$search",
 				 'boolean' => $boolean
 				 );
