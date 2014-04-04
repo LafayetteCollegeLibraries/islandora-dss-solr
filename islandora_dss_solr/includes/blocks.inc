@@ -593,14 +593,96 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 	$values['terms'][$i]['field-wrapper']['search'] = $term_query;
       }
     }
-  }
-  // 3. anywhere else: empty form
-  else {
+  } elseif(preg_match('/search\/node\/(.+)/', current_path(), $apachesolr_query_match)) { // Extending for integration with apachesolr
+
+    // 2. populate with current query on search results page
+
+    // get current query
+    $query = $apachesolr_query_match[1];
+    // set value variable
+    $values['terms'] = array();
+
+    /**
+     * Ensure that global searches are not parsed
+     *
+     */
+    if($query == '*:*') {
+
+      $query = '';
+    }
+
+    // explode on space
+    $query_explode = explode(' ', $query);
+
+    // break up the solr query to populate the advanced search form
+    $i = 0;
+    foreach ($query_explode as $key => $value) {
+
+      $term = array();
+
+      // check for first colon to split the string
+      if (strpos($value, ':') != FALSE) {
+
+        // split the filter into field and value
+        $value_split = explode(':', $value, 2);
+        // set field
+        $values['terms'][$i]['field-wrapper']['field'] = $value_split[0];
+
+        // second part of the split is the query value (or first part of it)
+        $value_split[1] = str_replace(array('(', ')'), '', $value_split[1]);
+
+	/**
+	 * Handling for specially formatted query strings
+	 * Resolves DSS-242
+	 *
+	 */
+	$query_segment = $value_split[1];
+	// add search string
+	$values['terms'][$i]['field-wrapper']['search'] = $query_segment;
+      }
+      // if the string does not include a colon or AND/OR/NOT, then it is a
+      // part of the query value
+      elseif (!preg_match('/(AND|OR|NOT)/', $value, $matches)) {
+        // trim brackets
+        $value = str_replace(array('(', ')'), '', $value);
+
+        if (isset($values['terms'][$i]['field-wrapper']['search'])) {
+          // append to search string
+          $values['terms'][$i]['field-wrapper']['search'] .= ' ' . $value;
+        }
+        else {
+          // search field is not set, so create new search value
+          $values['terms'][$i]['field-wrapper']['search'] = $value;
+        }
+      }
+      // if it matches AND/OR/NOT, then we have the boolean operator
+      else {
+        // set boolean operator
+        $values['terms'][$i]['field-wrapper']['boolean'] = $value;
+
+	// increment to next field
+	$i++;
+      }
+
+      /**
+       * Handling for specially formatted query strings
+       * Resolves DSS-242
+       *
+       */
+
+      if(count($values['terms']) > $i and array_key_exists('search', $values['terms'][$i]['field-wrapper'])) {
+
+	$term_query = $values['terms'][$i]['field-wrapper']['search'];
+
+	// add search string
+	$values['terms'][$i]['field-wrapper']['search'] = $term_query;
+      }
+    }
+
+  } else { // 3. anywhere else: empty form
 
     //Need at least one term to draw the search box.
-    $values = array(
-      'terms' => array(''),
-    );
+    $values = array('terms' => array(''));
   }
 
   $terms = array(
@@ -618,6 +700,9 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 
     $values['terms'] = array_slice($values['terms'], 0, -1);
   }
+
+  // Retrieve and store the current path
+  $current_path = current_path();
 
   $cdm_relation_collection_map = array(
 				       'Japanese Imperial House Postcard Album'  => 'eastasia',
@@ -731,7 +816,11 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     } elseif(isset($form_state['triggering_element']) and
 	     ($form_state['triggering_element']['#name'] == 'collection' or ($form_state['triggering_element']['#type'] == 'button' and $form_state['triggering_element']['#value'] == '<i class="icon-large"></i>'))) {
 
-      if($form_state['values']['collection'] == 'global') {
+      //dpm($form_state['values'] );
+      if($form_state['values']['scoping'] == 'SITE') {
+
+	$term['field-wrapper']['field']['#options'] = array('keywords' => 'DSS Pages');
+      } elseif($form_state['values']['collection'] == 'global') {
 
 	$term['field-wrapper']['field']['#options'] = islandora_solr_get_fields('search_fields');
       } else {
@@ -739,6 +828,8 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 	$term['field-wrapper']['field']['#options'] = islandora_dss_fields_map($form_state['values']['collection']);
       }
     } else {
+
+      dpm('trace3');
 
       /**
        * Seek to populate the individual field options based upon the collection being browsed
@@ -767,10 +858,17 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 	}
       }
 
+      // If the options weren't populated from the Solr facets...
       if(!array_key_exists('#options', $term['field-wrapper']['field'])) {
 
-	//$term['field-wrapper']['field']['#options'] = array('keywords' => 'DSS Pages');
-	$term['field-wrapper']['field']['#options'] = islandora_solr_get_fields('search_fields');
+	// Refactor
+	if(preg_match('/search\/node/', $current_path)) {
+	  
+	  $term['field-wrapper']['field']['#options'] = array('keywords' => 'DSS Pages');
+	} else {
+
+	  $term['field-wrapper']['field']['#options'] = islandora_solr_get_fields('search_fields');
+	}
       }
     }
 
@@ -888,9 +986,6 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 				    ));
   }
 
-  // Retrieve and store the current path
-  $current_path = current_path();
-
   // set form
   $form = array();
 
@@ -909,12 +1004,20 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     $form['path'] = array('#type' => 'hidden', '#value' => $current_path);
   }
 
+  if(preg_match('/search\/node/', current_path())) {
+
+    $scoping_default_value = 'SITE';
+  } else {
+
+    $scoping_default_value = 'COLL';
+  }
+
   // Set the scoping controls
   $form['scoping'] = array('#type' => 'radios',
 			   //'#prefix' => '<div class="islandora-solr-advanced-scoping">',
 			   '#prefix' => '<div id="islandora-solr-advanced-scoping">',
 			   '#suffix' => '</div>',
-			   '#default_value' => 'COLL',
+			   '#default_value' => $scoping_default_value,
 			   '#options' => $scoping_options,
 			   '#attributes' => array('class' => array('islandora-solr-scoping-button')),
 			   '#ajax' => array(
@@ -1062,11 +1165,28 @@ function islandora_dss_solr_islandora_solr_query_blocks() {
 
 function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
 
-  //$form_state['values']['scoping'];
-
+  /**
+   * For searches scoped to the site, simply redirect the query to the appropriate apachesolr callback
+   *
+   */
   if(array_key_exists('scoping', $form_state['values']) and $form_state['values']['scoping'] == 'SITE') {
 
-    return search_box_form_submit();
+    // Work-around
+    /* @todo Refactor (once Islandora 7 has integrated islandora_solr_search with the Drupal Search API) */
+    $query = '';
+    foreach($form_state['values']['terms'] as $term) {
+
+      if(array_key_exists('field-wrapper', $term)) {
+
+	$query .= "{$term['field-wrapper']['search']} ";
+	if(array_key_exists('boolean', $term)) {
+
+	  $query .= "{$term['boolean']} ";
+	}
+      }
+    }
+
+    drupal_goto('search/node/' . $query);
   }
 
   // Refactor for the administrative interface
