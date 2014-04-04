@@ -478,35 +478,10 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 
 	  if(isset($range_match) and count($range_match) > 2) {
 
-	    /*
-	    dpm($range_match[2]);
+	    $date_u = strtotime($value_split[1] . ' UTC');
+	    $date_v = strtotime($range_match[2] . ' UTC');
 
-	    // Please see http://us3.php.net/manual/en/function.strtotime.php#87900
-
-	    dpm(strtotime($value_split[1] . ' UTC'));
-	    //$date_u = DateTime::createFromFormat('s', strtotime($value_split[1] . ' UTC'));
-	    $date_u = new DateTime(strtotime($value_split[1] . ' UTC'));
-	    //$date_v = DateTime::createFromFormat('s', strtotime($range_match[2] . ' UTC'));
-
-	    dpm($value_split[1]);
-	    dpm($range_match[2]);
-	    //$date_v = new DateTime(strtotime($range_match[2] . ' UTC'));
-	    $date_v = new DateTime('10440323');
-
-	    dpm(gettype($date_u));
-
-	    //$date_diff = $date_v->diff($date_u);
-	    */
-
-	    if(true) {
-
-	      $values['terms'][$i]['field-wrapper']['search'] = gmdate('Y-m', $date_u);
-	      //$values['terms'][$i]['field-wrapper']['search'] = $date_u->format('Y-m');
-	    } else {
-
-	      $values['terms'][$i]['field-wrapper']['search'] = gmdate('Y', $date_u);
-	      //$values['terms'][$i]['field-wrapper']['search'] = $date_u->format('Y');
-	    }
+	    $values['terms'][$i]['field-wrapper']['search'] = gmdate('Y-m-d', $date_u);
 	  }
 	} else {
 
@@ -1075,7 +1050,13 @@ function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
 	 */
 	if(in_array($field, $ISLANDORA_DSS_SOLR_DATE_FIELDS)) {
 
-	  if(preg_match('/(\d{4})\-(\d{2})/', $search, $m)) {
+	  if(preg_match('/(\d{4})\-(\d{2})\-(\d{2})/', $search, $m)) {
+
+	    // Refactor
+	    $search_time_u = gmmktime(0, 0, 0, (int) $m[2], (int) $m[3], (int) $m[1]);
+	    $search_time_v = gmmktime(11, 59, 59, (int) $m[2], (int) $m[3], (int) $m[1]);
+
+	  } elseif(preg_match('/(\d{4})\-(\d{2})/', $search, $m)) {
 
 	    // Refactor
 	    $search_time_u = gmmktime(0, 0, 0, (int) $m[2], 1, (int) $m[1]);

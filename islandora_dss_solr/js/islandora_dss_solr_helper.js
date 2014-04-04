@@ -22,10 +22,10 @@
 		    if($(this).val() == 'dc.date') {
 
 			$(this).parents('.fieldset-wrapper').find('.form-text')
-			.val('Ex. 1925 or 1925-03')
+			.val('Ex. 1925, 1925-03, or 1925-03-01')
 			.click(function(e) {
 
-				if($(this).val() == 'Ex. 1925 or 1925-03') {
+				if($(this).val() == 'Ex. 1925, 1925-03, or 1925-03-01') {
 
 				    $(this).val('');
 				}
