@@ -111,9 +111,9 @@ function islandora_dss_fields_map($collection) {
   $ISLANDORA_DSS_FIELDS_MAP = array('eastasia' => array(
 							'foxml.all.text' => 'Full Text',
 							'dc.title' => 'Title.English',
-							//'foxml.all.text' => 'Title.Japanese', // Resolve with re-indexing (DSSSM-175 )
-							//'foxml.all.text' => 'Title.Chinese', // DSSSM-175
-							//'foxml.all.text' => 'Title.Korean', // DSSSM-175
+							'eastasia.Title.Japanese' => 'Title.Japanese', // Resolve with re-indexing (DSSSM-614 )
+							'eastasia.Title.Chinese' => 'Title.Chinese', // DSSSM-614
+							'eastasia.Title.Korean' => 'Title.Korean', // DSSSM-614
 							"eastasia.Contributors.Digital" => 'Contributor',
 							"eastasia.Contributor.Donor" => 'Contributor.Donor',
 							"eastasia.Coverage.Location" => 'Coverage.Location',
@@ -127,7 +127,7 @@ function islandora_dss_fields_map($collection) {
 							"eastasia.Date.Original" => 'Date.Original',
 							'mdl_prints.description' => 'Description.Caption.English',
 							'mdl_prints.description' => 'Description.Caption.Japanese',
-							//'foxml.all.text' => 'Description.Citation', // DSSSM-175
+							'mdl_prints.description' => 'Description.Citation', // (DSSSM-614 ?)
 							'geology_slides.description.critical' => 'Description.Critical',
 							"eastasia.Description.Ethnicity" => 'Description.Ethnicity',
 							"eastasia.Description.Indicia" => 'Description.Indicia',
