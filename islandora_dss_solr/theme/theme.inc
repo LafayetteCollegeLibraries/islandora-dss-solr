@@ -316,6 +316,8 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
       }
     }
   }
+
+  drupal_add_js(libraries_get_path('jquery-ui-touch-punch') . '/jquery.ui.touch-punch.min.js');
 }
 
 function islandora_dss_solr_process_islandora_solr_wrapper(&$vars) {
