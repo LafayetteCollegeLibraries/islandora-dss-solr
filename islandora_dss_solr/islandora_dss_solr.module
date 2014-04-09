@@ -479,7 +479,7 @@ function islandora_dss_solr_url_inbound_alter(&$path, $original_path, $path_lang
 					     'collections/eastasia/cpw-shashinkai',
 
 					     // Tentative
-					     'collections/eastasia/japan-study-cards',
+					     'collections/eastasia/gc-iroha01/browse',
 
 					     // Tentative
 					     'collections/mdl-prints/portraits-before-1789',
@@ -536,4 +536,7 @@ function islandora_dss_solr_menu_alter(&$items) {
   */
 
   $items['islandora/search']['page callback'] = 'islandora_dss_solr';
+
+
 }
+
