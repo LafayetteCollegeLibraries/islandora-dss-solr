@@ -176,7 +176,7 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 											 'eastasia.Coverage.Location.Country.sort' => 'Coverage.Location.Country',
 											 'eastasia.Creator.Maker.sort' => 'Creator.Maker',
 											 'cdm.Relation.IsPartOf.sort' => 'Relation.IsPartOf',
-											 'eastasia.Format.Medium' => 'Format.Medium',
+											 'eastasia.Format.Medium.sort' => 'Format.Medium',
 											 ),
 
 						   'Lafayette Newspaper Collection' => array('dc.title' => 'Title',
