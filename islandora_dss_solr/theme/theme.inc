@@ -171,12 +171,12 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 
 						   'East Asia Image Collection' => array('dc.title' => 'Title.English',
 											 'eastasia.Subject.OCM.sort' => 'Subject.OCM',
-											 //'eastasia.Date.Artifact.Lower' => 'Date.Artifact.Lower',
-											 //'eastasia.Date.Artifact.Upper' => 'Date.Artifact.Upper',
+											 'eastasia.Date.Artifact.Lower' => 'Date.Artifact.Lower',
+											 'eastasia.Date.Artifact.Upper' => 'Date.Artifact.Upper',
 											 'eastasia.Coverage.Location.Country.sort' => 'Coverage.Location.Country',
 											 'eastasia.Creator.Maker.sort' => 'Creator.Maker',
 											 'cdm.Relation.IsPartOf.sort' => 'Relation.IsPartOf',
-											 //'eastasia.Format.Medium' => 'Format.Medium',
+											 'eastasia.Format.Medium' => 'Format.Medium',
 											 ),
 
 						   'Lafayette Newspaper Collection' => array('dc.title' => 'Title',
