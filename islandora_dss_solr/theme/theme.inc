@@ -341,6 +341,21 @@ function islandora_dss_solr_process_islandora_solr_wrapper(&$vars) {
   $vars['collection_fields'] = $collection_fields;
 }
 
+function islandora_dss_solr_preprocess_html(&$vars) {
+
+  /**
+   * Set a static title for Islandora Solr search results
+   * Resolves 
+   * @todo Refactor for admin interface with variable_get()
+   *
+   */
+  //drupal_set_title('DSS Search Results');
+
+  $vars['head_title'] = t("DSS Search Results");
+}
+
+
+
 /**
  * Implements hook_theme_alter().
  * @author griffinj
