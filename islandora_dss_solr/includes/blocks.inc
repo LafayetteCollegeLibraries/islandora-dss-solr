@@ -769,6 +769,22 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     );
     */
 
+    /**
+     * For resolving issues related to case sensitivity in searches
+     * Resolves DSS and DSSSM-709
+     *
+     */
+    if(isset($value['field-wrapper']) and array_key_exists('field', $value['field-wrapper'])) {
+
+      /*
+      if(preg_match('', $value['field-wrapper']['field'], $field_label_match)) {
+
+      $value['field-wrapper']['field'] = $field_label_match[1];
+      }
+      */
+      $value['field-wrapper']['field'] = str_replace('_c', '', $value['field-wrapper']['field']);
+    }
+
     $term['field-wrapper']['field'] = array(
 					    '#title' => t(''),
 					    '#type' => 'select',
@@ -869,6 +885,8 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 	}
       }
     }
+
+    dpm($value);
 
     // Initialize the form field for a specific search term
     $term['field-wrapper']['search'] = array('#title' => t(''),
