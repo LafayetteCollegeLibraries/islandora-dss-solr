@@ -96,8 +96,6 @@ $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP = array();
  */
 $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP = array();
 
-
-
 function islandora_dss_solr_dc_label_map($collection, $dc_field) {
 
   global $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP;

@@ -181,7 +181,7 @@ function islandora_dss_solr($query = NULL) {
 					    'war_casualties.date.death.search'
 					    );
 
-    dpm(array($field));
+    //dpm(array($field));
 
     if(in_array($field, $ISLANDORA_DSS_SOLR_DATE_FIELDS)) {
 
