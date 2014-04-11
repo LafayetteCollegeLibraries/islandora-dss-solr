@@ -429,7 +429,6 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
      * @todo Resolve by reindexing Solr
      *
      */
-    dpm(array($query));
 
     // For boolean-based overrides at the field-level
     $query = preg_replace("/\:\(\"(.+?)\" OR \".+?\" OR \".+?\"\)/", ':("\1")', $query);
@@ -451,20 +450,14 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
       $query = preg_replace("/\:\[(.+?) TO .+?\]/", ':(\1)', $query);
     }
 
-    dpm(array($query));
-
     // explode on space
     $query_explode = explode(' ', $query);
 
-    dpm($query_explode);
-    
     // break up the solr query to populate the advanced search form
     $i = 0;
     foreach ($query_explode as $key => $value) {
 
       $term = array();
-
-      dpm(array($value));
 
       // check for first colon to split the string
       if (strpos($value, ':') != FALSE) {
@@ -515,8 +508,6 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 	  $query_segment = $value_split[1];
 	  // Remove asterisks
 	  $query_segment = preg_replace('/\*(.+?)\*/', '$1', $query_segment);
-
-	  dpm(array($query_segment));
 
 	  // Remove escaped whitespace
 	  $query_segment = preg_replace('/\\ /', ' ', $query_segment);
@@ -776,13 +767,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
      */
     if(isset($value['field-wrapper']) and array_key_exists('field', $value['field-wrapper'])) {
 
-      /*
-      if(preg_match('', $value['field-wrapper']['field'], $field_label_match)) {
-
-      $value['field-wrapper']['field'] = $field_label_match[1];
-      }
-      */
-      $value['field-wrapper']['field'] = str_replace('_c', '', $value['field-wrapper']['field']);
+      $value['field-wrapper']['field'] = str_replace('c_', '', $value['field-wrapper']['field']);
     }
 
     $term['field-wrapper']['field'] = array(
@@ -885,8 +870,6 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 	}
       }
     }
-
-    dpm($value);
 
     // Initialize the form field for a specific search term
     $term['field-wrapper']['search'] = array('#title' => t(''),
@@ -1339,11 +1322,9 @@ function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
 					   'war-casualties' => 'Lafayette World War II Casualties',
 					   );
 
-  //dpm($form_state['values']);
   if(array_key_exists('scoping', $form_state['values']) and $form_state['values']['scoping'] == 'COLL') {
 
     //return search_box_form_submit();
-    // dpm($form_state['values']);
     $params = array('f[0]' => 'cdm.Relation.IsPartOf:"' . $ISLANDORA_DSS_SOLR_RELATION_MAP[$form_state['values']['collection']] . '"');
   }
 
