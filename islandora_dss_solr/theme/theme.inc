@@ -354,8 +354,6 @@ function islandora_dss_solr_preprocess_html(&$vars) {
   $vars['head_title'] = t("DSS Search Results");
 }
 
-
-
 /**
  * Implements hook_theme_alter().
  * @author griffinj

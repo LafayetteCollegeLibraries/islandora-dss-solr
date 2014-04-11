@@ -411,6 +411,9 @@ function islandora_dss_solr_url_inbound_alter(&$path, $original_path, $path_lang
    *
    */
 
+  dpm(array($path));
+  dpm(array($original_path));
+
   /*
       'T.W. Ingersoll Co. Stereoviews of the Siege of Port Arthur' => { :primary => 'rjw-stereo' },
 
@@ -454,33 +457,38 @@ function islandora_dss_solr_url_inbound_alter(&$path, $original_path, $path_lang
       }
    */
 
-  $ISLANDORA_DSS_SOLR_BROWSE_ALIASES = array(
-					     'collections/eastasia/imperial-postcards',
+  $ISLANDORA_DSS_SOLR_BROWSE_COLL_ALIASES = array(
+						  'collections/eastasia',
+						  'collections/geology',
+						  'collections/historicalphotos',
+						  'collections/war',
+						  'collections/newspaper',
+						  'collections/lafayetteprints',
+						  'collections/mckelvy',
+						  );
 
-					     'collections/eastasia/pa-koshitsu',
-					     'collections/eastasia/pa-tsubokura',
-					     'collections/eastasia/rjw-stereo',
+  $ISLANDORA_DSS_SOLR_BROWSE_SUB_COLL_ALIASES = array(
+						      'collections/eastasia/imperial-postcards',
+						      'collections/eastasia/pa-koshitsu',
+						      'collections/eastasia/pa-tsubokura',
+						      'collections/eastasia/rjw-stereo',
+						      'collections/eastasia/pa-omitsu01',
+						      'collections/eastasia/pa-omitsu02',
+						      'collections/eastasia/lin-postcards',
+						      'collections/eastasia/pacwar-postcards',
+						      'collections/eastasia/lewis-postcards',
+						      'collections/eastasia/warner-postcards',
+						      'collections/eastasia/warner-negs-indonesia',
+						      'collections/eastasia/warner-negs-manchuria',
+						      'collections/eastasia/warner-negs-taiwan',
+						      'collections/eastasia/warner-slides-japan',
+						      'collections/eastasia/warner-souvenirs',
+						      'collections/eastasia/woodsworth-images',
+						      'collections/eastasia/cpw-nofuko',
+						      'collections/eastasia/cpw-shashinkai',
+						      'collections/eastasia/gc-iroha01',
 
-					     'collections/eastasia/pa-omitsu01',
-					     'collections/eastasia/pa-omitsu02',
-					     'collections/eastasia/lin-postcards',
-					     'collections/eastasia/pacwar-postcards',
-					     'collections/eastasia/lewis-postcards',
-					     'collections/eastasia/warner-postcards',
-					     'collections/eastasia/warner-negs-indonesia',
-					     'collections/eastasia/warner-negs-manchuria',
-					     'collections/eastasia/warner-negs-taiwan',
-					     'collections/eastasia/warner-slides-japan',
-					     'collections/eastasia/warner-souvenirs',
-
-					     'collections/eastasia/woodsworth-images',
-
-					     'collections/eastasia/cpw-nofuko',
-					     'collections/eastasia/cpw-shashinkai',
-
-					     // Tentative
-					     'collections/eastasia/gc-iroha01/browse',
-
+					     /*
 					     // Tentative
 					     'collections/mdl-prints/portraits-before-1789',
 					     'collections/mdl-prints/portraits-quenedey',
@@ -505,9 +513,15 @@ function islandora_dss_solr_url_inbound_alter(&$path, $original_path, $path_lang
 					     'collections/mdl-prints/family',
 					     'collections/mdl-prints/life-scenes',
 					     'collections/mdl-prints/homes',
+					     */
 					     );
 
-  if(in_array($original_path, $ISLANDORA_DSS_SOLR_BROWSE_ALIASES)) {
+  if(in_array($original_path, $ISLANDORA_DSS_SOLR_BROWSE_SUB_COLL_ALIASES)) {
+
+    drupal_goto("$original_path/browse", array(), 301);
+  } elseif(preg_match('/\/browse/', $original_path)
+	   and (in_array(str_replace('/browse', '', $original_path), $ISLANDORA_DSS_SOLR_BROWSE_COLL_ALIASES)
+		or in_array(str_replace('/browse', '', $original_path), $ISLANDORA_DSS_SOLR_BROWSE_SUB_COLL_ALIASES))) {
 
     // Does not resolve issues with more complex GET parameters
     //$_GET += drupal_get_query_array(array_pop(explode('?', $path)));
