@@ -351,7 +351,10 @@ function islandora_dss_solr_preprocess_html(&$vars) {
    */
   //drupal_set_title('DSS Search Results');
 
-  $vars['head_title'] = t("DSS Search Results");
+  if(preg_match('/islandora\/search/', current_path())) {
+
+    $vars['head_title'] = t("DSS Search Results") . ' | ' . $vars['head_title_array']['name'];
+  }
 }
 
 /**

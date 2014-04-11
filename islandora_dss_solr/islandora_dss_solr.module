@@ -10,6 +10,13 @@
 require_once dirname(__FILE__) . '/theme/theme.inc';
 require_once dirname(__FILE__) . '/includes/blocks.inc';
 
+//module_invoke_all('islandora_solr_query', $this);
+
+function islandora_dss_solr_islandora_solr_query(IslandoraSolrQueryProcessor $queryProcessor) {
+
+  dpm($queryProcessor->solrParams);
+}
+
 /**
  * Page callback: Islandora Solr.
  *
