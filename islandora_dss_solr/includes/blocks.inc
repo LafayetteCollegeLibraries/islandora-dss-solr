@@ -770,8 +770,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
       $value['field-wrapper']['field'] = str_replace('c_', '', $value['field-wrapper']['field']);
     }
 
-    $term['field-wrapper']['field'] = array(
-					    '#title' => t(''),
+    $term['field-wrapper']['field'] = array('#title' => t(''),
 					    '#type' => 'select',
 					    '#default_value' => ((isset($value['field-wrapper']) and array_key_exists('field', $value['field-wrapper'])) ? $value['field-wrapper']['field'] : 'Full Text'),
 					    '#attributes' => array('class' => array('islandora-solr-search-field')));
@@ -1046,7 +1045,15 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 			       'node/43' => 'war-casualties',
 			       );
 
-
+  $alias_collection_map = array(
+				'eastasia'  => 'eastasia',
+				'geology' => 'geology-slides',
+				'historicalphotos' => 'cap',
+				'newspaper' => 'newspaper',
+				'lafayetteprints' => 'mdl-prints',
+				'mckelvy' => 'mckelvy',
+				'war' => 'war-casualties',
+				);
 
   if(array_key_exists($current_path, $collection_node_map)) {
 
@@ -1083,6 +1090,28 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 	  }
 	}
       }
+    }
+  } elseif(preg_match('/collections\/(.+)\//', drupal_get_path_alias($current_path), $alias_m)) {
+
+    /**
+     * This permits searches at the Object-level
+     * Required is that the proper path alias has been generated within Drupal
+     * This resolves DSSSM-714
+     *
+     */
+    if(array_key_exists($alias_m[1], $alias_collection_map)) {
+
+      $default_collection_value = $alias_collection_map[$alias_m[1]];
+
+      /**
+       * If this is a new search, then update the term field with respect to the collection being browsed
+       * This resolves DSSSM-621
+       *
+       */
+      if(!array_key_exists('field-wrapper', $terms[1]) and $terms[0]['field-wrapper']['search']['#default_value'] == '') {
+	
+	$terms[0]['field-wrapper']['field']['#options'] = islandora_dss_fields_map($default_collection_value);
+      }      
     }
   }
 

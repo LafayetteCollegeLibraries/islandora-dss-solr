@@ -151,26 +151,66 @@ function islandora_dss_solr($query = NULL) {
 				  );
 
     $SOLR_INDEXED_FIELDS = array(
-				 //'dc.title',
-				 'eastasia.Title.Japanese',
-				 'eastasia.Title.Chinese',
-				 'eastasia.Title.Korean',
-				 'eastasia.Subject.OCM',
-				 'eastasia.Description.Critical',
-				 'eastasia.Description.Caption.English',
-				 'eastasia.Description.Caption.Japanese',
-				 'eastasia.Description.Indicia',
-				 'eastasia.Coverage.Location',
-				 'eastasia.Coverage.Location.Country',
-				 'eastasia.Description.Ethnicity',
-				 'eastasia.Contributors.Digital',
-				 'cdm.Relation.IsPartOf',
-				 'eastasia.Description.Citation',
-				 'eastasia.Format.Medium',
-				 'eastasia.Creator.Company',
-				 'eastasia.Creator.Maker',
-				 'eastasia.Format.Extent',
-				 'eastasia.Contributor.Donor',
+				 'eastasia.Title.Japanese' => 'Title.Japanese', // Resolve with re-indexing (DSSSM-614 )
+				 'eastasia.Title.Chinese' => 'Title.Chinese', // DSSSM-614
+				 'eastasia.Title.Korean' => 'Title.Korean', // DSSSM-614
+				 "eastasia.Contributors.Digital" => 'Contributor',
+				 "eastasia.Contributor.Donor" => 'Contributor.Donor',
+				 "eastasia.Coverage.Location" => 'Coverage.Location',
+				 "eastasia.Coverage.Location.Country" => 'Coverage.Location.Country',
+				 "eastasia.Creator.Company" => 'Creator.Company',
+				 "eastasia.Creator.Maker" => 'Creator.Maker',
+
+				 "eastasia.Description.Ethnicity" => 'Description.Ethnicity',
+				 "eastasia.Description.Indicia" => 'Description.Indicia',
+
+				 "eastasia.Format.Medium" => 'Format.Medium',
+				 "eastasia.Subject.OCM" => 'Subject.OCM',
+
+				 "cdm.Relation.IsPartOf" => 'Relation.IsPartOf',
+
+				 'dc.description' => 'Description',
+				 'dc.type' => 'Medium',
+
+				 'mdl_prints.creator' => 'creator',
+
+				 'mdl_prints.description' => 'description',
+				 'mdl_prints.description.condition' => 'description.condition',
+				 'mdl_prints.description.note' => 'description.note',
+				 'mdl_prints.description.provenance' => 'description.provenance',
+				 'mdl_prints.description.series' => 'description.series',
+				 'mdl_prints.format.digital' => 'format.digital',
+				 'mdl_prints.format.extent' => 'format.extent',
+				 'mdl_prints.format.medium' => 'format.medium',
+				 'mdl_prints.identifier.itemnumber' => 'identifier.item.number',
+				 'mdl_prints.publisher.digital' => 'publisher.digital',
+				 'mdl_prints.publisher.original' => 'publisher.original',
+
+				 'mdl_prints.rights.digital' => 'rights.digital',
+				 'mdl_prints.publisher.digital' => 'source',
+				 'mdl_prints.subject.lcsh' => 'subject.lcsh',
+
+				 'geology_slides_esi.coverage.location' => 'Coverage',
+				 'geology_slides_esi.description' => 'Description',
+
+				 'geology_slides_esi.relation.seealso.book' => 'Related Book',
+				 'geology_slides_esi.relation.seealso.image' => 'Related Image',
+				 'geology_slides_esi.subject' => 'Subject',
+				 'geology_slides_esi.description.vantagepoint' => 'Vantage Point',
+
+				 'mckelvy.creator.maker' => 'Creator',
+				 'mckelvy.description.size' => 'Dimensions',
+				 'mckelvy.format.medium' => 'Medium',
+				 'mckelvy.description.note' => 'Note',
+
+				 'war_casualties.description.cause.death' => 'Cause of Death',
+				 'war_casualties.description.class' => 'Graduating Class',
+				 'war_casualties.description.military.branch' => 'Military Branch',
+				 'war_casualties.description.honors' => 'Military Honors',
+				 'war_casualties.description.military.rank' => 'Military Rank',
+				 'war_casualties.contributor.military.unit' => 'Military Unit',
+				 'war_casualties.coverage.place.birth' => 'Place of Birth',
+				 'war_casualties.coverage.place.death' => 'Place of Death',
 				 );
 
     //global $ISLANDORA_DSS_SOLR_DATE_FIELDS;
@@ -336,9 +376,6 @@ function islandora_dss_solr($query = NULL) {
     $internal_solr_query = $query;
   }
 
-  dpm(array($internal_solr_query));
-  dpm($params);
-
   /**
    * Ensure that all queries are sorted by the value of dc.title in ascending order
    * Resolves DSSSM-623
@@ -348,8 +385,6 @@ function islandora_dss_solr($query = NULL) {
 
     $params['sort'] = 'dc.title asc';
   }
-
-  dpm($params);
 
   // Build and execute Apache Solr query.
   // this populates the GLOBAL!!!!!!!
@@ -417,9 +452,6 @@ function islandora_dss_solr_url_inbound_alter(&$path, $original_path, $path_lang
    * @todo Refactor with variable_get
    *
    */
-
-  dpm(array($path));
-  dpm(array($original_path));
 
   /*
       'T.W. Ingersoll Co. Stereoviews of the Siege of Port Arthur' => { :primary => 'rjw-stereo' },
