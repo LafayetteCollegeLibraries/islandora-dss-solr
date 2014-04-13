@@ -1091,7 +1091,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 	}
       }
     }
-  } elseif(preg_match('/collections\/(.+)\//', drupal_get_path_alias($current_path), $alias_m)) {
+  } elseif(preg_match('/collections\/(.+?)\//', drupal_get_path_alias($current_path), $alias_m)) {
 
     /**
      * This permits searches at the Object-level
