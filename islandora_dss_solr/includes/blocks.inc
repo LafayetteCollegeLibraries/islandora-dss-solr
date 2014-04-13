@@ -22,9 +22,6 @@ function _islandora_dss_solr_advanced_search_terms($form, &$form_state) {
 // _islandora_dss_solr_advanced_search_terms_rescope
 function _islandora_dss_solr_advanced_search_terms_rescope($form, &$form_state) {
 
-  //dpm($form_state['triggering_element']);
-  //watchdog('islandora_dss_solr', 'the triggering form element is %element', array('%element' => dpm()), WATCHDOG_NOTICE, $link = NULL);
-
   /*
   foreach($form['terms'] as $key => $value) {
 
@@ -405,7 +402,6 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 
       $collection_fields = array_keys(islandora_dss_fields_map( $ISLANDORA_DSS_SOLR_RELATION_MAP[$collection] ));
 
-      //dpm($query);
       foreach($collection_fields as $collection_field) {
 
 	//eastasia.Subject.OCM:("taiwan" OR "Taiwan") OR 
@@ -816,7 +812,6 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     } elseif(isset($form_state['triggering_element']) and
 	     ($form_state['triggering_element']['#name'] == 'collection' or ($form_state['triggering_element']['#type'] == 'button' and $form_state['triggering_element']['#value'] == '<i class="icon-large"></i>'))) {
 
-      //dpm($form_state['values'] );
       if($form_state['values']['scoping'] == 'SITE') {
 
 	$term['field-wrapper']['field']['#options'] = array('keywords' => 'DSS Pages');
@@ -943,7 +938,8 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
           '#type' => 'radios',
           '#prefix' => '<div class="islandora-solr-advanced-boolean">',
           '#suffix' => '</div>',
-          '#default_value' => isset($value['field-wrapper']['boolean']) ? $value['field-wrapper']['boolean'] : 'AND',
+          //'#default_value' => isset($value['field-wrapper']['boolean']) ? $value['field-wrapper']['boolean'] : 'AND',
+          '#default_value' => isset($value['boolean']) ? $value['boolean'] : 'AND',
           '#options' => array(
             'AND' => 'And',
             'OR' => 'Or',
