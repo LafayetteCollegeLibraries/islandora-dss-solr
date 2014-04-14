@@ -278,8 +278,6 @@ function islandora_dss_solr($query = NULL) {
       $search = preg_replace('/\\[/', '\[', $search);
       $search = preg_replace('/\\]/', '\]', $search);
 
-      dpm(array($search));
-
       if(ctype_upper($search)) { // Search segment characters are all in the upper case
 
 	$search = "(*$search* OR *" . strtolower($search) . "* OR *" . mb_convert_case($search, MB_CASE_TITLE, "UTF-8") . "*)";
@@ -303,7 +301,7 @@ function islandora_dss_solr($query = NULL) {
       }
     }
 
-    //dpm(array($search));
+    dpm(array($search));
     $internal_solr_query .= "$prefix:$search" . ' ';
   }
 
