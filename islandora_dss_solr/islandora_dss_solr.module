@@ -228,8 +228,6 @@ function islandora_dss_solr($query = NULL) {
 					    'war_casualties.date.death.search'
 					    );
 
-    //dpm(array($field));
-
     if(in_array($field, $ISLANDORA_DSS_SOLR_DATE_FIELDS)) {
 
       //$search = "[$search]";
@@ -301,7 +299,6 @@ function islandora_dss_solr($query = NULL) {
       }
     }
 
-    dpm(array($search));
     $internal_solr_query .= "$prefix:$search" . ' ';
   }
 
@@ -588,6 +585,14 @@ function islandora_dss_solr_menu_alter(&$items) {
 
   $items['islandora/search']['page callback'] = 'islandora_dss_solr';
 
+  /**
+   * Hide the "Site" and "User" menu items within the search results interface
+   * Resolves DSSSM-734
+   *
+   */
+  $items['search/site/%menu_tail']['access callback'] = FALSE;
+  $items['search/site/%']['access callback'] = FALSE;
 
+  $items['search/user/%menu_tail']['access callback'] = FALSE;
 }
 
