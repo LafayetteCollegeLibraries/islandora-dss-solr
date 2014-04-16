@@ -164,7 +164,7 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 						   'Geology Department Slide Collection' => array('dc.title' => 'Title',
 												  'geology_slides_esi.subject.sort' => 'Subject',
 												  'geology_slides_esi.date.original.sort' => 'Date.Original',
-												  'eastasia.Coverage.Location.sort' => 'Coverage.Location'
+												  'geology_slides_esi.coverage.location.sort' => 'Coverage.Location'
 												  ),
 
 						   'East Asia Image Collection' => array('dc.title' => 'Title.English',
