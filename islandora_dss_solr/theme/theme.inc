@@ -164,8 +164,8 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 
 						   'Geology Department Slide Collection' => array('dc.title' => 'Title',
 												  'geology_slides_esi.subject.sort' => 'Subject',
-												  'geology_slides_esi.date.original.sort' => 'Date.Original',
-												  'geology_slides_esi.coverage.location.sort' => 'Coverage.Location'
+												  'geology_slides_esi.date.original.sort' => 'Publication Date',
+												  'geology_slides_esi.coverage.location.sort' => 'Coverage'
 												  ),
 
 						   'East Asia Image Collection' => array('dc.title' => 'Title.English',
@@ -207,8 +207,8 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 						       // Cannot sort on multivalue fields (e. g. subject)
 						       'Geology Department Slide Collection' => array('dc.title' => 'Title',
 												      'geology_slides_esi.subject' => 'Subject',
-												      'geology_slides_esi.date.original' => 'Date.Original',
-												      'eastasia.Coverage.Location' => 'Coverage.Location'),
+												      'geology_slides_esi.date.original' => 'Publication Date',
+												      'eastasia.Coverage.Location' => 'Coverage'),
 
 						       'East Asia Image Collection' => array('dc.title' => 'Title.English',
 											     'eastasia.Subject.OCM' => 'Subject.OCM',
