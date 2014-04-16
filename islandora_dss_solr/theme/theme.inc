@@ -149,9 +149,9 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 
 						   'Historical Photograph Collection' => array('dc.title' => 'Title',
 											       'dc.subject.sort' => 'Subject',
-											       //'dc.date.sort' => 'Date',
-											       'mdl_prints.date.original.sort' => 'Date',
-											       'dc.type.sort' => 'Type'
+											       'dc.date.sort' => 'Publication Date',
+											       //'mdl_prints.date.original.sort' => 'Date',
+											       'dc.type.sort' => 'Medium'
 											       ),
 
 						   'Marquis de Lafayette Prints Collection' => array('dc.title' => 'Title',
