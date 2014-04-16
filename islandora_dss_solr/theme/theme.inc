@@ -142,9 +142,9 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 												  ),
 						   
 						   'Lafayette World War II Casualties' => array('dc.title' => 'Name',
-												'war_casualties.description.class.sort' => 'Description.Class',
-												'war_casualties.description.military.branch.sort' => 'Description.Military.Branch',
-												'war_casualties.contributor.military.unit.sort' => 'Description.Military.Unit',
+												'war_casualties.description.class.sort' => 'Graduating Class',
+												'war_casualties.description.military.branch.sort' => 'Military Branch',
+												'war_casualties.contributor.military.unit.sort' => 'Military Unit',
 												),
 
 						   'Historical Photograph Collection' => array('dc.title' => 'Title',
