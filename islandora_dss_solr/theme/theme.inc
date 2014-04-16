@@ -156,10 +156,10 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 
 						   'Marquis de Lafayette Prints Collection' => array('dc.title' => 'Title',
 												     'mdl_prints.creator.sort' => 'Creator',
-												     //'mdl_prints.subject.lcsh.sort' => 'Subject.LCSH',
 												     'mdl_prints.format.medium.sort' => 'Format.Medium',
 												     'mdl_prints.description.series.sort' => 'Description.Series',
-												     'mdl_prints.date.original.sort' => 'Date.Original'
+												     'mdl_prints.date.original.sort' => 'Date.Original',
+												     'mdl_prints.subject.lcsh.sort' => 'Subject.LCSH'
 												     ),
 
 						   'Geology Department Slide Collection' => array('dc.title' => 'Title',
