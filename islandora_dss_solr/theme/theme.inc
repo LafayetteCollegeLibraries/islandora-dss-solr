@@ -137,8 +137,8 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
   global $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP;
   $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP = array('McKelvy House Photograph Collection' => array('dc.title' => 'Title',
 												  'geology_slides_esi.subject.sort' => 'Subject',
-												  'mdl_prints.format.medium.sort' => 'Format.Medium',
-												  'mckelvy.date.original.display' => 'Date.Original',
+												  'mdl_prints.format.medium.sort' => 'Medium',
+												  'mckelvy.date.original.display' => 'Publication Date',
 												  ),
 						   
 						   'Lafayette World War II Casualties' => array('dc.title' => 'Name',
@@ -222,8 +222,8 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 
 						       'McKelvy House Photograph Collection' => array('dc.title' => 'Title',
 												      'geology_slides_esi.subject' => 'Subject',
-												      'eastasia.Format.Medium' => 'Format.Medium',
-												      'mckelvy.date.original.display' => 'Date'),
+												      'eastasia.Format.Medium' => 'Medium',
+												      'mckelvy.date.original.display' => 'Publication Date'),
 
 						       'Lafayette Newspaper Collection' => array('dc.title' => 'Title',
 												 'dc.date' => 'Date',

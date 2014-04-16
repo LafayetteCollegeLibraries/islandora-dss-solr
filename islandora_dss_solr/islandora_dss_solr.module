@@ -112,8 +112,6 @@ function islandora_dss_solr($query = NULL) {
   // create query
   $internal_solr_query = '';
 
-  dpm(preg_split('/(?<=\)) /', $query));
-
   foreach(preg_split('/(?<=\)) /', $query) as $search) {
 
     if(preg_match('/(.+?)\:(\[.+?\])/', $search, $range_match)) { // Handling also for ranges
@@ -126,7 +124,6 @@ function islandora_dss_solr($query = NULL) {
       $search = $m[2];
     } else { //if(!preg_match('/(.+?)\:\((.+?)\)/', $search, $m)) {
 
-      dpm($search);
       continue;
     }
 
