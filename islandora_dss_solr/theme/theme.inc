@@ -137,7 +137,7 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
   global $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP;
   $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP = array('McKelvy House Photograph Collection' => array('dc.title' => 'Title',
 												  'geology_slides_esi.subject.sort' => 'Subject',
-												  'dc.type.sort' => 'Format.Medium',
+												  'mdl_prints.format.medium.sort' => 'Format.Medium',
 												  'mckelvy.date.original.display' => 'Date.Original',
 												  ),
 						   
