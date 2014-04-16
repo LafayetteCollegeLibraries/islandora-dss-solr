@@ -179,8 +179,7 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 											 ),
 
 						   'Lafayette Newspaper Collection' => array('dc.title' => 'Title',
-											     'dc.date.sort' => 'Date',
-											     'dc.coverage.sort' => 'Coverage')
+											     'dc.date.sort' => 'Publication Date')
 						   );
 
   global $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP;
@@ -226,7 +225,7 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 												      'mckelvy.date.original.display' => 'Publication Date'),
 
 						       'Lafayette Newspaper Collection' => array('dc.title' => 'Title',
-												 'dc.date' => 'Date',
+												 'dc.date' => 'Publication Date',
 												 'dc.coverage' => 'Coverage')
 						       );
 
