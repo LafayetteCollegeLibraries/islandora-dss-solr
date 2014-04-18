@@ -449,15 +449,11 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     // explode on space
     $query_explode = explode(' ', $query);
 
-    dpm($query_explode);
-
     // break up the solr query to populate the advanced search form
     $i = 0;
     foreach ($query_explode as $key => $value) {
 
       $term = array();
-
-      dpm(array($value));
 
       // check for first colon to split the string
       if (strpos($value, ':') != FALSE) {
@@ -552,9 +548,6 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
       }
       // if it matches AND/OR/NOT, then we have the boolean operator
       else {
-
-	dpm($values['terms'][$i]);
-	dpm(array($value));
 
         // set boolean operator
         $values['terms'][$i]['field-wrapper']['boolean'] = $value;
@@ -943,7 +936,6 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 	  '#attributes' => array('class' => array('islandora-solr-search-boolean'))
         );
 	*/
-	dpm(array($value));
 
 	/**
 	 * Work-around
@@ -1264,7 +1256,19 @@ function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
       $search = trim($term['field-wrapper']['search']);
 
       //replace the slash so url doesn't break
-      $search = str_replace('/', '~slsh~', $search);
+      //$search = str_replace('/', '~slsh~', $search);
+
+      /**
+       * Handling for Lucene metacharacters
+       * Resolving DSSSM-775
+       * @todo Refactor
+       *
+       */
+      $ISLANDORA_DSS_SOLR_LUCENE_METACHARS = array('/', ':', '?', '&');
+      foreach($ISLANDORA_DSS_SOLR_LUCENE_METACHARS as $metachar) {
+
+	$search = str_replace("$metachar", urlencode($metachar), $search);
+      }
 
       // set boolean
       $boolean = (isset($term['boolean'])) ? $term['boolean'] : variable_get('islandora_solr_search_boolean', 'user');

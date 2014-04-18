@@ -112,7 +112,13 @@ function islandora_dss_solr($query = NULL) {
   // create query
   $internal_solr_query = '';
 
+  dpm(array($query));
+
+  dpm( preg_split('/(?<=\)) /', $query));
+
   foreach(preg_split('/(?<=\)) /', $query) as $search) {
+
+    dpm(array($search));
 
     if(preg_match('/(.+?)\:(\[.+?\])/', $search, $range_match)) { // Handling also for ranges
 
@@ -135,9 +141,7 @@ function islandora_dss_solr($query = NULL) {
 
       $field = $prefix;
     }
-
-    dpm(array($field,$search));
-
+    
     /**
      * Work-around for case sensitivity
      * Resolves DSS-208
@@ -243,6 +247,8 @@ function islandora_dss_solr($query = NULL) {
       // Quotation marks are applied to all queries
       preg_match('/"(.+?)"/', $search, $m);
       $search = '(' . $m[1] . ')';
+
+      dpm(array($search));
     } elseif($field == 'geology_slides_esi.subject') {
 
       // Quotation marks are applied to all queries
@@ -272,6 +278,7 @@ function islandora_dss_solr($query = NULL) {
       // Refactor
       $search = preg_replace('/\\[/', '\[', $search);
       $search = preg_replace('/\\]/', '\]', $search);
+      dpm(array($search));
 
       if(ctype_upper($search)) { // Search segment characters are all in the upper case
 
