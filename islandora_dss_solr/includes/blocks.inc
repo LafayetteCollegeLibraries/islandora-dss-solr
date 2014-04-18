@@ -449,11 +449,15 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     // explode on space
     $query_explode = explode(' ', $query);
 
+    dpm($query_explode);
+
     // break up the solr query to populate the advanced search form
     $i = 0;
     foreach ($query_explode as $key => $value) {
 
       $term = array();
+
+      dpm(array($value));
 
       // check for first colon to split the string
       if (strpos($value, ':') != FALSE) {
@@ -524,6 +528,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
       // if the string does not include a colon or AND/OR/NOT, then it is a
       // part of the query value
       elseif (!preg_match('/(AND|OR|NOT)/', $value, $matches)) {
+
         // trim brackets
         $value = str_replace(array('(', ')'), '', $value);
 
@@ -547,6 +552,10 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
       }
       // if it matches AND/OR/NOT, then we have the boolean operator
       else {
+
+	dpm($values['terms'][$i]);
+	dpm(array($value));
+
         // set boolean operator
         $values['terms'][$i]['field-wrapper']['boolean'] = $value;
 
@@ -934,18 +943,32 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 	  '#attributes' => array('class' => array('islandora-solr-search-boolean'))
         );
 	*/
-        $term['boolean'] = array(
-          '#type' => 'radios',
-          '#prefix' => '<div class="islandora-solr-advanced-boolean">',
-          '#suffix' => '</div>',
-          //'#default_value' => isset($value['field-wrapper']['boolean']) ? $value['field-wrapper']['boolean'] : 'AND',
-          '#default_value' => isset($value['boolean']) ? $value['boolean'] : 'AND',
-          '#options' => array(
-            'AND' => 'And',
-            'OR' => 'Or',
-            'NOT' => 'Not'),
-	  '#attributes' => array('class' => array('islandora-solr-search-boolean'))
-        );
+	dpm(array($value));
+
+	/**
+	 * Work-around
+	 * @todo Refactor for DSSSM-774
+	 *
+	 */
+	if(array_key_exists('boolean', $value)) {
+
+	  $term_boolean_default_value = isset($value['boolean']) ? $value['boolean'] : 'AND';
+	} else {
+	  
+	  $term_boolean_default_value = isset($value['field-wrapper']['boolean']) ? $value['field-wrapper']['boolean'] : 'AND';
+	}
+
+	$term['boolean'] = array(
+				 '#type' => 'radios',
+				 '#prefix' => '<div class="islandora-solr-advanced-boolean">',
+				 '#suffix' => '</div>',
+				 '#default_value' => $term_boolean_default_value,
+				 '#options' => array(
+						     'AND' => 'And',
+						     'OR' => 'Or',
+						     'NOT' => 'Not'),
+				 '#attributes' => array('class' => array('islandora-solr-search-boolean'))
+				 );
       }
     }
 
