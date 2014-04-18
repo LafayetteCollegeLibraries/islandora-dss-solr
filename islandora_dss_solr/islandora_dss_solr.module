@@ -85,20 +85,23 @@ function islandora_dss_solr($query = NULL) {
   if(array_key_exists('f', $params)) {
 
     $collection = $params['f']['0'];
-    preg_match('/cdm.Relation.IsPartOf:"(.+)"/', $collection, $m);
-    $collection = $m[1];
 
-    $ISLANDORA_DSS_SOLR_RELATION_MAP = array_flip(array('eastasia' => 'East Asia Image Collection',
-							'newspaper' => 'Lafayette Newspaper Collection',
-							'academic' => 'Academic Publications',
-							'cap' => 'Historical Photograph Collection',
-							'mdl-prints' => 'Marquis de Lafayette Prints Collection',
-							'geology-slides' => 'Geology Department Slide Collection',
-							'administration' => 'Administration Archives',
-							'mckelvy' => 'McKelvy House Photograph Collection',
-							'war-casualties' => 'Lafayette World War II Casualties',
-							));
-    $collection = $ISLANDORA_DSS_SOLR_RELATION_MAP[$collection];
+    if(preg_match('/cdm.Relation.IsPartOf:"(.+)"/', $collection, $m)) {
+
+      $collection = $m[1];
+
+      $ISLANDORA_DSS_SOLR_RELATION_MAP = array_flip(array('eastasia' => 'East Asia Image Collection',
+							  'newspaper' => 'Lafayette Newspaper Collection',
+							  'academic' => 'Academic Publications',
+							  'cap' => 'Historical Photograph Collection',
+							  'mdl-prints' => 'Marquis de Lafayette Prints Collection',
+							  'geology-slides' => 'Geology Department Slide Collection',
+							  'administration' => 'Administration Archives',
+							  'mckelvy' => 'McKelvy House Photograph Collection',
+							  'war-casualties' => 'Lafayette World War II Casualties',
+							  ));
+      $collection = $ISLANDORA_DSS_SOLR_RELATION_MAP[$collection];
+    }
   }
 
   /**
