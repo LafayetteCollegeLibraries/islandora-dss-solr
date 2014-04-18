@@ -26,8 +26,8 @@
 						  'eastasia.Date.Original',
 						  'geology_slides_esi.date.original',
 						  'mdl_prints.date.original',
-						  'war_casualties.date.birth.search',
-						  'war_casualties.date.death.search',
+						  'war_casualties.date.birth.display',
+						  'war_casualties.date.death.display',
 						  'mckelvy.date.original.search',
 						  ];
 

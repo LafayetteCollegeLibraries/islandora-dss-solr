@@ -207,8 +207,8 @@ function islandora_dss_fields_map($collection) {
 							      'foxml.all.text' => 'Full Text',
 							      'dc.title' => 'Name',
 							      'war_casualties.description.cause.death' => 'Cause of Death',
-							      'war_casualties.date.birth.search' => 'Date of Birth',
-							      'war_casualties.date.death.search' => 'Date of Death',
+							      'war_casualties.date.birth.display' => 'Date of Birth',
+							      'war_casualties.date.death.display' => 'Date of Death',
 							      'war_casualties.description.class' => 'Graduating Class',
 							      'war_casualties.description.military.branch' => 'Military Branch',
 							      'war_casualties.description.honors' => 'Military Honors',
@@ -306,8 +306,8 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 					  'mdl_prints.date.original',
 					  'geology_slides_esi.date.original',
 					  'mckelvy.date.original.search',
-					  'war_casualties.date.birth.search',
-					  'war_casualties.date.death.search'
+					  'war_casualties.date.birth.display',
+					  'war_casualties.date.death.display'
 					  );
 
   drupal_load('module', 'search');
@@ -1224,8 +1224,8 @@ function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
 					  'mdl_prints.date.original',
 					  'geology_slides_esi.date.original',
 					  'mckelvy.date.original.search',
-					  'war_casualties.date.birth.search',
-					  'war_casualties.date.death.search'
+					  'war_casualties.date.birth.display',
+					  'war_casualties.date.death.display'
 					  );
 
   // Collect query values
