@@ -1374,6 +1374,7 @@ function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
 					   'war-casualties' => 'Lafayette World War II Casualties',
 					   );
 
+  $params = array();
   //if(array_key_exists('scoping', $form_state['values']) and $form_state['values']['scoping'] == 'COLL') {
   if(array_key_exists('scoping', $form_state['values'])
      and $form_state['values']['scoping'] == 'COLL'
@@ -1381,7 +1382,8 @@ function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
      and $form_state['values']['collection'] != 'global') {
 
     //return search_box_form_submit();
-    $params = array('f[0]' => 'cdm.Relation.IsPartOf:"' . $ISLANDORA_DSS_SOLR_RELATION_MAP[$form_state['values']['collection']] . '"');
+    //$params = array('f[0]' => 'cdm.Relation.IsPartOf:"' . $ISLANDORA_DSS_SOLR_RELATION_MAP[$form_state['values']['collection']] . '"');
+    $params['f[0]'] = 'cdm.Relation.IsPartOf:"' . $ISLANDORA_DSS_SOLR_RELATION_MAP[$form_state['values']['collection']] . '"';
   }
 
   // navigate to results page
