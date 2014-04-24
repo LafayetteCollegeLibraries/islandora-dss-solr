@@ -6,94 +6,7 @@
    *
    */
 
-  /*
-title
-subject
-date.original
-coverage.location
-  */
-
-  /*
-			<!-- war_casualties.description.cause.death -->
-			<xsl:for-each select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/mods:mods/mods:note[@type='cause-death']">
-			  <field name="war_casualties.description.cause.death">
-
-			    <xsl:apply-templates />
-			  </field>
-			</xsl:for-each>
-
-			<!-- war_casualties.contributor.military.unit -->
-			<xsl:for-each select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/mods:mods/mods:note[@type='military-unit']">
-			  <field name="war_casualties.contributor.military.unit">
-
-			    <xsl:apply-templates />
-			  </field>
-			</xsl:for-each>
-
-			<!-- war_casualties.description.class -->
-			<xsl:for-each select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/mods:mods/mods:note[@type='lafayette-class']">
-			  <field name="war_casualties.description.class">
-
-			    <xsl:apply-templates />
-			  </field>
-			</xsl:for-each>
-
-			<!-- war_casualties.description.honors -->
-			<xsl:for-each select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/mods:mods/mods:note[@type='military-honors']">
-			  <field name="war_casualties.description.honors">
-
-			    <xsl:apply-templates />
-			  </field>
-			</xsl:for-each>
-
-			<!-- war_casualties.description.military.branch -->
-			<xsl:for-each select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/mods:mods/mods:note[@type='military-branch']">
-			  <field name="war_casualties.description.military.branch">
-
-			    <xsl:apply-templates />
-			  </field>
-			</xsl:for-each>
-
-			<!-- war_casualties.description.military.rank -->
-			<xsl:for-each select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/mods:mods/mods:note[@type='military-rank']">
-			  <field name="war_casualties.description.military.rank">
-
-			    <xsl:apply-templates />
-			  </field>
-			</xsl:for-each>
-
-			<!-- war_casualties.coverage.place.birth -->
-			<xsl:for-each select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/mods:mods/mods:note[@type='place-birth']">
-			  <field name="war_casualties.coverage.place.birth">
-
-			    <xsl:apply-templates />
-			  </field>
-			</xsl:for-each>
-
-			<!-- war_casualties.coverage.place.death -->
-			<xsl:for-each select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/mods:mods/mods:note[@type='place-death']">
-			  <field name="war_casualties.coverage.place.death">
-
-			    <xsl:apply-templates />
-			  </field>
-			</xsl:for-each>
-
-			<!-- war_casualties.format.analog -->
-			<xsl:for-each select="foxml:datastream/foxml:datastreamVersion[last()]/foxml:xmlContent/mods:mods/mods:physicalDescription/mods:note[@type='format-analog']">
-			  <field name="war_casualties.format.analog">
-
-			    <xsl:apply-templates />
-			  </field>
-			</xsl:for-each>
-   */
-
 $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP = array();
-
-/*
-						       'Lafayette Newspaper Collection' => array('dc.title' => 'Title',
-												 'dc.date' => 'Date',
-												 'dc.coverage' => 'Coverage')
- */
 $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP = array();
 
 function islandora_dss_solr_dc_label_map($collection, $dc_field) {
@@ -150,7 +63,6 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 						   'Historical Photograph Collection' => array('dc.title' => 'Title',
 											       'dc.subject.sort' => 'Subject',
 											       'dc.date.sort' => 'Publication Date',
-											       //'mdl_prints.date.original.sort' => 'Date',
 											       'dc.type.sort' => 'Medium'
 											       ),
 
@@ -242,9 +154,12 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
   $vars['restricted_results'] = false;
 
   $client_ip = ip_address();
-  $is_anon_non_lafayette_user = !islandora_dss_solr_net_match('192.168.101.0/24', $client_ip) and // Not on the VPN...
-    !islandora_dss_solr_net_match('139.147.0.0/16', $client_ip) and // ...not within the campus network...
-    !user_is_logged_in(); // ...and not authenticated.
+
+  // Not on the VPN...
+  $is_anon_non_lafayette_user = !islandora_dss_solr_net_match('192.168.101.0/24', $client_ip);
+  // ...not within the campus network...
+  $is_anon_non_lafayette_user &= !islandora_dss_solr_net_match('139.147.0.0/16', $client_ip);
+  $is_anon_non_lafayette_user &= !user_is_logged_in(); // ...and not authenticated.
 
   foreach($vars['results'] as &$result ) {
 
