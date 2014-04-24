@@ -235,8 +235,19 @@ function islandora_dss_solr($query = NULL) {
     } elseif(in_array($field, $SOLR_FULLTEXT_FIELDS)) { // For Solr-indexed fields supporting full-text indexing (i. e. not tokenized)
 
       // Quotation marks are applied to all queries
-      preg_match('/"(.+?)"/', $search, $m);
-      $search = '(' . $m[1] . ')';
+
+      /**
+       * Ensures that all full text queries are encapsulated by quotations
+       * (Lucene syntax otherwise structures this as an "OR" query)
+       * Resolves DSS-277
+       *
+       */
+      //preg_match('/"(.+?)"/', $search, $m);
+      //$search = '(' . $m[1] . ')';
+
+      preg_match('/(".+?")/', $search, $m);
+      $search = $m[1];
+
     } elseif(in_array($field, $SOLR_INDEXED_FIELDS)) { // For Solr-indexed fields with specific Analyzers (i. e. not optimized for tokenization of contents)
 
       $prefix = str_replace($field, 'c_' . $field, $prefix);
