@@ -161,6 +161,9 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
   $is_anon_non_lafayette_user &= !islandora_dss_solr_net_match('139.147.0.0/16', $client_ip);
   $is_anon_non_lafayette_user &= !user_is_logged_in(); // ...and not authenticated.
 
+  // Fully resolves DSS-280
+  $is_anon_non_lafayette_user = (bool) $is_anon_non_lafayette_user;
+
   foreach($vars['results'] as &$result ) {
 
     $result['restricted'] = false;
