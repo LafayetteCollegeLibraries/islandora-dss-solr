@@ -154,11 +154,20 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
   $vars['restricted_results'] = false;
 
   $client_ip = ip_address();
+  $headers = apache_request_headers();
 
   // Not on the VPN...
   $is_anon_non_lafayette_user = !islandora_dss_solr_net_match('192.168.101.0/24', $client_ip);
+
   // ...not within the campus network...
-  $is_anon_non_lafayette_user &= !islandora_dss_solr_net_match('139.147.0.0/16', $client_ip);
+  // (for proxy servers...)
+  if(array_key_exists('X-Forwarded-For', $headers)) {
+
+    $is_anon_non_lafayette_user &= (bool) !islandora_dss_solr_net_match('139.147.0.0/16', $headers['X-Forwarded-For']);
+  } else {
+
+    $is_anon_non_lafayette_user &= (bool) !islandora_dss_solr_net_match('139.147.0.0/16', $client_ip);
+  }
   $is_anon_non_lafayette_user &= !user_is_logged_in(); // ...and not authenticated.
 
   // Fully resolves DSS-280
