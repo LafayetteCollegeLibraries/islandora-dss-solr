@@ -1180,6 +1180,14 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 				      '#value' => t('Search')
 				      );
 
+  /**
+   * This key must be present for the implementation of hook_form_alter() within the bootstrap theme
+   * Resolves EDDC-77
+   * @todo Refactor
+   *
+   */
+  $form['actions']['#type'] = '';
+
   return $form;
   }
 
