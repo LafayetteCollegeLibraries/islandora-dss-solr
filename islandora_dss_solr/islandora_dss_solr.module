@@ -14,7 +14,7 @@ require_once dirname(__FILE__) . '/includes/blocks.inc';
 
 function islandora_dss_solr_islandora_solr_query(IslandoraSolrQueryProcessor $queryProcessor) {
 
-  dpm($queryProcessor->solrParams);
+  //dpm($queryProcessor->solrParams);
 }
 
 /**
@@ -229,7 +229,7 @@ function islandora_dss_solr($query = NULL) {
     if(in_array($field, $ISLANDORA_DSS_SOLR_DATE_FIELDS)) {
 
       //$search = "[$search]";
-      dpm(array($search));
+
       //$search = "($search)";
 
     } elseif(in_array($field, $SOLR_FULLTEXT_FIELDS)) { // For Solr-indexed fields supporting full-text indexing (i. e. not tokenized)
@@ -386,7 +386,20 @@ function islandora_dss_solr($query = NULL) {
    */
   if(!array_key_exists('sort', $params)) {
 
+    /**
+     * If this is a member of the newspaper collection, sort by the publication date
+     * Resolves DSSSM-865
+     *
+     */
     $params['sort'] = 'dc.title asc';
+
+    if(array_key_exists('f', $params) and !empty($params['f'])) {
+
+      if($params['f'][0] == 'cdm.Relation.IsPartOf:"Lafayette Newspaper Collection"') {
+
+	$params['sort'] = 'dc.date.sort asc';
+      }
+    }
   }
 
   // Build and execute Apache Solr query.

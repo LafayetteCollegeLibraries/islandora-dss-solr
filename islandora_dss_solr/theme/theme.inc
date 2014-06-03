@@ -245,9 +245,6 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 
   drupal_add_js(libraries_get_path('jquery-ui-touch-punch') . '/jquery.ui.touch-punch.min.js');
 
-  dpm(http_build_query($_GET));
-  dpm( rawurldecode(http_build_query($_GET)));
-
   //drupal_add_js(array('islandoraDssSolrFacetPages' => array('pathAlias' => http_build_query($_GET)), 'setting'));
 
   drupal_add_js(array('islandoraDssSolrFacetPages' => array('query' => $_GET['q'])), 'setting');
