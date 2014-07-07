@@ -225,8 +225,32 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 
 	  // Ensure that, if there are multiple dates present, that only the first value is formatted
 	  $result['solr_doc'][$collection_field]['value'] = array_shift(explode(',', $result['solr_doc'][$collection_field]['value']));
+	  //$result['solr_doc'][$collection_field]['value'] = gmdate('Y-m-d', strtotime($result['solr_doc'][$collection_field]['value']));
 
-	  $result['solr_doc'][$collection_field]['value'] = gmdate('Y-m-d', strtotime($result['solr_doc'][$collection_field]['value']));
+	  /**
+	   * Restructuring the date values for decades within the Historical Photograph Collection
+	   * Resolves DSSSM-885
+	   *
+	   */
+	  //$result['solr_doc'][$collection_field]['value'] = gmdate('Y-m-d', strtotime($result['solr_doc'][$collection_field]['value']));
+	  $date_value = new DateTime($result['solr_doc'][$collection_field]['value'], new DateTimeZone('GMT'));
+	  $result['solr_doc'][$collection_field]['value'] = $date_value->format('Y-m-d');
+
+	  /**
+	   * Addressing the issue for ...
+	   * Resolves DSSSM-885
+	   */
+	  if($top_collection == 'Historical Photograph Collection' or $top_collection == 'McKelvy House Photograph Collection') {
+
+	    if($date_value->format('m-d') == '01-01') {
+
+	      $result['solr_doc'][$collection_field]['value'] = $date_value->format('Y');
+	      if(preg_match('/\d0/', $date_value->format('y')) and $top_collection == 'Historical Photograph Collection') {
+
+		$result['solr_doc'][$collection_field]['value'] .= "'s";
+	      }
+	    }
+	  }
 	}
       }
     }
