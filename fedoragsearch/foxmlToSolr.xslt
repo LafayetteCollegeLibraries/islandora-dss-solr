@@ -113,7 +113,6 @@
 			<!-- Inline XML Datastream Content -->
 			<xsl:for-each select="foxml:datastream[@ID='MODS']/foxml:datastreamVersion[last()]/foxml:xmlContent">
 
-			  <!-- <xsl:apply-imports /> -->
 			  <xsl:apply-templates select="mods:mods" />
 			</xsl:for-each>
 

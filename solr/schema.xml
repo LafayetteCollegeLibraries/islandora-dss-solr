@@ -1115,32 +1115,6 @@
    <field name="fgs.lastModifiedDate" type="string" indexed="true" stored="true"/>
 
    <!--
-
-      SEVERE: java.lang.NumberFormatException: Invalid shift value in prefixCoded string (is encoded value really a LONG?)
-      at org.apache.lucene.util.NumericUtils.prefixCodedToLong(NumericUtils.java:205)
-      at org.apache.solr.schema.TrieField.indexedToReadable(TrieField.java:335)
-      at org.apache.solr.schema.TrieDateField.indexedToReadable(TrieDateField.java:110)
-      at org.apache.solr.handler.admin.LukeRequestHandler$TopTermQueue.toNamedList(LukeRequestHandler.java:687)
-      at org.apache.solr.handler.admin.LukeRequestHandler.getIndexedFieldsInfo(LukeRequestHandler.java:364)
-      at org.apache.solr.handler.admin.LukeRequestHandler.handleRequestBody(LukeRequestHandler.java:153)
-      at org.apache.solr.handler.RequestHandlerBase.handleRequest(RequestHandlerBase.java:129)
-      at org.apache.solr.core.SolrCore.execute(SolrCore.java:1376)
-      at org.apache.solr.servlet.SolrDispatchFilter.execute(SolrDispatchFilter.java:365)
-      at org.apache.solr.servlet.SolrDispatchFilter.doFilter(SolrDispatchFilter.java:260)
-      at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:235)
-      at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:206)
-      at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:233)
-      at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:191)
-      at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:127)
-      at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:102)
-      at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:109)
-      at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:298)
-      at org.apache.coyote.http11.Http11Processor.process(Http11Processor.java:857)
-      at org.apache.coyote.http11.Http11Protocol$Http11ConnectionHandler.process(Http11Protocol.java:588)
-      at org.apache.tomcat.util.net.JIoEndpoint$Worker.run(JIoEndpoint.java:489)
-      at java.lang.Thread.run(Thread.java:781)
-      -->
-   <!--
    <field name="dsmd_OBJ.created" type="tdate" indexed="true" stored="true"/>
    <field name="fgs.lastModifiedDate" type="tdate" indexed="true" stored="true"/>
    -->
@@ -1154,6 +1128,10 @@
    <!-- These are captured as dynamic fields -->
    <dynamicField name="dc.contributor.*" type="string" indexed="true" stored="true" multiValued="true"/>
    <dynamicField name="dc.subject.*" type="string" indexed="true" stored="true" multiValued="true"/>
+
+   <!-- MODS Fields -->
+   <dynamicField name="*_dts" type="date" indexed="true" stored="true" multiValued="false" />
+   <dynamicField name="*_ss" type="string" indexed="true" stored="true" multiValued="false" />
 
    <!-- griffinj -->
    <!-- Fields specific to the eastasia project -->
@@ -1378,6 +1356,8 @@
    <dynamicField name="ldr.dc.*" type="string" indexed="true" stored="true" multiValued="true"/>
 
    <!-- Dynamic fields for case-insensitive queries -->
+   <dynamicField name="c_MODS.*" type="c_text" indexed="true" stored="true" multiValued="true"/>
+
    <dynamicField name="c_cdm.*" type="c_text" indexed="true" stored="true" multiValued="true"/>
    <dynamicField name="c_eastasia.*" type="c_text" indexed="true" stored="true" multiValued="true"/>
    <dynamicField name="c_mdl_prints.*" type="c_text" indexed="true" stored="true" multiValued="true"/>
@@ -1435,6 +1415,8 @@
    <!-- <copyField source="name" dest="alphaNameSort"/> -->
 
    <!-- Copying the fields to enable case-insensitive searching against tokenized fields -->
+   <copyField source="MODS.*" dest="c_MODS.*" />
+
    <copyField source="cdm.*" dest="c_cdm.*" />
    <copyField source="eastasia.*" dest="c_eastasia.*" />
    <copyField source="mdl_prints.*" dest="c_mdl_prints.*"/>
