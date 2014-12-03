@@ -390,12 +390,18 @@ function islandora_dss_solr($query = NULL) {
      * If this is a member of the newspaper collection, sort by the publication date
      * Resolves DSSSM-865
      *
+     * Also, if this is a member of the historical collection, sort by publication date
+     * @todo Refactor for includes/islandora_solr.inc within bootstrap_dss_digital
+     * Resolves DSSSM-983
+     *
      */
     $params['sort'] = 'dc.title asc';
 
     if(array_key_exists('f', $params) and !empty($params['f'])) {
-
-      if($params['f'][0] == 'cdm.Relation.IsPartOf:"Lafayette Newspaper Collection"') {
+      
+      //if($params['f'][0] == 'cdm.Relation.IsPartOf:"Lafayette Newspaper Collection"') {
+      if(in_array($params['f'][0], array('cdm.Relation.IsPartOf:"Lafayette Newspaper Collection"',
+					 'cdm.Relation.IsPartOf:"Historical Photograph Collection"'))) {
 
 	$params['sort'] = 'dc.date.sort asc';
       }
