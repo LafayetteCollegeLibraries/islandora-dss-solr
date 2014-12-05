@@ -19,7 +19,7 @@
   <xsl:template match="mods:mods/mods:titleInfo">
 
     <!-- Title (CDATA) -->
-    <field name="MODS.mods:mods/mods:titleInfo/*_s">
+    <field name="MODS.mods.titleInfo_s">
 
       <xsl:apply-templates select="mods:nonSort" />
       <xsl:text> </xsl:text>
@@ -28,7 +28,7 @@
 
     <!-- Title for sorting -->
     <xsl:for-each select="(mods:title)[1]">
-      <field name="MODS.(mods:mods/mods:titleInfo/mods:title)[1]_ss">
+      <field name="MODS.mods.titleInfo.title_ss">
       
 	<xsl:apply-templates />
       </field>
@@ -36,7 +36,7 @@
 
     <!-- Sub-Title -->
     <xsl:for-each select="mods:subTitle">
-      <field name="MODS.mods:mods/mods:titleInfo/mods:subTitle_s">
+      <field name="MODS.mods.titleInfo.subTitle_s">
       
 	<xsl:apply-templates />
       </field>
@@ -44,7 +44,7 @@
 
     <!-- Part Number -->
     <xsl:for-each select="mods:partNumber">
-      <field name="MODS.mods:mods/mods:titleInfo/mods:partNumber_s">
+      <field name="MODS.mods.titleInfo.partNumber_s">
       
 	<xsl:apply-templates />
       </field>
@@ -56,7 +56,7 @@
 
     <!-- displayForm -->
     <xsl:for-each select="mods:displayForm">
-      <field name="MODS.mods:mods/mods:name/mods:displayForm_s">
+      <field name="MODS.mods.name.displayForm_s">
 	
 	<xsl:apply-templates />
       </field>
@@ -68,7 +68,7 @@
 
     <!-- placeTerm -->
     <xsl:for-each select="mods:place/mods:placeTerm">
-      <field name="MODS.mods:mods/mods:originInfo/mods:place/mods:placeTerm_s">
+      <field name="MODS.mods.originInfo.place.placeTerm_s">
       
 	<xsl:apply-templates />
       </field>
@@ -76,7 +76,7 @@
     
     <!-- Publisher -->
     <xsl:for-each select="mods:publisher">
-      <field name="MODS.mods:mods/mods:originInfo/mods:publisher_s">
+      <field name="MODS.mods.originInfo.publisher_s">
       
 	<xsl:apply-templates />
       </field>
@@ -88,7 +88,7 @@
 
     <!-- W3CDTF-encoded datestamp -->
     <xsl:for-each select="mods:date[@encoding='w3cdtf']">
-      <field name="MODS.mods:mods/mods:relatedItem/mods:part/mods:date[@encoding='w3cdtf']_dts">
+      <field name="MODS.mods.relatedItem.part.date.w3cdtf_dts">
       
       <xsl:apply-templates />
     </field>
@@ -96,7 +96,7 @@
 
   <!-- Approximate datestamp -->
   <xsl:for-each select="mods:date[@qualifier='approximate']">
-    <field name="MODS.mods:mods/mods:relatedItem/mods:part/mods:date[@qualifier='approximate']_ss">
+    <field name="MODS.mods.relatedItem.part.date.approximate_ss">
       
       <xsl:apply-templates />
     </field>
@@ -105,7 +105,7 @@
   <!-- Textual Volume -->
   <!-- Possibly anomalous -->
   <xsl:for-each select="mods:text[@type='volume']">
-    <field name="MODS.mods:mods/mods:relatedItem/mods:part/mods:text[@type='volume']_s">
+    <field name="MODS.mods.relatedItem.part.text.volume_s">
       
       <xsl:apply-templates />
     </field>
@@ -113,7 +113,7 @@
 
   <!-- Numeric Volume -->
   <xsl:for-each select="mods:detail[@type='volume']/mods:number">
-    <field name="MODS.mods:mods/mods:relatedItem/mods:part/mods:detail[@type='volume']/number_i">
+    <field name="MODS.mods.relatedItem.part.detail.volume.number_i">
       
       <xsl:apply-templates />
     </field>
@@ -122,7 +122,7 @@
   <!-- Textual Issue -->
   <!-- Possibly anomalous -->
   <xsl:for-each select="mods:text[@type='issue']">
-    <field name="MODS.mods:mods/mods:relatedItem/mods:part/mods:text[@type='issue']_s">
+    <field name="MODS.mods.relatedItem.part.text.issue_s">
       
       <xsl:apply-templates />
     </field>
@@ -130,7 +130,7 @@
 
   <!-- Numeric Issue -->
   <xsl:for-each select="mods:detail[@type='issue']/mods:number">
-    <field name="MODS.mods:mods/mods:relatedItem/mods:part/mods:detail[@type='issue']/number_i">
+    <field name="MODS.mods.relatedItem.part.detail.issue.number_i">
       
       <xsl:apply-templates />
     </field>
@@ -146,7 +146,7 @@
 
     <!-- title -->
     <xsl:for-each select="mods:titleInfo/mods:title">
-      <field name="MODS.mods:mods/mods:relatedItem/mods:titleInfo/mods:title_ss">
+      <field name="MODS.mods.relatedItem.titleInfo.title_ss">
       
 	<xsl:apply-templates />
       </field>
@@ -154,12 +154,19 @@
 
     <!-- Alternative datestamp -->
     <xsl:for-each select="mods:originInfo/mods:dateIssued[@encoding='w3cdtf']">
-      <field name="MODS.mods:mods/mods:relatedItem/mods:originInfo/mods:dateIssued[@encoding='w3cdtf']_dts">
+      <field name="MODS.mods.relatedItem.originInfo.dateIssued.w3cdtf_dts">
       
 	<xsl:apply-templates />
       </field>
     </xsl:for-each>
 
+    <!-- Alternative approximate datestamp -->
+    <xsl:for-each select="mods:originInfo/mods:dateIssued[@qualifier='approximate']">
+      <field name="MODS.mods.relatedItem.originInfo.dateIssued.approximate_s">
+      
+	<xsl:apply-templates />
+      </field>
+    </xsl:for-each>
   </xsl:template>
 
   <!-- MODS Document -->
