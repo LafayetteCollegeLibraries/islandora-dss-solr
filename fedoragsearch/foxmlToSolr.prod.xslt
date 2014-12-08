@@ -52,7 +52,7 @@
 	    <xsl:apply-templates select="mods:title"/>
 	  </field>
 	  
-	  <!-- Title for sorting -->
+	  <!-- Sorting Title -->
 	  <xsl:for-each select="(mods:title)[1]">
 	    <field name="MODS.mods.titleInfo.title_ss">
 	      
@@ -107,6 +107,14 @@
 	      <xsl:apply-templates />
 	    </field>
 	  </xsl:for-each>
+
+	  <!-- Publisher (Sorting) -->
+	  <xsl:for-each select="(mods:publisher)[1]">
+	    <field name="MODS.mods.originInfo.publisher_ss">
+	      
+	      <xsl:apply-templates />
+	    </field>
+	  </xsl:for-each>
 	</xsl:template>
 	
 	<!-- relatedItem/part -->
@@ -114,7 +122,7 @@
 	  
 	  <!-- W3CDTF-encoded datestamp -->
 	  <xsl:for-each select="mods:date[@encoding='w3cdtf']">
-	    <field name="MODS.mods.relatedItem.part.date.w3cdtf_dts">
+	    <field name="MODS.mods.relatedItem.part.date.w3cdtf_dt">
 	      
 	      <xsl:apply-templates />
 	    </field>
@@ -122,7 +130,7 @@
 	  
 	  <!-- Approximate datestamp -->
 	  <xsl:for-each select="mods:date[@qualifier='approximate']">
-	    <field name="MODS.mods.relatedItem.part.date.approximate_ss">
+	    <field name="MODS.mods.relatedItem.part.date.approximate_s">
 	      
 	      <xsl:apply-templates />
 	    </field>
@@ -161,18 +169,18 @@
 	      <xsl:apply-templates />
 	    </field>
 	  </xsl:for-each>
-	  
 	</xsl:template>
 	
 	<!-- relatedItem -->
-	<xsl:template match="mods:mods/mods:relatedItem">
-	  
+	<!-- <xsl:template match="mods:mods/mods:relatedItem"> -->
+	<xsl:template name="relatedItem" match="mods:mods/mods:relatedItem">
+
 	  <!-- part -->
 	  <xsl:apply-templates select="mods:part" />
 	  
 	  <!-- title -->
 	  <xsl:for-each select="mods:titleInfo/mods:title">
-	    <field name="MODS.mods.relatedItem.titleInfo.title_ss">
+	    <field name="MODS.mods.relatedItem.titleInfo.title_s">
 	      
 	      <xsl:apply-templates />
 	    </field>
@@ -180,7 +188,7 @@
 	  
 	  <!-- Alternative datestamp -->
 	  <xsl:for-each select="mods:originInfo/mods:dateIssued[@encoding='w3cdtf']">
-	    <field name="MODS.mods.relatedItem.originInfo.dateIssued.w3cdtf_dts">
+	    <field name="MODS.mods.relatedItem.originInfo.dateIssued.w3cdtf_dt">
 	      
 	      <xsl:apply-templates />
 	    </field>
@@ -194,7 +202,56 @@
 	    </field>
 	  </xsl:for-each>
 	</xsl:template>
-	
+
+	<!-- relatedItem (Sorting) -->
+	<xsl:template match="mods:mods/mods:relatedItem[1]">
+
+	  <!-- title -->
+	  <xsl:for-each select="mods:titleInfo/mods:title[1]">
+	    <field name="MODS.mods.relatedItem.titleInfo.title_ss">
+	      
+	      <xsl:apply-templates />
+	    </field>
+	  </xsl:for-each>
+
+	  <!-- date -->
+	  <xsl:for-each select="mods:originInfo/mods:dateIssued[@encoding='w3cdtf'] | mods:part/mods:date[@encoding='w3cdtf']">
+	    <field name="MODS.mods.relatedItem.date.w3cdtf_dts">
+	      
+	      <xsl:apply-templates />
+	    </field>
+	  </xsl:for-each>
+
+	  <xsl:call-template name="relatedItem" />
+	</xsl:template>
+
+	<!-- identifier -->
+	<xsl:template match="mods:identifier">
+	  <field name="MODS.mods.identifier.local_is">
+	      
+	    <xsl:apply-templates />
+	  </field>
+	</xsl:template>
+
+	<!-- Notes -->
+	<!-- Administrative notes -->
+	<xsl:template name="note-admin" match="mods:note[@type='admin']">
+
+	  <field name="MODS.mods.note.admin_s">
+
+	    <xsl:apply-templates />
+	  </field>
+	</xsl:template>
+
+	<xsl:template match="mods:note[@type='admin'][1]">
+
+	  <field name="MODS.mods.note.admin_ss">
+
+	    <xsl:apply-templates />
+	  </field>
+	  <xsl:call-template name="note-admin" />
+	</xsl:template>
+
 	<!-- MODS Document -->
 	<xsl:template match="mods:mods">
 	  
@@ -203,6 +260,8 @@
 	  <xsl:apply-templates select="mods:place" />
 	  <xsl:apply-templates select="mods:originInfo" />
 	  <xsl:apply-templates select="mods:relatedItem" />
+	  <xsl:apply-templates select="mods:identifier" />
+	  <xsl:apply-templates select="mods:note" />
 	</xsl:template>
 
 	<xsl:template match="/">

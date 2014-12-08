@@ -1132,6 +1132,7 @@
    <!-- MODS Fields -->
    <dynamicField name="*_dts" type="date" indexed="true" stored="true" multiValued="false" />
    <dynamicField name="*_ss" type="string" indexed="true" stored="true" multiValued="false" />
+   <dynamicField name="*_is" type="int" indexed="true" stored="true" multiValued="false" />
 
    <!-- griffinj -->
    <!-- Fields specific to the eastasia project -->

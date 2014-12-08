@@ -28,7 +28,7 @@
 
     <!-- Title for sorting -->
     <xsl:for-each select="(mods:title)[1]">
-      <field name="MODS.mods.titleInfo.title_ss">
+      <field name="MODS.mods.titleInfo.title_s">
       
 	<xsl:apply-templates />
       </field>
@@ -88,7 +88,7 @@
 
     <!-- W3CDTF-encoded datestamp -->
     <xsl:for-each select="mods:date[@encoding='w3cdtf']">
-      <field name="MODS.mods.relatedItem.part.date.w3cdtf_dts">
+      <field name="MODS.mods.relatedItem.part.date.w3cdtf_dt">
       
       <xsl:apply-templates />
     </field>
@@ -96,7 +96,7 @@
 
   <!-- Approximate datestamp -->
   <xsl:for-each select="mods:date[@qualifier='approximate']">
-    <field name="MODS.mods.relatedItem.part.date.approximate_ss">
+    <field name="MODS.mods.relatedItem.part.date.approximate_s">
       
       <xsl:apply-templates />
     </field>
@@ -146,7 +146,7 @@
 
     <!-- title -->
     <xsl:for-each select="mods:titleInfo/mods:title">
-      <field name="MODS.mods.relatedItem.titleInfo.title_ss">
+      <field name="MODS.mods.relatedItem.titleInfo.title_s">
       
 	<xsl:apply-templates />
       </field>
@@ -154,7 +154,7 @@
 
     <!-- Alternative datestamp -->
     <xsl:for-each select="mods:originInfo/mods:dateIssued[@encoding='w3cdtf']">
-      <field name="MODS.mods.relatedItem.originInfo.dateIssued.w3cdtf_dts">
+      <field name="MODS.mods.relatedItem.originInfo.dateIssued.w3cdtf_dt">
       
 	<xsl:apply-templates />
       </field>
@@ -169,6 +169,22 @@
     </xsl:for-each>
   </xsl:template>
 
+  <!-- identifier -->
+  <xsl:template match="mods:mods/mods:identifier">
+    <field name="MODS.mods.identifier.local_is">
+	      
+      <xsl:apply-templates />
+    </field>
+  </xsl:template>
+
+  <!-- Administrative notes -->
+  <xsl:for-each select="mods:note[@type='admin']">
+    <field name="MODS.mods.note.admin_s">
+
+      <xsl:apply-templates />
+    </field>
+  </xsl:for-each>
+
   <!-- MODS Document -->
   <xsl:template match="mods:mods">
 
@@ -177,6 +193,7 @@
     <xsl:apply-templates select="mods:place" />
     <xsl:apply-templates select="mods:originInfo" />
     <xsl:apply-templates select="mods:relatedItem" />
+    <xsl:apply-templates select="mods:note" />
   </xsl:template>
 
 </xsl:stylesheet>
