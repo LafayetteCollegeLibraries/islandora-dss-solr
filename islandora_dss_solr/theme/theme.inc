@@ -93,7 +93,7 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 						   'Lafayette Newspaper Collection' => array('dc.title' => 'Title',
 											     'dc.date.sort' => 'Publication Date'),
 
-						   'Alumni Publications' => array('MODS.mods.titleInfo_s' => 'Title',
+						   'Alumni Publications' => array('MODS.mods.titleInfo_ss' => 'Title',
 										  'MODS.mods.relatedItem.date.w3cdtf_dts' => 'Date',
 										  'MODS.mods.originInfo.publisher_ss' => 'Publisher',
 										  'MODS.mods.relatedItem.titleInfo.title_ss' => 'Series',
