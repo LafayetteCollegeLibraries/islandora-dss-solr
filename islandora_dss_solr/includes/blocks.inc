@@ -1267,7 +1267,9 @@ function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
 					  'geology_slides_esi.date.original',
 					  'mckelvy.date.original.search',
 					  'war_casualties.date.birth.display',
-					  'war_casualties.date.death.display'
+					  'war_casualties.date.death.display',
+
+					  'MODS.mods.relatedItem.date.w3cdtf_dts'
 					  );
 
   // Collect query values
@@ -1399,6 +1401,7 @@ function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
 					   'administration' => 'Administration Archives',
 					   'mckelvy' => 'McKelvy House Photograph Collection',
 					   'war-casualties' => 'Lafayette World War II Casualties',
+					   'alumni' => 'Alumni Publications'
 					   );
 
   $params = array();

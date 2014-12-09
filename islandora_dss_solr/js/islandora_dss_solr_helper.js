@@ -29,6 +29,7 @@
 						  'war_casualties.date.birth.display',
 						  'war_casualties.date.death.display',
 						  'mckelvy.date.original.search',
+						  'MODS.mods.relatedItem.date.w3cdtf_dts'
 						  ];
 
 	    $('.islandora-solr-search-field option').click(function(e) {
