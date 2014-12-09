@@ -91,7 +91,13 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 											 ),
 
 						   'Lafayette Newspaper Collection' => array('dc.title' => 'Title',
-											     'dc.date.sort' => 'Publication Date')
+											     'dc.date.sort' => 'Publication Date'),
+
+						   'Alumni Publications' => array('MODS.mods.titleInfo_s' => 'Title',
+										  'MODS.mods.relatedItem.date.w3cdtf_dts' => 'Date',
+										  'MODS.mods.originInfo.publisher_ss' => 'Publisher',
+										  'MODS.mods.relatedItem.titleInfo.title_ss' => 'Series',
+										  )
 						   );
 
   global $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP;
@@ -138,7 +144,13 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 
 						       'Lafayette Newspaper Collection' => array('dc.title' => 'Title',
 												 'dc.date' => 'Publication Date',
-												 'dc.coverage' => 'Coverage')
+												 'dc.coverage' => 'Coverage'),
+
+						       'Alumni Publications' => array('MODS.mods.titleInfo_s' => 'Title',
+										      'MODS.mods.relatedItem.date.w3cdtf_dts' => 'Date',
+										      'MODS.mods.originInfo.publisher_s' => 'Publisher',
+										      'MODS.mods.relatedItem.titleInfo.title_s' => 'Series',
+										      )
 						       );
 
   $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP['Mckelvy House Photograph Collection'] = $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP['McKelvy House Photograph Collection'];
@@ -212,7 +224,11 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
     if(count($collection_fields) != count(array_keys($result['solr_doc']))) {
 
       // Refactor
-      $ISLANDORA_DSS_SOLR_DATE_FIELDS = array('dc.date', 'geology_slides_esi.date.original', 'mckelvy.date.original.display', 'mdl_prints.date.original');
+      $ISLANDORA_DSS_SOLR_DATE_FIELDS = array('dc.date',
+					      'geology_slides_esi.date.original',
+					      'mckelvy.date.original.display',
+					      'mdl_prints.date.original',
+					      'MODS.mods.relatedItem.date.w3cdtf_dts');
 
       foreach($collection_fields as $collection_field) {
 
@@ -255,6 +271,16 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
       }
     }
 
+    // Reorder the fields
+    $sorted_doc = array();
+    foreach($collection_fields as $field) {
+
+      $sorted_doc[$field] = $result['solr_doc'][$field];
+    }
+    $result['solr_doc'] = $sorted_doc;
+
+    // Replacing certain Dublin Core field values with the appropriate value
+    // (e. g. replacing MARC relator values)
     foreach($result['solr_doc'] as $field => &$value) {
 
       if(! islandora_dss_solr_dc_label_map($top_collection, $field)) {

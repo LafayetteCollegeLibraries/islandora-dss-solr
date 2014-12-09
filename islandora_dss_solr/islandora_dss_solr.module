@@ -99,6 +99,7 @@ function islandora_dss_solr($query = NULL) {
 							  'administration' => 'Administration Archives',
 							  'mckelvy' => 'McKelvy House Photograph Collection',
 							  'war-casualties' => 'Lafayette World War II Casualties',
+							  'alumni' => 'Alumni Publications'
 							  ));
       $collection = $ISLANDORA_DSS_SOLR_RELATION_MAP[$collection];
     }
@@ -109,8 +110,6 @@ function islandora_dss_solr($query = NULL) {
    * Resolves DSS-207
    *
    */
-  //if(true) {
-  //if(!in_array($collection, array('cap', 'mdl-prints'))) {
 
   // create query
   $internal_solr_query = '';
@@ -209,6 +208,11 @@ function islandora_dss_solr($query = NULL) {
 				 'war_casualties.contributor.military.unit' => 'Military Unit',
 				 'war_casualties.coverage.place.birth' => 'Place of Birth',
 				 'war_casualties.coverage.place.death' => 'Place of Death',
+
+				 'MODS.mods.relatedItem.date.w3cdtf_dts' => 'Date',
+				 'MODS.mods.originInfo.publisher_s' => 'Publisher',
+				 'MODS.mods.relatedItem.titleInfo.title_s' => 'Series',
+				 'MODS.mods.titleInfo_s' => 'Title',
 				 );
 
     //global $ISLANDORA_DSS_SOLR_DATE_FIELDS;
@@ -223,7 +227,8 @@ function islandora_dss_solr($query = NULL) {
 					    'geology_slides_esi.date.original',
 					    'mckelvy.date.original.search',
 					    'war_casualties.date.birth.display',
-					    'war_casualties.date.death.display'
+					    'war_casualties.date.death.display',
+					    'MODS.mods.relatedItem.date.w3cdtf_dts'
 					    );
 
     if(in_array($field, $ISLANDORA_DSS_SOLR_DATE_FIELDS)) {
@@ -473,49 +478,6 @@ function islandora_dss_solr_url_inbound_alter(&$path, $original_path, $path_lang
    * Resolves DSSSM-665
    * @todo Refactor with variable_get
    *
-   */
-
-  /*
-      'T.W. Ingersoll Co. Stereoviews of the Siege of Port Arthur' => { :primary => 'rjw-stereo' },
-
-      'Imperial Postcard Collection' => { :primary => 'imperial-postcards', :secondary => 'imperial-postcards/backs' },
-      
-      'Postcard Albums' => {
-
-        'Japanese Imperial House Postcard Album' => { :primary => 'pa-koshitsu', :secondary => 'pa-koshitsu' },
-        'Tsubokura Russo-Japanese War Postcard Album' => { :primary => 'pa-tsubokura', :secondary => 'pa-tsubokura' },
-        'Sino-Japanese War Postcard Album 01' => { :primary => 'pa-omitsu01', :secondary => 'pa-omitsu01' },
-        'Sino-Japanese War Postcard Album 02' => { :primary => 'pa-omitsu02', :secondary => 'pa-omitsu02' },
-      },
-
-      'Lin Chia-Feng Family Postcard Collection' => { :primary => 'lin-postcards', :secondary => 'lin-postcards/back.orig' },    
-
-      # Unique to ContentDM
-      'Game Cards' => {
-
-        'Japanese History Study Cards' => nil
-      },
-      
-      'Pacific War Postcard Collection' => { :primary => 'pacwar-postcards', :secondary => 'pacwar-postcards/backs-300dpi' },
-
-      'Michael Lewis Taiwan Postcard Collection' => { :primary => 'lewis-postcards', :secondary => 'lewis/fixed-lewis-postcard-backs' },
-      
-      # Not featured on http://digital.lafayette.edu/collections/eastasia
-      'Gerald & Rella Warner Taiwan Postcard Collection' => { :primary => 'warner-postcards', :secondary => 'warner/warner-postcards-captioned/jpg' },
-
-      'Gerald & Rella Warner Dutch East Indies Negative Collection' => { :primary => 'warner-negs-indonesia' },
-      'Gerald & Rella Warner Manchuria Negative Collection' => { :primary => 'warner-negs-manchuria', :secondary => 'warner-negs-manchuria' },
-      'Gerald & Rella Warner Taiwan Negative Collection' => { :primary => 'warner-negs-taiwan', :secondary => 'warner-negs-taiwan/warner-negs-taiwan-submerged-images' },
-      'Gerald & Rella Warner Japan Slide Collection' => { :primary => 'warner-slides-japan' },
-      'Gerald & Rella Warner Souvenirs of Beijing and Tokyo' => { :primary => 'warner-souvenirs' },
-
-      'Woodsworth Taiwan Image Collection' => { :primary => 'woodsworth-images', :secondary => 'woodsworth-images/image-backs' },
-
-      'Colonial Pictorial Works' => {
-        
-        'Scenic Taiwan' => { :primary => 'cpw-nofuko', :secondary => 'nofuko/nofuko-missing-pages-hoover-originals'},
-        'Taiwan Photographic Monthly' => { :primary => 'cpw-shashinkai'}
-      }
    */
 
   $ISLANDORA_DSS_SOLR_BROWSE_COLL_ALIASES = array(

@@ -217,6 +217,19 @@ function islandora_dss_fields_map($collection) {
 							      'war_casualties.coverage.place.birth' => 'Place of Birth',
 							      'war_casualties.coverage.place.death' => 'Place of Death',
 							      ),
+				    'alumni' => array(
+						      'foxml.all.text' => 'Full Text',
+						      'MODS.mods.titleInfo.title_s' => 'Title',
+						      'MODS.mods.titleInfo.subTitle_s' => 'Subtitle',
+						      'MODS.mods.titleInfo.partNumber_s' => 'Part Of',
+						      'MODS.mods.name.displayForm_s' => 'Author',
+						      'MODS.mods.relatedItem.date.w3cdtf_dts' => 'Date',
+
+						      'MODS.mods.originInfo.publisher_s' => 'Publisher',
+						      'MODS.mods.originInfo.place.placeTerm_s' => 'Place of Publication',
+						      
+						      'MODS.mods.relatedItem.titleInfo.title_s' => 'Series'
+						      )
 				    );
 
   //$ISLANDORA_DSS_FIELDS_MAP['administration'] = array_merge($ISLANDORA_DSS_FIELDS_MAP['academic'], $ISLANDORA_DSS_FIELDS_MAP['administration']);
@@ -307,7 +320,9 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 					  'geology_slides_esi.date.original',
 					  'mckelvy.date.original.search',
 					  'war_casualties.date.birth.display',
-					  'war_casualties.date.death.display'
+					  'war_casualties.date.death.display',
+
+					  'MODS.mods.relatedItem.date.w3cdtf_dts'
 					  );
 
   drupal_load('module', 'search');
@@ -344,7 +359,8 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     // set values
     $values = $form_state['values'];
 
-  } elseif (islandora_solr_results_page($_islandora_solr_queryclass) == TRUE && !isset($_islandora_solr_queryclass->internalSolrParams['type'])) {
+  } elseif (islandora_solr_results_page($_islandora_solr_queryclass) == TRUE and
+	    !isset($_islandora_solr_queryclass->internalSolrParams['type'])) {
 
     // 2. populate with current query on search results page
 
@@ -723,6 +739,8 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 				       'Marquis de Lafayette Prints Collection' => 'mdl-prints',
 				       'McKelvy House Photograph Collection' => 'mckelvy',
 				       'Lafayette World War II Casualties' => 'war-casualties',
+
+				       'Alumni Publications' => 'alumni'
 				       );
 
   // loop over each term
@@ -1142,6 +1160,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 						  'newspaper' => 'Lafayette Newspaper',
 						  'mdl-prints' => 'Marquis de Lafayette Prints Collection',
 						  'mckelvy' => 'McKelvy House',
+						  'alumni' => 'Alumni Publications'
 						  ),
 			      '#ajax' => array(
 					       'wrapper' => 'islandora-solr-advanced-terms',
