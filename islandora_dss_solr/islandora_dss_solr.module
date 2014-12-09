@@ -409,6 +409,9 @@ function islandora_dss_solr($query = NULL) {
 					 'cdm.Relation.IsPartOf:"Historical Photograph Collection"'))) {
 
 	$params['sort'] = 'dc.date.sort asc';
+      } elseif(in_array($params['f'][0], array('cdm.Relation.IsPartOf:"Alumni Publications"'))) {
+
+	$params['sort'] = 'MODS.mods.identifier.local_i asc';
       }
     }
   }
