@@ -147,8 +147,7 @@ function islandora_dss_solr($query = NULL) {
 				  'foxml.all.text'
 				  );
 
-    $SOLR_INDEXED_FIELDS = array(
-				 'eastasia.Title.Japanese' => 'Title.Japanese', // Resolve with re-indexing (DSSSM-614 )
+    $SOLR_INDEXED_FIELDS = array('eastasia.Title.Japanese' => 'Title.Japanese', // Resolve with re-indexing (DSSSM-614 )
 				 'eastasia.Title.Chinese' => 'Title.Chinese', // DSSSM-614
 				 'eastasia.Title.Korean' => 'Title.Korean', // DSSSM-614
 				 "eastasia.Contributors.Digital" => 'Contributor',
@@ -210,14 +209,17 @@ function islandora_dss_solr($query = NULL) {
 				 'war_casualties.coverage.place.death' => 'Place of Death',
 
 				 'MODS.mods.relatedItem.date.w3cdtf_dts' => 'Date',
+
+				 'MODS.mods.relatedItem.part.date.approximate_s' => 'Date',
+				 'MODS.mods.relatedItem.originInfo.dateIssued.approximate_s' => 'Date',
+
 				 'MODS.mods.originInfo.publisher_s' => 'Publisher',
 				 'MODS.mods.relatedItem.titleInfo.title_s' => 'Series',
 				 'MODS.mods.titleInfo_s' => 'Title',
 				 );
 
     //global $ISLANDORA_DSS_SOLR_DATE_FIELDS;
-    $ISLANDORA_DSS_SOLR_DATE_FIELDS = array(
-					    'dc.date',
+    $ISLANDORA_DSS_SOLR_DATE_FIELDS = array('dc.date',
 					    "eastasia.Date.Artifact.Lower",
 					    "eastasia.Date.Artifact.Upper",
 					    "eastasia.Date.Image.Lower",
@@ -483,14 +485,14 @@ function islandora_dss_solr_url_inbound_alter(&$path, $original_path, $path_lang
    *
    */
 
-  $ISLANDORA_DSS_SOLR_BROWSE_COLL_ALIASES = array(
-						  'collections/eastasia',
+  $ISLANDORA_DSS_SOLR_BROWSE_COLL_ALIASES = array('collections/eastasia',
 						  'collections/geology',
 						  'collections/historicalphotos',
 						  'collections/war',
 						  'collections/newspaper',
 						  'collections/lafayetteprints',
 						  'collections/mckelvy',
+						  'collections/alumni',
 						  );
 
   $ISLANDORA_DSS_SOLR_BROWSE_SUB_COLL_ALIASES = array(

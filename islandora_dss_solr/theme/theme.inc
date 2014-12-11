@@ -93,8 +93,9 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 						   'Lafayette Newspaper Collection' => array('dc.title' => 'Title',
 											     'dc.date.sort' => 'Publication Date'),
 
-						   'Alumni Publications' => array('MODS.mods.titleInfo_ss' => 'Title',
-										  'MODS.mods.relatedItem.date.w3cdtf_dts' => 'Date',
+						   'Alumni Publications' => array(
+										  'MODS.mods.identifier.local_i' => 'Publication Sequence',
+										  'MODS.mods.titleInfo_ss' => 'Title',
 										  'MODS.mods.originInfo.publisher_ss' => 'Publisher',
 										  'MODS.mods.relatedItem.titleInfo.title_ss' => 'Series',
 										  )
@@ -148,6 +149,10 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 
 						       'Alumni Publications' => array('MODS.mods.titleInfo_s' => 'Title',
 										      'MODS.mods.relatedItem.date.w3cdtf_dts' => 'Date',
+
+										      'MODS.mods.relatedItem.part.date.approximate_s' => 'Date',
+										      'MODS.mods.relatedItem.originInfo.dateIssued.approximate_s' => 'Date',
+
 										      'MODS.mods.originInfo.publisher_s' => 'Publisher',
 										      'MODS.mods.relatedItem.titleInfo.title_s' => 'Series',
 										      )
@@ -230,13 +235,94 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 					      'mdl_prints.date.original',
 					      'MODS.mods.relatedItem.date.w3cdtf_dts');
 
+      //dpm($result['solr_doc']);
+
       foreach($collection_fields as $collection_field) {
 
-	if(!array_key_exists($collection_field, $result['solr_doc'])) {
+	if($top_collection == 'Alumni Publications') {
+
+	  if(in_array($collection_field, array('MODS.mods.relatedItem.part.date.approximate_s',
+					       'MODS.mods.relatedItem.originInfo.dateIssued.approximate_s'))) {
+
+	    if(!empty($result['solr_doc'][$collection_field]['value'])) {
+
+	      if(!empty($result['solr_doc']['MODS.mods.relatedItem.date.w3cdtf_dts']['value'])) {
+
+		$result['solr_doc']['MODS.mods.relatedItem.date.w3cdtf_dts']['value'] = $result['solr_doc'][$collection_field]['value'];
+		unset($result['solr_doc'][$collection_field]);
+	      } else {
+		
+		$result['solr_doc']['MODS.mods.relatedItem.date.w3cdtf_dts'] = array('label' => $result['solr_doc'][$collection_field]['label'],
+										     'class' => 'mods-mods-relateditem-date-w3cdtf-dts',
+										     'value' => $result['solr_doc'][$collection_field]['value']
+										     );
+
+		$ISLANDORA_DSS_SOLR_DATE_FIELDS = array_diff($ISLANDORA_DSS_SOLR_DATE_FIELDS, array('MODS.mods.relatedItem.date.w3cdtf_dts'));
+		unset($result['solr_doc'][$collection_field]);
+	      }
+	    } elseif(array_key_exists($collection_field, $result['solr_doc'])) {
+
+	      unset($result['solr_doc'][$collection_field]);
+	    }
+	  }
+
+	  if(in_array($collection_field, array('MODS.mods.relatedItem.titleInfo.title_s'))) {
+
+	    /**
+	     *
+	     *
+	     */
+
+	    $field_values = explode(',', $result['solr_doc'][$collection_field]['value']);
+	    $result['solr_doc'][$collection_field]['value'] = array_shift($field_values);
+
+	    //
+	    if(!empty($result['solr_doc']['MODS.mods.relatedItem.part.text.volume_s']['value'])) {
+
+	      $result['solr_doc'][$collection_field]['value'] .= ' (Vol. ' . $result['solr_doc']['MODS.mods.relatedItem.part.text.volume_s']['value'] . ')';
+	      //
+	      if(!empty($result['solr_doc']['MODS.mods.relatedItem.part.text.issue_s']['value'])) {
+
+		$result['solr_doc'][$collection_field]['value'] = rtrim($result['solr_doc'][$collection_field]['value'], ')');
+		$result['solr_doc'][$collection_field]['value'] .= ', no. ' . $result['solr_doc']['MODS.mods.relatedItem.part.text.issue_s']['value'] . ')';
+	      }
+	    } elseif(!empty($result['solr_doc']['MODS.mods.relatedItem.date.w3cdtf_dts']['value'])) {
+
+	      $result['solr_doc'][$collection_field]['value'] .= ' (' . $result['solr_doc']['MODS.mods.relatedItem.date.w3cdtf_dts']['value'] . ')';
+	    }
+
+
+
+	    foreach($field_values as $i => $field_value) {
+
+	      $field_key = $collection_field . '_' . $i;
+	      if(!empty($result['solr_doc']['MODS.mods.relatedItem.date.w3cdtf_dts']['value'])) {
+
+		$field_value .= ' (' . $result['solr_doc']['MODS.mods.relatedItem.date.w3cdtf_dts']['value'] . ')';
+	      }
+
+	      $result['solr_doc'][$field_key] = array('label' => $result['solr_doc'][$collection_field]['label'],
+						      'value' => $field_value,
+						      'class' => '');
+	      $collection_fields[] = $field_key;
+	    }
+
+	    
+	  }
+
+	  /*
+	  if(in_array($collection_field, array(''))) {
+
+	  }
+	  */
+	}
+
+	if(!array_key_exists($collection_field, $result['solr_doc']) and $top_collection != 'Alumni Publications') {
 
 	  $result['solr_doc'][$collection_field] = array('label' => islandora_dss_solr_dc_label_map($top_collection, $collection_field),
 							 'value' => '',
 							 'class' => '');
+	  
 	} elseif(in_array($collection_field, $ISLANDORA_DSS_SOLR_DATE_FIELDS)) { // Format date field values
 
 	  // Ensure that, if there are multiple dates present, that only the first value is formatted
@@ -256,7 +342,8 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 	   * Addressing the issue for ...
 	   * Resolves DSSSM-885
 	   */
-	  if($top_collection == 'Historical Photograph Collection' or $top_collection == 'McKelvy House Photograph Collection') {
+	  if($top_collection == 'Historical Photograph Collection' or
+	     $top_collection == 'McKelvy House Photograph Collection') {
 
 	    if($date_value->format('m-d') == '01-01') {
 
@@ -271,6 +358,11 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
       }
     }
 
+    if($top_collection == 'Alumni Publications') {
+
+      $collection_fields = array_diff($collection_fields, array('MODS.mods.relatedItem.part.date.approximate_s', 'MODS.mods.relatedItem.originInfo.dateIssued.approximate_s'));
+    }
+
     // Reorder the fields
     $sorted_doc = array();
     foreach($collection_fields as $field) {
@@ -283,12 +375,20 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
     // (e. g. replacing MARC relator values)
     foreach($result['solr_doc'] as $field => &$value) {
 
-      if(! islandora_dss_solr_dc_label_map($top_collection, $field)) {
+      /**
+       * Work-around for the Alumni Publications
+       * @todo Refactor
+       *
+       */
+      if(!preg_match('/MODS.mods.relatedItem.titleInfo.title_s_/', $field)) {
 
-	unset($result['solr_doc'][$field]);
-      } else {
+	if(!islandora_dss_solr_dc_label_map($top_collection, $field)) {
 
-	$value['label'] = islandora_dss_solr_dc_label_map($top_collection, $field);
+	  unset($result['solr_doc'][$field]);
+	} else {
+
+	  $value['label'] = islandora_dss_solr_dc_label_map($top_collection, $field);
+	}
       }
     }
   }
