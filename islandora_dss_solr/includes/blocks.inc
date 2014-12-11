@@ -219,14 +219,14 @@ function islandora_dss_fields_map($collection) {
 							      ),
 				    'alumni' => array(
 						      'foxml.all.text' => 'Full Text',
-						      'MODS.mods.titleInfo.title_s' => 'Title',
+						      'MODS.mods.titleInfo.title_ss' => 'Title',
 						      'MODS.mods.titleInfo.subTitle_s' => 'Subtitle',
 						      'MODS.mods.titleInfo.partNumber_s' => 'Part Of',
 						      'MODS.mods.name.displayForm_s' => 'Author',
 						      'MODS.mods.relatedItem.date.w3cdtf_dts' => 'Date',
 
 						      'MODS.mods.originInfo.publisher_s' => 'Publisher',
-						      'MODS.mods.originInfo.place.placeTerm_s' => 'Place of Publication',
+						      //'MODS.mods.originInfo.place.placeTerm_s' => 'Place of Publication',
 						      
 						      'MODS.mods.relatedItem.titleInfo.title_s' => 'Series'
 						      )
