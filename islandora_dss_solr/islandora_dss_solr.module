@@ -511,7 +511,7 @@ function islandora_dss_solr_url_inbound_alter(&$path, $original_path, $path_lang
 						  'collections/newspaper',
 						  'collections/lafayetteprints',
 						  'collections/mckelvy',
-						  'collections/alumni',
+						  'collections/alumninewspubs',
 						  );
 
   $ISLANDORA_DSS_SOLR_BROWSE_SUB_COLL_ALIASES = array(
@@ -534,34 +534,7 @@ function islandora_dss_solr_url_inbound_alter(&$path, $original_path, $path_lang
 						      'collections/eastasia/cpw-nofuko',
 						      'collections/eastasia/cpw-shashinkai',
 						      'collections/eastasia/gc-iroha01',
-
-					     /*
-					     // Tentative
-					     'collections/mdl-prints/portraits-before-1789',
-					     'collections/mdl-prints/portraits-quenedey',
-					     'collections/mdl-prints/portraits-levachez',
-					     'collections/mdl-prints/portraits-debucourt',
-					     'collections/mdl-prints/portraits-weyler',
-					     'collections/mdl-prints/portraits-jacobi',
-					     'collections/mdl-prints/portraits-before-1800',
-					     'collections/mdl-prints/portraits-clary',
-					     'collections/mdl-prints/portraits-scheffer',
-					     'collections/mdl-prints/portraits-gerard',
-					     'collections/mdl-prints/portraits-maurin',
-					     'collections/mdl-prints/portraits-julien',
-					     'collections/mdl-prints/portraits-uniform-white',
-					     'collections/mdl-prints/portraits-bridi',
-					     'collections/mdl-prints/portraits-uniform-fur',
-					     'collections/mdl-prints/portraits-martinet',
-					     'collections/mdl-prints/portraits-misc',
-					     'collections/mdl-prints/portraits-equestrian',
-					     'collections/mdl-prints/caricatures',
-					     'collections/mdl-prints/symbolic',
-					     'collections/mdl-prints/family',
-					     'collections/mdl-prints/life-scenes',
-					     'collections/mdl-prints/homes',
-					     */
-					     );
+						      );
 
   if(in_array($original_path, $ISLANDORA_DSS_SOLR_BROWSE_SUB_COLL_ALIASES)) {
 

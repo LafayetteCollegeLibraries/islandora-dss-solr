@@ -278,7 +278,7 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 	    // For cases in which the volume of the <relatedItem> entity can be rendered, append the value (within parentheses) to the field value itself
 	    if(!empty($result['solr_doc']['MODS.mods.relatedItem.part.text.volume_s']['value'])) {
 
-	      $result['solr_doc'][$collection_field]['value'] .= ' (Vol. ' . $result['solr_doc']['MODS.mods.relatedItem.part.text.volume_s']['value'] . ')';
+	      $result['solr_doc'][$collection_field]['value'] .= ' (vol. ' . $result['solr_doc']['MODS.mods.relatedItem.part.text.volume_s']['value'] . ')';
 
 	      // For cases in which the issue of the <relatedItem> entity can, also, be rendered, append the value (within parentheses) to the field value itself
 	      if(!empty($result['solr_doc']['MODS.mods.relatedItem.part.text.issue_s']['value'])) {
