@@ -278,9 +278,6 @@ function islandora_dss_solr($query = NULL) {
       preg_match('/"(.+?)"/', $search, $m);
       $search = '(*' . $m[1] . '*)';
 
-      dpm($search);
-      dpm($prefix);
-
     } elseif($field == 'geology_slides_esi.subject') {
 
       // Quotation marks are applied to all queries
@@ -425,14 +422,16 @@ function islandora_dss_solr($query = NULL) {
 
     if(array_key_exists('f', $params) and !empty($params['f'])) {
       
-      //if($params['f'][0] == 'cdm.Relation.IsPartOf:"Lafayette Newspaper Collection"') {
-      if(in_array($params['f'][0], array('cdm.Relation.IsPartOf:"Lafayette Newspaper Collection"',
+      if(in_array($params['f'][0], array(
 					 'cdm.Relation.IsPartOf:"Historical Photograph Collection"'))) {
 
 	$params['sort'] = 'dc.date.sort asc';
+      } elseif(in_array($params['f'][0], array('cdm.Relation.IsPartOf:"Lafayette Newspaper Collection"'))) {
+
+	$params['sort'] = 'dc.date.sort desc';
       } elseif(in_array($params['f'][0], array('cdm.Relation.IsPartOf:"Alumni Publications"'))) {
 
-	$params['sort'] = 'MODS.mods.identifier.local_i asc';
+	$params['sort'] = 'MODS.mods.identifier.local_i desc';
       }
     }
   }
