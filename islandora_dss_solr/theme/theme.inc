@@ -235,12 +235,15 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 					      'mdl_prints.date.original',
 					      'MODS.mods.relatedItem.date.w3cdtf_dts');
 
-      //dpm($result['solr_doc']);
-
       foreach($collection_fields as $collection_field) {
 
+	/**
+	 * Transformations unique to the Alumni Publications Collection
+	 *
+	 */
 	if($top_collection == 'Alumni Publications') {
 
+	  // Ensure that only the natural language date value is rendered for the field "Date"
 	  if(in_array($collection_field, array('MODS.mods.relatedItem.part.date.approximate_s',
 					       'MODS.mods.relatedItem.originInfo.dateIssued.approximate_s'))) {
 
@@ -266,33 +269,31 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 	    }
 	  }
 
+	  // Ensure that multiple values for the field "Series" are rendered within separate rows
 	  if(in_array($collection_field, array('MODS.mods.relatedItem.titleInfo.title_s'))) {
-
-	    /**
-	     *
-	     *
-	     */
 
 	    $field_values = explode(',', $result['solr_doc'][$collection_field]['value']);
 	    $result['solr_doc'][$collection_field]['value'] = array_shift($field_values);
 
-	    //
+	    // For cases in which the volume of the <relatedItem> entity can be rendered, append the value (within parentheses) to the field value itself
 	    if(!empty($result['solr_doc']['MODS.mods.relatedItem.part.text.volume_s']['value'])) {
 
 	      $result['solr_doc'][$collection_field]['value'] .= ' (Vol. ' . $result['solr_doc']['MODS.mods.relatedItem.part.text.volume_s']['value'] . ')';
-	      //
+
+	      // For cases in which the issue of the <relatedItem> entity can, also, be rendered, append the value (within parentheses) to the field value itself
 	      if(!empty($result['solr_doc']['MODS.mods.relatedItem.part.text.issue_s']['value'])) {
 
 		$result['solr_doc'][$collection_field]['value'] = rtrim($result['solr_doc'][$collection_field]['value'], ')');
 		$result['solr_doc'][$collection_field]['value'] .= ', no. ' . $result['solr_doc']['MODS.mods.relatedItem.part.text.issue_s']['value'] . ')';
 	      }
+
 	    } elseif(!empty($result['solr_doc']['MODS.mods.relatedItem.date.w3cdtf_dts']['value'])) {
 
+	      // For cases in which neither the volume nor issue can be rendered, simply render the date
 	      $result['solr_doc'][$collection_field]['value'] .= ' (' . $result['solr_doc']['MODS.mods.relatedItem.date.w3cdtf_dts']['value'] . ')';
 	    }
 
-
-
+	    // Render the multiple values for "Series" as multiple fields
 	    foreach($field_values as $i => $field_value) {
 
 	      $field_key = $collection_field . '_' . $i;
@@ -306,15 +307,13 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 						      'class' => '');
 	      $collection_fields[] = $field_key;
 	    }
-
-	    
 	  }
 
-	  /*
-	  if(in_array($collection_field, array(''))) {
+	  // Trim the leading whitespace for the title field, and render this as a link
+	  if(in_array($collection_field, array('MODS.mods.titleInfo_s'))) {
 
+	    $result['solr_doc'][$collection_field]['value'] = ltrim($result['solr_doc'][$collection_field]['value'], ' ');
 	  }
-	  */
 	}
 
 	if(!array_key_exists($collection_field, $result['solr_doc']) and $top_collection != 'Alumni Publications') {
