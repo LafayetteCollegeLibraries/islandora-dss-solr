@@ -310,9 +310,26 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 	  }
 
 	  // Trim the leading whitespace for the title field, and render this as a link
+	  // This resolves DSSSM-1093
 	  if(in_array($collection_field, array('MODS.mods.titleInfo_s'))) {
 
 	    $result['solr_doc'][$collection_field]['value'] = ltrim($result['solr_doc'][$collection_field]['value'], ' ');
+
+	    // Ensure that the value links to the Object within Fedora Commons
+	    // This resolves DSSSM-1093
+	    $options = array('html' => TRUE);
+
+	    if(isset($result['object_url_params'])) {
+
+	      $options['query'] = $result['object_url_params'];
+	    }
+	    
+	    if(isset($result['object_url_fragment'])) {
+
+	      $options['fragment'] = $result['object_url_fragment'];
+	    }
+
+	    $result['solr_doc'][$collection_field]['value'] = l($result['solr_doc'][$collection_field]['value'], drupal_get_path_alias($result['object_url']), $options);
 	  }
 	}
 
