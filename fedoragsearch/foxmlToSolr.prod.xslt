@@ -46,9 +46,14 @@
 	  
 	  <!-- Title (CDATA) -->
 	  <field name="MODS.mods.titleInfo_s">
-			    
-	    <xsl:apply-templates select="mods:nonSort" />
-	    <xsl:text> </xsl:text>
+
+	    <xsl:choose>
+	      <xsl:when test="mods:nonSort">
+		<xsl:apply-templates select="mods:nonSort" />
+		<xsl:text> </xsl:text>
+	      </xsl:when>
+	    </xsl:choose>
+
 	    <xsl:apply-templates select="mods:title"/>
 	  </field>
 	  
@@ -226,8 +231,8 @@
 	</xsl:template>
 
 	<!-- identifier -->
-	<xsl:template match="mods:identifier">
-	  <field name="MODS.mods.identifier.local_is">
+	<xsl:template match="mods:identifier[@type='local']">
+	  <field name="MODS.mods.identifier.local_i">
 	      
 	    <xsl:apply-templates />
 	  </field>
