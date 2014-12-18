@@ -422,16 +422,19 @@ function islandora_dss_solr($query = NULL) {
 
     if(array_key_exists('f', $params) and !empty($params['f'])) {
       
-      if(in_array($params['f'][0], array(
-					 'cdm.Relation.IsPartOf:"Historical Photograph Collection"'))) {
+      if(in_array($params['f'][0], array('cdm.Relation.IsPartOf:"Historical Photograph Collection"'))) {
 
 	$params['sort'] = 'dc.date.sort asc';
       } elseif(in_array($params['f'][0], array('cdm.Relation.IsPartOf:"Lafayette Newspaper Collection"'))) {
 
-	$params['sort'] = 'dc.date.sort desc';
+	//$params['sort'] = 'dc.date.sort desc';
+	// This resolves DSS-419
+	$params['sort'] = 'dc.date.sort asc';
       } elseif(in_array($params['f'][0], array('cdm.Relation.IsPartOf:"Alumni Publications"'))) {
 
-	$params['sort'] = 'MODS.mods.identifier.local_i desc';
+	//$params['sort'] = 'MODS.mods.identifier.local_i desc';
+	// This resolves DSS-419
+	$params['sort'] = 'MODS.mods.identifier.local_i asc';
       }
     }
   }
