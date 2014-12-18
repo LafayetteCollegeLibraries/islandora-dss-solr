@@ -217,8 +217,7 @@ function islandora_dss_fields_map($collection) {
 							      'war_casualties.coverage.place.birth' => 'Place of Birth',
 							      'war_casualties.coverage.place.death' => 'Place of Death',
 							      ),
-				    'alumni' => array(
-						      'foxml.all.text' => 'Full Text',
+				    'alumni' => array('foxml.all.text' => 'Full Text',
 						      'MODS.mods.titleInfo.title_ss' => 'Title',
 						      'MODS.mods.titleInfo.subTitle_s' => 'Subtitle',
 						      'MODS.mods.titleInfo.partNumber_s' => 'Part Of',
@@ -284,6 +283,11 @@ function islandora_dss_solr_get_fields($path='', $field_type = NULL, $filter = T
   return $records;
 }
 
+/**
+ * Deprecated
+ * @todo Remove
+ *
+ */
 function islandora_dss_solr_get_fields_for_collection($collection='') {
 
   
@@ -1072,6 +1076,8 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 			       //'administration' => 'Administration Archives',
 			       'node/42' => 'mckelvy',
 			       'node/43' => 'war-casualties',
+			       // This resolves DSS-420
+			       'node/52' => 'alumni'
 			       );
 
   $alias_collection_map = array(
@@ -1082,6 +1088,8 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 				'lafayetteprints' => 'mdl-prints',
 				'mckelvy' => 'mckelvy',
 				'war' => 'war-casualties',
+				// This resolves DSS-420
+				'alumninewspubs' => 'alumni'
 				);
 
   if(array_key_exists($current_path, $collection_node_map)) {
