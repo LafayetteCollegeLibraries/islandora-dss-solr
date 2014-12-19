@@ -93,12 +93,12 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 						   'Lafayette Newspaper Collection' => array('dc.title' => 'Title',
 											     'dc.date.sort' => 'Publication Date'),
 
-						   'Alumni Publications' => array(
-										  'MODS.mods.identifier.local_i' => 'Publication Sequence',
-										  'MODS.mods.titleInfo_ss' => 'Title',
-										  'MODS.mods.originInfo.publisher_ss' => 'Publisher',
-										  'MODS.mods.relatedItem.titleInfo.title_ss' => 'Series',
-										  )
+						   'Lafayette Magazine Collection' => array(
+											    'MODS.mods.identifier.local_i' => 'Publication Sequence',
+											    'MODS.mods.titleInfo_ss' => 'Title',
+											    'MODS.mods.originInfo.publisher_ss' => 'Publisher',
+											    'MODS.mods.relatedItem.titleInfo.title_ss' => 'Series',
+											    )
 						   );
 
   global $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP;
@@ -147,15 +147,16 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 												 'dc.date' => 'Publication Date',
 												 'dc.coverage' => 'Coverage'),
 
-						       'Alumni Publications' => array('MODS.mods.titleInfo_s' => 'Title',
-										      'MODS.mods.relatedItem.date.w3cdtf_dts' => 'Date',
+						       'Lafayette Magazine Collection' => array(
+												'MODS.mods.titleInfo_s' => 'Title',
+												'MODS.mods.relatedItem.date.w3cdtf_dts' => 'Date',
 
-										      'MODS.mods.relatedItem.part.date.approximate_s' => 'Date',
-										      'MODS.mods.relatedItem.originInfo.dateIssued.approximate_s' => 'Date',
+												'MODS.mods.relatedItem.part.date.approximate_s' => 'Date',
+												'MODS.mods.relatedItem.originInfo.dateIssued.approximate_s' => 'Date',
 
-										      'MODS.mods.originInfo.publisher_s' => 'Publisher',
-										      'MODS.mods.relatedItem.titleInfo.title_s' => 'Series',
-										      )
+												'MODS.mods.originInfo.publisher_s' => 'Publisher',
+												'MODS.mods.relatedItem.titleInfo.title_s' => 'Series',
+												)
 						       );
 
   $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP['Mckelvy House Photograph Collection'] = $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP['McKelvy House Photograph Collection'];

@@ -99,7 +99,8 @@ function islandora_dss_solr($query = NULL) {
 							  'administration' => 'Administration Archives',
 							  'mckelvy' => 'McKelvy House Photograph Collection',
 							  'war-casualties' => 'Lafayette World War II Casualties',
-							  'alumni' => 'Alumni Publications'
+							  //'alumni' => 'Alumni Publications'
+							  'magazine' => 'Lafayette Magazine Collection'
 							  ));
       $collection = $ISLANDORA_DSS_SOLR_RELATION_MAP[$collection];
     }
@@ -510,7 +511,8 @@ function islandora_dss_solr_url_inbound_alter(&$path, $original_path, $path_lang
 						  'collections/newspaper',
 						  'collections/lafayetteprints',
 						  'collections/mckelvy',
-						  'collections/alumninewspubs',
+						  //'collections/alumninewspubs',
+						  'collections/magazine',
 						  );
 
   $ISLANDORA_DSS_SOLR_BROWSE_SUB_COLL_ALIASES = array(
