@@ -217,18 +217,15 @@ function islandora_dss_fields_map($collection) {
 							      'war_casualties.coverage.place.birth' => 'Place of Birth',
 							      'war_casualties.coverage.place.death' => 'Place of Death',
 							      ),
-				    'alumni' => array('foxml.all.text' => 'Full Text',
-						      'MODS.mods.titleInfo.title_ss' => 'Title',
-						      'MODS.mods.titleInfo.subTitle_s' => 'Subtitle',
-						      'MODS.mods.titleInfo.partNumber_s' => 'Part Of',
-						      'MODS.mods.name.displayForm_s' => 'Author',
-						      'MODS.mods.relatedItem.date.w3cdtf_dts' => 'Date',
-
-						      'MODS.mods.originInfo.publisher_s' => 'Publisher',
-						      //'MODS.mods.originInfo.place.placeTerm_s' => 'Place of Publication',
-						      
-						      'MODS.mods.relatedItem.titleInfo.title_s' => 'Series'
-						      )
+				    'magazine' => array('foxml.all.text' => 'Full Text',
+							'MODS.mods.titleInfo.title_ss' => 'Title',
+							'MODS.mods.titleInfo.subTitle_s' => 'Subtitle',
+							'MODS.mods.titleInfo.partNumber_s' => 'Part Of',
+							'MODS.mods.name.displayForm_s' => 'Author',
+							'MODS.mods.relatedItem.date.w3cdtf_dts' => 'Date',
+							'MODS.mods.originInfo.publisher_s' => 'Publisher',
+							'MODS.mods.relatedItem.titleInfo.title_s' => 'Series'
+							)
 				    );
 
   //$ISLANDORA_DSS_FIELDS_MAP['administration'] = array_merge($ISLANDORA_DSS_FIELDS_MAP['academic'], $ISLANDORA_DSS_FIELDS_MAP['administration']);
@@ -744,7 +741,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 				       'McKelvy House Photograph Collection' => 'mckelvy',
 				       'Lafayette World War II Casualties' => 'war-casualties',
 
-				       'Alumni Publications' => 'alumni'
+				       'Lafayette Magazine Collection' => 'magazine'
 				       );
 
   // loop over each term
@@ -1077,7 +1074,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 			       'node/42' => 'mckelvy',
 			       'node/43' => 'war-casualties',
 			       // This resolves DSS-420
-			       'node/52' => 'alumni'
+			       'node/52' => 'magazine'
 			       );
 
   $alias_collection_map = array(
@@ -1089,7 +1086,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 				'mckelvy' => 'mckelvy',
 				'war' => 'war-casualties',
 				// This resolves DSS-420
-				'alumninewspubs' => 'alumni'
+				'magazine' => 'magazine'
 				);
 
   if(array_key_exists($current_path, $collection_node_map)) {
@@ -1168,7 +1165,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 						  'newspaper' => 'Lafayette Newspaper',
 						  'mdl-prints' => 'Marquis de Lafayette Prints Collection',
 						  'mckelvy' => 'McKelvy House',
-						  'alumni' => 'Alumni Publications'
+						  'magazine' => 'Lafayette Magazine'
 						  ),
 			      '#ajax' => array(
 					       'wrapper' => 'islandora-solr-advanced-terms',
@@ -1409,7 +1406,7 @@ function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
 					   'administration' => 'Administration Archives',
 					   'mckelvy' => 'McKelvy House Photograph Collection',
 					   'war-casualties' => 'Lafayette World War II Casualties',
-					   'alumni' => 'Alumni Publications'
+					   'magazine' => 'Lafayette Magazine Collection'
 					   );
 
   $params = array();
