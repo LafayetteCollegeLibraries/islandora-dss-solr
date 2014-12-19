@@ -99,7 +99,6 @@ function islandora_dss_solr($query = NULL) {
 							  'administration' => 'Administration Archives',
 							  'mckelvy' => 'McKelvy House Photograph Collection',
 							  'war-casualties' => 'Lafayette World War II Casualties',
-							  //'alumni' => 'Alumni Publications'
 							  'magazine' => 'Lafayette Magazine Collection'
 							  ));
       $collection = $ISLANDORA_DSS_SOLR_RELATION_MAP[$collection];
@@ -428,7 +427,7 @@ function islandora_dss_solr($query = NULL) {
 	//$params['sort'] = 'dc.date.sort desc';
 	// This resolves DSS-419
 	$params['sort'] = 'dc.date.sort asc';
-      } elseif(in_array($params['f'][0], array('cdm.Relation.IsPartOf:"Alumni Publications"'))) {
+      } elseif(in_array($params['f'][0], array('cdm.Relation.IsPartOf:"Lafayette Magazine Collection"'))) {
 
 	//$params['sort'] = 'MODS.mods.identifier.local_i desc';
 	// This resolves DSS-419
@@ -511,7 +510,6 @@ function islandora_dss_solr_url_inbound_alter(&$path, $original_path, $path_lang
 						  'collections/newspaper',
 						  'collections/lafayetteprints',
 						  'collections/mckelvy',
-						  //'collections/alumninewspubs',
 						  'collections/magazine',
 						  );
 

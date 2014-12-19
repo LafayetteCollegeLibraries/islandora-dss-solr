@@ -242,7 +242,7 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 	 * Transformations unique to the Alumni Publications Collection
 	 *
 	 */
-	if($top_collection == 'Alumni Publications') {
+	if($top_collection == 'Lafayette Magazine Collection') {
 
 	  // Ensure that only the natural language date value is rendered for the field "Date"
 	  if(in_array($collection_field, array('MODS.mods.relatedItem.part.date.approximate_s',
@@ -334,7 +334,7 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 	  }
 	}
 
-	if(!array_key_exists($collection_field, $result['solr_doc']) and $top_collection != 'Alumni Publications') {
+	if(!array_key_exists($collection_field, $result['solr_doc']) and $top_collection != 'Lafayette Magazine Collection') {
 
 	  $result['solr_doc'][$collection_field] = array('label' => islandora_dss_solr_dc_label_map($top_collection, $collection_field),
 							 'value' => '',
@@ -375,7 +375,7 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
       }
     }
 
-    if($top_collection == 'Alumni Publications') {
+    if($top_collection == 'Lafayette Magazine Collection') {
 
       $collection_fields = array_diff($collection_fields, array('MODS.mods.relatedItem.part.date.approximate_s', 'MODS.mods.relatedItem.originInfo.dateIssued.approximate_s'));
     }
