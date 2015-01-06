@@ -47,6 +47,8 @@ function islandora_dss_solr_net_match($CIDR, $IP) {
  */
 function islandora_dss_solr_process_islandora_solr(&$vars) {
 
+  dpm($vars);
+
   global $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP;
   $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP = array('McKelvy House Photograph Collection' => array('dc.title' => 'Title',
 												  'geology_slides_esi.subject.sort' => 'Subject',
@@ -187,6 +189,7 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
     $is_anon_non_lafayette_user = !islandora_dss_solr_net_match('192.168.101.0/24', $client_ip);
     $is_anon_non_lafayette_user &= (bool) !islandora_dss_solr_net_match('139.147.0.0/16', $client_ip);
   }
+
   $is_anon_non_lafayette_user &= !user_is_logged_in(); // ...and not authenticated.
 
   // Fully resolves DSS-280
@@ -330,7 +333,31 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 	      $options['fragment'] = $result['object_url_fragment'];
 	    }
 
-	    $result['solr_doc'][$collection_field]['value'] = l($result['solr_doc'][$collection_field]['value'], drupal_get_path_alias($result['object_url']), $options);
+	    // Implement links
+
+	    dpm($top_collection);
+
+	    if(in_array($top_collection, array('Lafayette Newspaper Collection', 'Lafayette Magazine Collection'))) {
+
+	    }
+
+	    /**
+	     * Modifying the links for Objects retrieved during full-text searches in order to ensure that the "q" parameter contains the search string
+	     * DSSSM-1117
+	     *
+	     */
+	    if(preg_match('/foxml\.all\.text\:\((".+?")\)/', $_GET['q'], $query_match)) {
+
+	      $full_text_query = $query_match[1];
+	      $result['solr_doc'][$collection_field]['value'] = l($result['solr_doc'][$collection_field]['value'],
+								  drupal_get_path_alias($result['object_url']),
+								  array_merge($options, array('query' => array('q' => $full_text_query)))
+								  );
+
+	    } else {
+
+	      $result['solr_doc'][$collection_field]['value'] = l($result['solr_doc'][$collection_field]['value'], drupal_get_path_alias($result['object_url']), $options);
+	    }
 	  }
 	}
 
