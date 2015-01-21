@@ -143,8 +143,7 @@ function islandora_dss_solr($query = NULL) {
      * Resolves DSS-208
      *
      */
-    $SOLR_FULLTEXT_FIELDS = array(
-				  'foxml.all.text'
+    $SOLR_FULLTEXT_FIELDS = array('foxml.all.text'
 				  );
 
     $SOLR_INDEXED_FIELDS = array('eastasia.Title.Japanese' => 'Title.Japanese', // Resolve with re-indexing (DSSSM-614 )

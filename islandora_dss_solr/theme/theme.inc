@@ -47,8 +47,6 @@ function islandora_dss_solr_net_match($CIDR, $IP) {
  */
 function islandora_dss_solr_process_islandora_solr(&$vars) {
 
-  dpm($vars);
-
   global $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP;
   $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP = array('McKelvy House Photograph Collection' => array('dc.title' => 'Title',
 												  'geology_slides_esi.subject.sort' => 'Subject',
@@ -335,8 +333,6 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 
 	    // Implement links
 
-	    dpm($top_collection);
-
 	    if(in_array($top_collection, array('Lafayette Newspaper Collection', 'Lafayette Magazine Collection'))) {
 
 	    }
@@ -351,7 +347,7 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 	      $full_text_query = $query_match[1];
 	      $result['solr_doc'][$collection_field]['value'] = l($result['solr_doc'][$collection_field]['value'],
 								  drupal_get_path_alias($result['object_url']),
-								  array_merge($options, array('query' => array('q' => $full_text_query)))
+								  array_merge($options, array('query' => array('search' => $full_text_query)))
 								  );
 
 	    } else {
