@@ -97,7 +97,7 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 											    'MODS.mods.identifier.local_i' => 'Publication Sequence',
 											    'MODS.mods.titleInfo_ss' => 'Title',
 											    'MODS.mods.originInfo.publisher_ss' => 'Publisher',
-											    'MODS.mods.relatedItem.titleInfo.title_ss' => 'Series',
+											    'MODS.mods.relatedItem.titleInfo.title_ss' => 'Publication Title', // Changing this label from "Series" to "Publication Title" in accordance with DSSSM-1177
 											    )
 						   );
 
@@ -155,7 +155,7 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 												'MODS.mods.relatedItem.originInfo.dateIssued.approximate_s' => 'Date',
 
 												'MODS.mods.originInfo.publisher_s' => 'Publisher',
-												'MODS.mods.relatedItem.titleInfo.title_s' => 'Series',
+												'MODS.mods.relatedItem.titleInfo.title_s' => 'Publication Title', // Changing this label from "Series" to "Publication Title" in accordance with DSSSM-1177
 												)
 						       );
 

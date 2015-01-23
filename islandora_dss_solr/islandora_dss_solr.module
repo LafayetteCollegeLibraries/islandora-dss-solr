@@ -211,20 +211,11 @@ function islandora_dss_solr($query = NULL) {
 				 'MODS.mods.relatedItem.part.date.approximate_s' => 'Date',
 				 'MODS.mods.relatedItem.originInfo.dateIssued.approximate_s' => 'Date',
 
-				 'MODS.mods.originInfo.publisher_s' => 'Publisher',
-				 'MODS.mods.relatedItem.titleInfo.title_s' => 'Series',
-
 				 'MODS.mods.titleInfo.title_ss' => 'Title',
-
 				 'MODS.mods.titleInfo.subTitle_s' => 'Subtitle',
 				 'MODS.mods.titleInfo.partNumber_s' => 'Part Of',
-				 'MODS.mods.name.displayForm_s' => 'Author',
-				 //'MODS.mods.relatedItem.date.w3cdtf_dts' => 'Date',
-
-				 'MODS.mods.originInfo.publisher_s' => 'Publisher',
-				 //'MODS.mods.originInfo.place.placeTerm_s' => 'Place of Publication',
-				 
-				 'MODS.mods.relatedItem.titleInfo.title_s' => 'Series'
+				 'MODS.mods.name.displayForm_s' => 'Author',				 
+				 'MODS.mods.relatedItem.titleInfo.title_s' => 'Publication Title' // Changing this label from "Series" to "Publication Title" in accordance with DSSSM-1177
 				 );
 
     //global $ISLANDORA_DSS_SOLR_DATE_FIELDS;
