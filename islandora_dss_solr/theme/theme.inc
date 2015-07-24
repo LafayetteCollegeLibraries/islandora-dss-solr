@@ -101,9 +101,7 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 											    ),
 						   'Shakespeare Bulletin Archive' => array(
 											   'MODS.mods.relatedItem.date.w3cdtf_dts' => 'Date',
-											   'MODS.mods.titleInfo_ss' => 'Title',
-											   'MODS.mods.originInfo.publisher_ss' => 'Publisher',
-											   'MODS.mods.relatedItem.titleInfo.title_ss' => 'Publication Title',
+											   'MODS.mods.titleInfo_ss' => 'Title'
 											   )
 						   );
 
