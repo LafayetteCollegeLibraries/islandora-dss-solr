@@ -98,7 +98,13 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 											    'MODS.mods.titleInfo_ss' => 'Title',
 											    'MODS.mods.originInfo.publisher_ss' => 'Publisher',
 											    'MODS.mods.relatedItem.titleInfo.title_ss' => 'Publication Title', // Changing this label from "Series" to "Publication Title" in accordance with DSSSM-1177
-											    )
+											    ),
+						   'Shakespeare Bulletin Archive' => array(
+											   'MODS.mods.relatedItem.date.w3cdtf_dts' => 'Date',
+											   'MODS.mods.titleInfo_ss' => 'Title',
+											   'MODS.mods.originInfo.publisher_ss' => 'Publisher',
+											   'MODS.mods.relatedItem.titleInfo.title_ss' => 'Publication Title',
+											   )
 						   );
 
   global $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP;
@@ -156,7 +162,14 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 
 												'MODS.mods.originInfo.publisher_s' => 'Publisher',
 												'MODS.mods.relatedItem.titleInfo.title_s' => 'Publication Title', // Changing this label from "Series" to "Publication Title" in accordance with DSSSM-1177
-												)
+												),
+						       'Shakespeare Bulletin Archive' => array(
+											       'MODS.mods.titleInfo_s' => 'Title',
+											       'MODS.mods.relatedItem.part.date.approximate_s' => 'Date',
+											       'MODS.mods.originInfo.publisher_s' => 'Publisher',
+											       'MODS.mods.relatedItem.titleInfo.title_s' => 'Publication Title',
+											       )
+
 						       );
 
   $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP['Mckelvy House Photograph Collection'] = $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP['McKelvy House Photograph Collection'];
@@ -174,18 +187,21 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
   $client_ip = ip_address();
   $headers = apache_request_headers();
 
+  $ip_ranges = variable_get('islandora_dss_solr_ip_ranges', array('192.168.101.0/24', '139.147.0.0/16'));
+
   // ...not within the campus network...
+
   // (for proxy servers...)
   if(array_key_exists('X-Forwarded-For', $headers)) {
 
     // Not on the VPN...
-    $is_anon_non_lafayette_user = !islandora_dss_solr_net_match('192.168.101.0/24', $headers['X-Forwarded-For']);
-    $is_anon_non_lafayette_user &= (bool) !islandora_dss_solr_net_match('139.147.0.0/16', $headers['X-Forwarded-For']);
+    $is_anon_non_lafayette_user = !islandora_dss_solr_net_match($ip_ranges[0], $headers['X-Forwarded-For']);
+    $is_anon_non_lafayette_user &= (bool) !islandora_dss_solr_net_match($ip_ranges[1], $headers['X-Forwarded-For']);
   } else {
 
     // Not on the VPN...
-    $is_anon_non_lafayette_user = !islandora_dss_solr_net_match('192.168.101.0/24', $client_ip);
-    $is_anon_non_lafayette_user &= (bool) !islandora_dss_solr_net_match('139.147.0.0/16', $client_ip);
+    $is_anon_non_lafayette_user = !islandora_dss_solr_net_match($ip_ranges[0], $client_ip);
+    $is_anon_non_lafayette_user &= (bool) !islandora_dss_solr_net_match($ip_ranges[1], $client_ip);
   }
 
   $is_anon_non_lafayette_user &= !user_is_logged_in(); // ...and not authenticated.
@@ -240,10 +256,10 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
       foreach($collection_fields as $collection_field) {
 
 	/**
-	 * Transformations unique to the Alumni Publications Collection
+	 * Transformations unique to the Alumni Publications Collection and the Shakespeare Bulletin Archive
 	 *
 	 */
-	if($top_collection == 'Lafayette Magazine Collection') {
+	if( in_array($top_collection, array('Lafayette Magazine Collection') ) ) {
 
 	  // Ensure that only the natural language date value is rendered for the field "Date"
 	  if(in_array($collection_field, array('MODS.mods.relatedItem.part.date.approximate_s',
@@ -310,52 +326,47 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 	      $collection_fields[] = $field_key;
 	    }
 	  }
+	}
 
-	  // Trim the leading whitespace for the title field, and render this as a link
+	// Trim the leading whitespace for the title field, and render this as a link
+	// This resolves DSSSM-1093
+	if(in_array($collection_field, array('MODS.mods.titleInfo_s'))) {
+
+	  $result['solr_doc'][$collection_field]['value'] = ltrim($result['solr_doc'][$collection_field]['value'], ' ');
+
+	  // Ensure that the value links to the Object within Fedora Commons
 	  // This resolves DSSSM-1093
-	  if(in_array($collection_field, array('MODS.mods.titleInfo_s'))) {
+	  $options = array('html' => TRUE);
 
-	    $result['solr_doc'][$collection_field]['value'] = ltrim($result['solr_doc'][$collection_field]['value'], ' ');
+	  if(isset($result['object_url_params'])) {
 
-	    // Ensure that the value links to the Object within Fedora Commons
-	    // This resolves DSSSM-1093
-	    $options = array('html' => TRUE);
-
-	    if(isset($result['object_url_params'])) {
-
-	      $options['query'] = $result['object_url_params'];
-	    }
+	    $options['query'] = $result['object_url_params'];
+	  }
 	    
-	    if(isset($result['object_url_fragment'])) {
+	  if(isset($result['object_url_fragment'])) {
 
-	      $options['fragment'] = $result['object_url_fragment'];
-	    }
+	    $options['fragment'] = $result['object_url_fragment'];
+	  }
 
-	    // Implement links
+	  /**
+	   * Modifying the links for Objects retrieved during full-text searches in order to ensure that the "q" parameter contains the search string
+	   * DSSSM-1117
+	   *
+	   */
+	  if(preg_match('/foxml\.all\.text\:\((".+?")\)/', $_GET['q'], $query_match)) {
+	    
+	    $full_text_query = $query_match[1];
+	    $result['solr_doc'][$collection_field]['value'] = l($result['solr_doc'][$collection_field]['value'],
+								drupal_get_path_alias($result['object_url']),
+								array_merge($options, array('query' => array('search' => $full_text_query)))
+								);
 
-	    if(in_array($top_collection, array('Lafayette Newspaper Collection', 'Lafayette Magazine Collection'))) {
+	  } else {
 
-	    }
-
-	    /**
-	     * Modifying the links for Objects retrieved during full-text searches in order to ensure that the "q" parameter contains the search string
-	     * DSSSM-1117
-	     *
-	     */
-	    if(preg_match('/foxml\.all\.text\:\((".+?")\)/', $_GET['q'], $query_match)) {
-
-	      $full_text_query = $query_match[1];
-	      $result['solr_doc'][$collection_field]['value'] = l($result['solr_doc'][$collection_field]['value'],
-								  drupal_get_path_alias($result['object_url']),
-								  array_merge($options, array('query' => array('search' => $full_text_query)))
-								  );
-
-	    } else {
-
-	      $result['solr_doc'][$collection_field]['value'] = l($result['solr_doc'][$collection_field]['value'], drupal_get_path_alias($result['object_url']), $options);
-	    }
+	    $result['solr_doc'][$collection_field]['value'] = l($result['solr_doc'][$collection_field]['value'], drupal_get_path_alias($result['object_url']), $options);
 	  }
 	}
+      
 
 	if(!array_key_exists($collection_field, $result['solr_doc']) and $top_collection != 'Lafayette Magazine Collection') {
 
@@ -398,13 +409,22 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
       }
     }
 
+    /**
+     * Specialized handling for reordering the fields based upon the parent collection of the Object
+     *
+     */
     if($top_collection == 'Lafayette Magazine Collection') {
 
       $collection_fields = array_diff($collection_fields, array('MODS.mods.relatedItem.part.date.approximate_s', 'MODS.mods.relatedItem.originInfo.dateIssued.approximate_s'));
     }
 
+    /**
+     * Sort the field labels based upon a custom array
+     *
+     */
     // Reorder the fields
     $sorted_doc = array();
+
     foreach($collection_fields as $field) {
 
       $sorted_doc[$field] = $result['solr_doc'][$field];
@@ -445,17 +465,15 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
   }
 }
 
+/**
+ * Implements hook_process_HOOK().
+ * This is passed for handling within the theming layer for islandora_solr functionality
+ *
+ */
 function islandora_dss_solr_process_islandora_solr_wrapper(&$vars) {
 
-  //global $ISLANDORA_DSS_SOLR_COLLECTIONS_DC_LABEL_MAP;
   global $ISLANDORA_DSS_SOLR_COLLECTIONS_SORT_MAP;
   global $ISLANDORA_DSS_SOLR_TOP_COLLECTION;
-
-  /*
-  $result = array_shift($vars['results']);
-  $collections = explode(', ', $result['solr_doc']['cdm.Relation.IsPartOf']['value']);
-  $top_collection = array_shift($collections);
-  */
 
   if(!$ISLANDORA_DSS_SOLR_TOP_COLLECTION) {
 
@@ -468,6 +486,10 @@ function islandora_dss_solr_process_islandora_solr_wrapper(&$vars) {
   $vars['collection_fields'] = $collection_fields;
 }
 
+/**
+ * Implements hook_preprocess_html()
+ *
+ */
 function islandora_dss_solr_preprocess_html(&$vars) {
 
   /**
@@ -476,8 +498,6 @@ function islandora_dss_solr_preprocess_html(&$vars) {
    * @todo Refactor for admin interface with variable_get()
    *
    */
-  //drupal_set_title('DSS Search Results');
-
   if(preg_match('/islandora\/search/', current_path())) {
 
     $vars['head_title'] = t("DSS Search Results") . ' | ' . $vars['head_title_array']['name'];

@@ -17,6 +17,8 @@
 
 	attach: function(context, settings) {
 
+	    var ISLANDORA_DSS_SOLR_DATE_DEFAULT_VALUE = 'Ex. 1925, 1925-03, or 1925-03-01';
+
 	    var ISLANDORA_DSS_SOLR_DATE_FIELDS = [
 						  'dc.date',
 						  'eastasia.Date.Artifact.Lower',
@@ -29,7 +31,8 @@
 						  'war_casualties.date.birth.display',
 						  'war_casualties.date.death.display',
 						  'mckelvy.date.original.search',
-						  'MODS.mods.relatedItem.date.w3cdtf_dts'
+						  'MODS.mods.relatedItem.date.w3cdtf_dts',
+						  'MODS.mods.originInfo.dateIssued.w3cdtf_dt'
 						  ];
 
 	    $('.islandora-solr-search-field option').click(function(e) {
@@ -40,7 +43,7 @@
 			.val('Ex. 1925, 1925-03, or 1925-03-01')
 			.click(function(e) {
 
-				if($(this).val() == 'Ex. 1925, 1925-03, or 1925-03-01') {
+				if($(this).val() == ISLANDORA_DSS_SOLR_DATE_DEFAULT_VALUE) {
 
 				    $(this).val('');
 				}

@@ -10,13 +10,6 @@
 require_once dirname(__FILE__) . '/theme/theme.inc';
 require_once dirname(__FILE__) . '/includes/blocks.inc';
 
-//module_invoke_all('islandora_solr_query', $this);
-
-function islandora_dss_solr_islandora_solr_query(IslandoraSolrQueryProcessor $queryProcessor) {
-
-  //dpm($queryProcessor->solrParams);
-}
-
 /**
  * Page callback: Islandora Solr.
  *
@@ -99,7 +92,8 @@ function islandora_dss_solr($query = NULL) {
 							  'administration' => 'Administration Archives',
 							  'mckelvy' => 'McKelvy House Photograph Collection',
 							  'war-casualties' => 'Lafayette World War II Casualties',
-							  'magazine' => 'Lafayette Magazine Collection'
+							  'magazine' => 'Lafayette Magazine Collection',
+							  'shakespeare' => 'Shakespeare Bulletin Archive'
 							  ));
       $collection = $ISLANDORA_DSS_SOLR_RELATION_MAP[$collection];
     }
@@ -230,7 +224,8 @@ function islandora_dss_solr($query = NULL) {
 					    'mckelvy.date.original.search',
 					    'war_casualties.date.birth.display',
 					    'war_casualties.date.death.display',
-					    'MODS.mods.relatedItem.date.w3cdtf_dts'
+					    'MODS.mods.relatedItem.date.w3cdtf_dts',
+					    'MODS.mods.originInfo.dateIssued.w3cdtf_dt'
 					    );
 
     if(in_array($field, $ISLANDORA_DSS_SOLR_DATE_FIELDS)) {
@@ -282,8 +277,10 @@ function islandora_dss_solr($query = NULL) {
     } else {
 
       // Quotation marks are applied to all queries
-      preg_match('/"(.+?)"/', $search, $m);
-      $search = $m[1];
+      if(preg_match('/"(.+?)"/', $search, $m)) {
+
+	$search = $m[1];
+      }
 
       // Escape spaces
       // Refactor
@@ -323,61 +320,6 @@ function islandora_dss_solr($query = NULL) {
    * Work-around resolving DSS-207
    *
    */
-  if($query != '*:*') {
-  
-    /**
-     * Deprecated by reindexing
-     *
-     */
-    /*
-    if($field == 'foxml.all.text' and !in_array($collection, array('cap', 'mdl-prints'))) {
-    
-      $collection_fields = array_keys(islandora_dss_fields_map($collection));
-      foreach($collection_fields as $collection_field) {
-      
-	// Do not transform queries for any date fields
-	if(!preg_match('/Date\./', $collection_field)) {
-
-	  $query_array[] = array(
-				 //'search' => "$collection_field:($search or )",
-				 'search' => "$collection_field:$search",
-				 'boolean' => 'OR'
-				 );
-	}
-      }
-    } else {
-    
-      $query_array[] = array(
-			     //'search' => "$field:($search)",
-			     'search' => "$field:$search",
-			     //'boolean' => $boolean
-			     );
-    }
-    */
-
-    /*
-    $query_array[] = array(
-			   //'search' => "$field:($search)",
-			   'search' => "$field:$search",
-			   //'boolean' => $boolean
-			   );
-    */
-
-    /*
-    dpm($query_array);
-
-    $i = 0;
-    foreach ($query_array as $term) {
-      
-      $internal_solr_query .= $term['search'];
-      if (count($query_array) -1 != $i) {
-	$internal_solr_query .= ' ' . $term['boolean'] . ' ';
-      }
-      $i++;
-    }
-    */
-  }
-  //}
 
   if($query != '*:*') {
 
@@ -417,9 +359,12 @@ function islandora_dss_solr($query = NULL) {
 	$params['sort'] = 'dc.date.sort asc';
       } elseif(in_array($params['f'][0], array('cdm.Relation.IsPartOf:"Lafayette Magazine Collection"'))) {
 
-	//$params['sort'] = 'MODS.mods.identifier.local_i desc';
 	// This resolves DSS-419
 	$params['sort'] = 'MODS.mods.identifier.local_i asc';
+      } elseif(in_array($params['f'][0], array('cdm.Relation.IsPartOf:"Shakespeare Bulletin Archive"'))) {
+
+	// Default to sorting on the date of the publication series
+	$params['sort'] = 'MODS.mods.relatedItem.date.w3cdtf_dts asc';
       }
     }
   }
@@ -499,6 +444,7 @@ function islandora_dss_solr_url_inbound_alter(&$path, $original_path, $path_lang
 						  'collections/lafayetteprints',
 						  'collections/mckelvy',
 						  'collections/magazine',
+						  'collections/shakespeare',
 						  );
 
   $ISLANDORA_DSS_SOLR_BROWSE_SUB_COLL_ALIASES = array(
@@ -546,15 +492,6 @@ function islandora_dss_solr_url_inbound_alter(&$path, $original_path, $path_lang
  * Implements hook_menu().
  */
 function islandora_dss_solr_menu_alter(&$items) {
-
-  /*
-  $items['islandora/search'] = array(
-    'title' => 'Search results',
-    'page callback' => 'islandora_solr',
-    'access arguments' => array('search islandora solr'),
-    'type' => MENU_CALLBACK,
-  );
-  */
 
   $items['islandora/search']['page callback'] = 'islandora_dss_solr';
 

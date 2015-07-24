@@ -19,19 +19,17 @@ function _islandora_dss_solr_advanced_search_terms($form, &$form_state) {
   return $form['terms'];
 }
 
-// _islandora_dss_solr_advanced_search_terms_rescope
+/**
+ * AJAX callback for advanced search form
+ * This should be extended for the rescoping of a search based upon collection-specific attributes
+ *
+ * @param type $form
+ * @param type $form_state
+ * @return type
+ *
+ * @see islandora_solr_advanced_search_form()
+ */
 function _islandora_dss_solr_advanced_search_terms_rescope($form, &$form_state) {
-
-  /*
-  foreach($form['terms'] as $key => $value) {
-
-    if(is_int($key)) {
-
-      
-    }
-
-  }
-  */
 
   return $form['terms'];
 }
@@ -219,7 +217,10 @@ function islandora_dss_fields_map($collection) {
 							      ),
 				    'magazine' => array('foxml.all.text' => 'Full Text',
 							'MODS.mods.relatedItem.date.w3cdtf_dts' => 'Date',
-							)
+							),
+				    'shakespeare' => array('foxml.all.text' => 'Full Text',
+							   'MODS.mods.originInfo.dateIssued.w3cdtf_dt' => 'Date',
+							   )
 				    );
 
   //$ISLANDORA_DSS_FIELDS_MAP['administration'] = array_merge($ISLANDORA_DSS_FIELDS_MAP['academic'], $ISLANDORA_DSS_FIELDS_MAP['administration']);
@@ -317,7 +318,8 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 					  'war_casualties.date.birth.display',
 					  'war_casualties.date.death.display',
 
-					  'MODS.mods.relatedItem.date.w3cdtf_dts'
+					  'MODS.mods.relatedItem.date.w3cdtf_dts',
+					  'MODS.mods.originInfo.dateIssued.w3cdtf_dt'
 					  );
 
   drupal_load('module', 'search');
@@ -735,7 +737,8 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 				       'McKelvy House Photograph Collection' => 'mckelvy',
 				       'Lafayette World War II Casualties' => 'war-casualties',
 
-				       'Lafayette Magazine Collection' => 'magazine'
+				       'Lafayette Magazine Collection' => 'magazine',
+				       'Shakespeare Bulletin Archive' => 'shakespeare'
 				       );
 
   // loop over each term
@@ -1067,8 +1070,11 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 			       //'administration' => 'Administration Archives',
 			       'node/42' => 'mckelvy',
 			       'node/43' => 'war-casualties',
+
 			       // This resolves DSS-420
-			       'node/52' => 'magazine'
+			       'node/52' => 'magazine',
+
+			       '/' => 'shakespeare'
 			       );
 
   $alias_collection_map = array(
@@ -1079,8 +1085,11 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 				'lafayetteprints' => 'mdl-prints',
 				'mckelvy' => 'mckelvy',
 				'war' => 'war-casualties',
+
 				// This resolves DSS-420
-				'magazine' => 'magazine'
+				'magazine' => 'magazine',
+
+				'shakespeare' => 'shakespeare'
 				);
 
   if(array_key_exists($current_path, $collection_node_map)) {
@@ -1159,7 +1168,8 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 						  'newspaper' => 'Lafayette Newspaper',
 						  'mdl-prints' => 'Marquis de Lafayette Prints Collection',
 						  'mckelvy' => 'McKelvy House',
-						  'magazine' => 'Lafayette Magazine'
+						  'magazine' => 'Lafayette Magazine',
+						  'shakespeare' => 'Shakespeare Bulletin Archive'
 						  ),
 			      '#ajax' => array(
 					       'wrapper' => 'islandora-solr-advanced-terms',
@@ -1268,7 +1278,8 @@ function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
 					  'war_casualties.date.birth.display',
 					  'war_casualties.date.death.display',
 
-					  'MODS.mods.relatedItem.date.w3cdtf_dts'
+					  'MODS.mods.relatedItem.date.w3cdtf_dts',
+					  'MODS.mods.originInfo.dateIssued.w3cdtf_dt'
 					  );
 
   // Collect query values
@@ -1400,7 +1411,8 @@ function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
 					   'administration' => 'Administration Archives',
 					   'mckelvy' => 'McKelvy House Photograph Collection',
 					   'war-casualties' => 'Lafayette World War II Casualties',
-					   'magazine' => 'Lafayette Magazine Collection'
+					   'magazine' => 'Lafayette Magazine Collection',
+					   'shakespeare' => 'Shakespeare Bulletin Archive'
 					   );
 
   $params = array();
@@ -1417,16 +1429,4 @@ function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
 
   // navigate to results page
   drupal_goto('islandora/search/' . $query, array('query' => $params));
-}
-
-/**
- * Implements hook_form_FORM_ID_alter().
- *
- * @see islandora_solr_advanced_search()
- *
- */
-
-function islandora_dss_solr_form_islandora_dss_solr_advanced_search_form_alter(&$form, &$form_state) {
-
-  /* dpm($form_state); */
 }
