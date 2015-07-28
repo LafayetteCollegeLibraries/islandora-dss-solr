@@ -727,6 +727,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 				       'Woodsworth Taiwan Image Collection'  => 'eastasia',
 				       'Scenic Taiwan'  => 'eastasia',
 				       'Taiwan Photographic Monthly'  => 'eastasia',
+				       'Truku-Japanese War Commemorative Postcard Collection' => 'eastasia',
 
 				       'East Asia Image Collection' => 'eastasia',
 
