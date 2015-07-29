@@ -444,7 +444,7 @@ function islandora_dss_solr_url_inbound_alter(&$path, $original_path, $path_lang
 						  'collections/lafayetteprints',
 						  'collections/mckelvy',
 						  'collections/magazine',
-						  'collections/shakespeare',
+						  'collections/sbarchive',
 						  );
 
   $ISLANDORA_DSS_SOLR_BROWSE_SUB_COLL_ALIASES = array(
@@ -467,7 +467,7 @@ function islandora_dss_solr_url_inbound_alter(&$path, $original_path, $path_lang
 						      'collections/eastasia/cpw-nofuko',
 						      'collections/eastasia/cpw-shashinkai',
 						      'collections/eastasia/gc-iroha01',
-						      'collections/eastasia/tjwar-postcards',
+						      'collections/eastasia/truku',
 						      );
 
   if(in_array($original_path, $ISLANDORA_DSS_SOLR_BROWSE_SUB_COLL_ALIASES)) {
