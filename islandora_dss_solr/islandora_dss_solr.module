@@ -228,34 +228,10 @@ function islandora_dss_solr($query = NULL) {
 					    'MODS.mods.originInfo.dateIssued.w3cdtf_dt'
 					    );
 
-    if(in_array($field, $ISLANDORA_DSS_SOLR_DATE_FIELDS)) {
+    if(array_key_exists($field, $SOLR_INDEXED_FIELDS)) { // For Solr-indexed fields with specific Analyzers (i. e. not optimized for tokenization of contents)
 
-      /**
-       * @todo To be removed
-       *
-       */
-    } elseif(in_array($field, $SOLR_FULLTEXT_FIELDS)) { // For Solr-indexed fields supporting full-text indexing (i. e. not tokenized)
-
-      /**
-       * Ensures that all full text queries are encapsulated by quotations
-       * (Lucene syntax otherwise structures this as an "OR" query)
-       * Resolves DSS-277
-       *
-       */
-      
-      //preg_match('/(".+?")/', $search, $m);
-      //$search = $m[1];
-
-      /**
-       * Disabled in order to resolve DSS-423
-       *
-       */
-
-      /**
-       * @todo To be removed
-       *
-       */
-    } elseif(array_key_exists($field, $SOLR_INDEXED_FIELDS)) { // For Solr-indexed fields with specific Analyzers (i. e. not optimized for tokenization of contents)
+      $prefix = str_replace($field, 'c_' . $field, $prefix);
+    } elseif(isset($collection) and $collection == 'newspaper' and in_array($field, array('foxml.all.text', 'ds.OBJ'))) {
 
       $prefix = str_replace($field, 'c_' . $field, $prefix);
     } elseif($field == 'geology_slides_esi.subject') {
@@ -275,6 +251,7 @@ function islandora_dss_solr($query = NULL) {
       //$search = "(*" . strtoupper($search) . "*)";
       $search = "(*$search* OR *" . strtoupper($search) . "*)";
     } else {
+
 
       // Quotation marks are applied to all queries
       if(preg_match('/"(.+?)"/', $search, $m)) {
@@ -310,6 +287,7 @@ function islandora_dss_solr($query = NULL) {
 	$search = "(*$search* OR *" . mb_convert_case($search, MB_CASE_TITLE, "UTF-8") . "* OR *" . strtoupper($search) . "*)";
 	//$search = "(\"*$search*\" OR \"*" . mb_convert_case($search, MB_CASE_TITLE, "UTF-8") . "*\" OR \"*" . strtoupper($search) . "*\")";
       }
+
     }
 
     $internal_solr_query .= "$prefix:$search" . ' ';
