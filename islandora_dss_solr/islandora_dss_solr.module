@@ -231,7 +231,7 @@ function islandora_dss_solr($query = NULL) {
     if(array_key_exists($field, $SOLR_INDEXED_FIELDS)) { // For Solr-indexed fields with specific Analyzers (i. e. not optimized for tokenization of contents)
 
       $prefix = str_replace($field, 'c_' . $field, $prefix);
-    } elseif(isset($collection) and in_array($collection, array('newspaper', 'magazine')) and in_array($field, array('foxml.all.text', 'ds.OBJ'))) {
+    } elseif(isset($collection) and in_array($collection, array('newspaper', 'magazine', 'shakespeare')) and in_array($field, array('foxml.all.text', 'ds.OBJ'))) {
 
       $prefix = str_replace($field, 'c_' . $field, $prefix);
     } elseif($field == 'geology_slides_esi.subject') {

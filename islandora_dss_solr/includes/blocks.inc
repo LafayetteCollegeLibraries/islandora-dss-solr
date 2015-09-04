@@ -1074,8 +1074,8 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 
 			       // This resolves DSS-420
 			       'node/52' => 'magazine',
-
-			       '/' => 'shakespeare'
+			       
+			       'node/64' => 'shakespeare'
 			       );
 
   $alias_collection_map = array(
@@ -1090,7 +1090,7 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 				// This resolves DSS-420
 				'magazine' => 'magazine',
 
-				'shakespeare' => 'shakespeare'
+				'sbarchive' => 'shakespeare'
 				);
 
   if(array_key_exists($current_path, $collection_node_map)) {
