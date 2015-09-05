@@ -165,7 +165,7 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 											       'MODS.mods.titleInfo_s' => 'Title',
 											       'MODS.mods.relatedItem.part.date.approximate_s' => 'Date',
 											       'MODS.mods.originInfo.publisher_s' => 'Publisher',
-											       'MODS.mods.relatedItem.titleInfo.title_s' => 'Publication Title',
+											       'MODS.mods.relatedItem.titleInfo.title_s' => 'Series',
 											       )
 
 						       );
@@ -257,31 +257,34 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 	 * Transformations unique to the Alumni Publications Collection and the Shakespeare Bulletin Archive
 	 *
 	 */
-	if( in_array($top_collection, array('Lafayette Magazine Collection') ) ) {
+	if(in_array($top_collection, array('Lafayette Magazine Collection', 'Shakespeare Bulletin Archive'))) {
 
 	  // Ensure that only the natural language date value is rendered for the field "Date"
-	  if(in_array($collection_field, array('MODS.mods.relatedItem.part.date.approximate_s',
-					       'MODS.mods.relatedItem.originInfo.dateIssued.approximate_s'))) {
+	  if(in_array($top_collection, array('Lafayette Magazine Collection'))) {
+	    
+	    if(in_array($collection_field, array('MODS.mods.relatedItem.part.date.approximate_s',
+						 'MODS.mods.relatedItem.originInfo.dateIssued.approximate_s'))) {
 
-	    if(!empty($result['solr_doc'][$collection_field]['value'])) {
+	      if(!empty($result['solr_doc'][$collection_field]['value'])) {
 
-	      if(!empty($result['solr_doc']['MODS.mods.relatedItem.date.w3cdtf_dts']['value'])) {
+		if(!empty($result['solr_doc']['MODS.mods.relatedItem.date.w3cdtf_dts']['value'])) {
 
-		$result['solr_doc']['MODS.mods.relatedItem.date.w3cdtf_dts']['value'] = $result['solr_doc'][$collection_field]['value'];
-		unset($result['solr_doc'][$collection_field]);
-	      } else {
+		  $result['solr_doc']['MODS.mods.relatedItem.date.w3cdtf_dts']['value'] = $result['solr_doc'][$collection_field]['value'];
+		  unset($result['solr_doc'][$collection_field]);
+		} else {
 		
-		$result['solr_doc']['MODS.mods.relatedItem.date.w3cdtf_dts'] = array('label' => $result['solr_doc'][$collection_field]['label'],
-										     'class' => 'mods-mods-relateditem-date-w3cdtf-dts',
-										     'value' => $result['solr_doc'][$collection_field]['value']
-										     );
+		  $result['solr_doc']['MODS.mods.relatedItem.date.w3cdtf_dts'] = array('label' => $result['solr_doc'][$collection_field]['label'],
+										       'class' => 'mods-mods-relateditem-date-w3cdtf-dts',
+										       'value' => $result['solr_doc'][$collection_field]['value']
+										       );
 
-		$ISLANDORA_DSS_SOLR_DATE_FIELDS = array_diff($ISLANDORA_DSS_SOLR_DATE_FIELDS, array('MODS.mods.relatedItem.date.w3cdtf_dts'));
+		  $ISLANDORA_DSS_SOLR_DATE_FIELDS = array_diff($ISLANDORA_DSS_SOLR_DATE_FIELDS, array('MODS.mods.relatedItem.date.w3cdtf_dts'));
+		  unset($result['solr_doc'][$collection_field]);
+		}
+	      } elseif(array_key_exists($collection_field, $result['solr_doc'])) {
+		
 		unset($result['solr_doc'][$collection_field]);
 	      }
-	    } elseif(array_key_exists($collection_field, $result['solr_doc'])) {
-
-	      unset($result['solr_doc'][$collection_field]);
 	    }
 	  }
 
@@ -295,7 +298,7 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 	    if(!empty($result['solr_doc']['MODS.mods.relatedItem.part.text.volume_s']['value'])) {
 
 	      $result['solr_doc'][$collection_field]['value'] .= ' (vol. ' . $result['solr_doc']['MODS.mods.relatedItem.part.text.volume_s']['value'] . ')';
-
+	      
 	      // For cases in which the issue of the <relatedItem> entity can, also, be rendered, append the value (within parentheses) to the field value itself
 	      if(!empty($result['solr_doc']['MODS.mods.relatedItem.part.text.issue_s']['value'])) {
 
@@ -305,8 +308,14 @@ function islandora_dss_solr_process_islandora_solr(&$vars) {
 
 	    } elseif(!empty($result['solr_doc']['MODS.mods.relatedItem.date.w3cdtf_dts']['value'])) {
 
-	      // For cases in which neither the volume nor issue can be rendered, simply render the date
-	      $result['solr_doc'][$collection_field]['value'] .= ' (' . $result['solr_doc']['MODS.mods.relatedItem.date.w3cdtf_dts']['value'] . ')';
+	      if(in_array($top_collection, array('Shakespeare Bulletin Archive'))) {
+		
+		$result['solr_doc'][$collection_field]['value'] .= ' (' . $result['solr_doc']['MODS.mods.relatedItem.part.date.approximate_s']['value'] . ')';
+	      } else {
+		
+		// For cases in which neither the volume nor issue can be rendered, simply render the date
+		$result['solr_doc'][$collection_field]['value'] .= ' (' . $result['solr_doc']['MODS.mods.relatedItem.date.w3cdtf_dts']['value'] . ')';
+	      }
 	    }
 
 	    // Render the multiple values for "Series" as multiple fields

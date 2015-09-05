@@ -108,6 +108,9 @@ function islandora_dss_solr($query = NULL) {
   // create query
   $internal_solr_query = '';
 
+  // Quotation marks are applied to all queries
+  $query = preg_replace('/"\((.+?)\)(.*?)"/', '"$1$2"', $query);
+
   foreach(preg_split('/(?<=\)) /', $query) as $search) {
 
     if(preg_match('/(.+?)\:(\[.+?\])/', $search, $range_match)) { // Handling also for ranges
@@ -250,8 +253,14 @@ function islandora_dss_solr($query = NULL) {
 
       //$search = "(*" . strtoupper($search) . "*)";
       $search = "(*$search* OR *" . strtoupper($search) . "*)";
-    } elseif(!in_array($field, array('foxml.all.text', 'ds.OBJ'))) {
+    } elseif(in_array($field, array('foxml.all.text', 'ds.OBJ'))) {
 
+      $search = preg_replace('/\\(/', '\(', $search);
+      $search = preg_replace('/\\)/', '\)', $search);
+
+      $search = preg_replace('/\\"/', '', $search);
+      
+    } elseif(!in_array($field, array('foxml.all.text', 'ds.OBJ'))) {
 
       // Quotation marks are applied to all queries
       if(preg_match('/"(.+?)"/', $search, $m)) {
@@ -346,8 +355,6 @@ function islandora_dss_solr($query = NULL) {
       }
     }
   }
-
-  dpm($internal_solr_query);
 
   // Build and execute Apache Solr query.
   // this populates the GLOBAL!!!!!!!
