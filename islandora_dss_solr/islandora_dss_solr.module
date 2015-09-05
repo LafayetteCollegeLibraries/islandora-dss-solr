@@ -250,7 +250,7 @@ function islandora_dss_solr($query = NULL) {
 
       //$search = "(*" . strtoupper($search) . "*)";
       $search = "(*$search* OR *" . strtoupper($search) . "*)";
-    } else {
+    } elseif(!in_array($field, array('foxml.all.text', 'ds.OBJ'))) {
 
 
       // Quotation marks are applied to all queries
@@ -346,6 +346,8 @@ function islandora_dss_solr($query = NULL) {
       }
     }
   }
+
+  dpm($internal_solr_query);
 
   // Build and execute Apache Solr query.
   // this populates the GLOBAL!!!!!!!
