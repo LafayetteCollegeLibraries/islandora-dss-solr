@@ -335,23 +335,64 @@ function islandora_dss_solr($query = NULL) {
     $params['sort'] = 'dc.title asc';
 
     if(array_key_exists('f', $params) and !empty($params['f'])) {
-      
-      if(in_array($params['f'][0], array('cdm.Relation.IsPartOf:"Historical Photograph Collection"'))) {
 
-	$params['sort'] = 'dc.date.sort asc';
-      } elseif(in_array($params['f'][0], array('cdm.Relation.IsPartOf:"Lafayette Newspaper Collection"'))) {
+      // More complex sorting logic introduced for other facets
+      // Resolves DSS-609
 
-	//$params['sort'] = 'dc.date.sort desc';
-	// This resolves DSS-419
-	$params['sort'] = 'dc.date.sort asc';
-      } elseif(in_array($params['f'][0], array('cdm.Relation.IsPartOf:"Lafayette Magazine Collection"'))) {
+      // Read the facets from an external file
+      $dc_date_sort = array_intersect($params['f'], array('cdm.Relation.IsPartOf:"Historical Photograph Collection"',
 
-	// This resolves DSS-419
-	$params['sort'] = 'MODS.mods.identifier.local_i asc';
-      } elseif(in_array($params['f'][0], array('cdm.Relation.IsPartOf:"Shakespeare Bulletin Archive"'))) {
+							  'cdm.Relation.IsPartOf:"Lafayette Newspaper Collection"',
+
+							  'dc.subject:"The Lafayette (1884-)"',
+							  'dc.subject:"The Lafayette Journal (1875-1884)"',
+							  'dc.subject:"The Lafayette Monthly (1870-1875)"',
+
+							  'dc.publisher:"Lafayette College"',
+
+							  'dc.type:"Student newspaper"',
+							  'dc.type:"Text"',
+							  ));
+
+      $identifier_local_sort = array_intersect($params['f'], array('cdm.Relation.IsPartOf:"Lafayette Magazine Collection"',
+								   
+								   'MODS.mods.originInfo.publisher_s:"Alumni Association of Lafayette College"',
+								   'MODS.mods.originInfo.publisher_s:"Lafayette College, Division of Communications"',
+								   'MODS.mods.originInfo.publisher_s:"Lafayette College, Office of Alumni Affairs"',
+								   'MODS.mods.originInfo.publisher_s:"Lafayette College, Office of Alumni Affairs in cooperation with the Office of Public Information"',
+								   'MODS.mods.originInfo.publisher_s:"Lafayette College, Office of Public Information"',
+
+								   'MODS.mods.relatedItem.titleInfo.title_s:"Lafayette Alumni News [newspaper]"',
+								   'MODS.mods.relatedItem.titleInfo.title_s:"Lafayette Alumnus Football News Letter"',
+								   'MODS.mods.relatedItem.titleInfo.title_s:"Lafayette Magazine"',
+								   ));
+
+      $related_item_date_sort = array_intersect($params['f'], array('cdm.Relation.IsPartOf:"Shakespeare Bulletin Archive"',
+								    'MODS.mods.titleInfo_s:"Shakespeare Bulletin"',
+								    'MODS.mods.titleInfo_s:"Shakespeare on Film Newsletter"',
+								    'MODS.mods.titleInfo_s:"Bulletin of the New York Shakespeare Society"',
+								    'MODS.mods.titleInfo_s:"Bulletin of the New York Shakespear[e] Society"',
+								    'MODS.mods.titleInfo_s:"New York Shakespeare Society Bulletin"',
+								    'MODS.mods.originInfo.publisher_s:"Department of English, University of Vermont"',
+								    'MODS.mods.originInfo.publisher_s:"Lafayette College"',
+								    'MODS.mods.originInfo.publisher_s:"Lafayette College in affiliation with The New York Shakespeare Society"',
+								    'MODS.mods.originInfo.publisher_s:"The New York Shakespeare Society"',
+								    'MODS.mods.relatedItem.titleInfo.title_s:"Shakespeare Bulletin"',
+								    'MODS.mods.relatedItem.titleInfo.title_s:"Shakespeare on Film Newsletter"',
+								    ));
+
+      if($related_item_date_sort) {
 
 	// Default to sorting on the date of the publication series
 	$params['sort'] = 'MODS.mods.relatedItem.date.w3cdtf_dts asc';
+      } elseif($identifier_local_sort) {
+
+	// This resolves DSS-419
+	$params['sort'] = 'MODS.mods.identifier.local_i asc';
+      } elseif($dc_date_sort) {
+
+	// This resolves DSS-419
+	$params['sort'] = 'dc.date.sort asc';
       }
     }
   }
