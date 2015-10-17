@@ -237,6 +237,7 @@ function islandora_dss_solr($query = NULL) {
     } elseif(isset($collection) and in_array($collection, array('newspaper', 'magazine', 'shakespeare')) and in_array($field, array('foxml.all.text', 'ds.OBJ'))) {
 
       $prefix = str_replace($field, 'c_' . $field, $prefix);
+
     } elseif($field == 'geology_slides_esi.subject') {
 
       // Quotation marks are applied to all queries
@@ -259,7 +260,11 @@ function islandora_dss_solr($query = NULL) {
       $search = preg_replace('/\\)/', '\)', $search);
 
       $search = preg_replace('/\\"/', '', $search);
-      
+
+    } elseif(in_array($field, $ISLANDORA_DSS_SOLR_DATE_FIELDS)) {
+
+      // No-op
+      // Resolves DSS-624
     } elseif(!in_array($field, array('foxml.all.text', 'ds.OBJ'))) {
 
       // Quotation marks are applied to all queries
@@ -315,6 +320,8 @@ function islandora_dss_solr($query = NULL) {
 
     $internal_solr_query = $query;
   }
+
+  dpm($internal_solr_query);
 
   /**
    * Ensure that all queries are sorted by the value of dc.title in ascending order

@@ -65,15 +65,6 @@ function islandora_dss_solr_current_collection($path='') {
   }
 
   return NULL;
-
-  /*
-  if(preg_match('/collections\/.+/', drupal_get_path_alias($path)) or
-     preg_match('/projects\/.+/', drupal_get_path_alias($path)) or
-     (preg_match('/islandora\/object\/.+/', $path) and !preg_match('/islandora\/object\/islandora\:root\/?/', $path) )) {
-    
-    $scoping_options['COLL'] = 'Search this collection';
-  }
-  */
 }
 
 /**
@@ -131,21 +122,6 @@ function islandora_dss_fields_map($collection) {
 							"cdm.Relation.IsPartOf" => 'Relation.IsPartOf',
 							"eastasia.Subject.OCM" => 'Subject.OCM',
 							),
-				    /*
-				    'academic' => array(
-							'foxml.all.text' => 'Full Text',
-							'dc.description.abstract' => 'Abstract',
-							'dc.identifier.issn' => 'Series',
-							'dc.contributor.author' => 'Author',
-							'dc.title' => 'Title',
-							'dc.subject' => 'Keyword',
-							'dc.language.iso' => 'Language (ISO)',
-							'dc.type' => 'MIME-Type',
-							'dc.' => 'Sponsor',
-							'dc.identifier.isbn' => 'Identifier',
-							),
-				    */
-				    //'administration' => array(),
 				    'newspaper' => array(
 							 'foxml.all.text' => 'Full Text',
 							 'dc.date' => 'Publication Date'
@@ -223,8 +199,6 @@ function islandora_dss_fields_map($collection) {
 							   )
 				    );
 
-  //$ISLANDORA_DSS_FIELDS_MAP['administration'] = array_merge($ISLANDORA_DSS_FIELDS_MAP['academic'], $ISLANDORA_DSS_FIELDS_MAP['administration']);
-  
   // Ensure that the merge isn't performed for certain collections
   
   // Thom: It seems none of the collections should have the merge performed
@@ -898,26 +872,6 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
 						    '#attributes' => array('style' => 'visibility:hidden;position:fixed;top:-1000px;right:-1000px;')
 						    );
 
-    /*
-    if(count($values['terms']) < 5) {
-
-      $term['add'] = array(
-			   '#type' => 'button',
-			   '#value' => '+',
-			   '#attributes' => array('title' => t('Add a field'),
-						  'class' => array('islandora-solr-search-add')),
-			   '#name' => 'add-field-' . $i,
-			   '#ajax' => array(
-					    'callback' => '_islandora_solr_advanced_search_terms',
-					    'wrapper' => 'islandora-solr-advanced-terms',
-					    'method' => 'replace',
-					    'effect' => 'fade',
-					    'progress' => array('type' => 'none'),
-					    ),
-			   );
-    }
-    */
-
     if (count($values['terms']) > 1) {
       
       $term['field-wrapper']['remove'] = array(
@@ -939,20 +893,6 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
       );
 
       if ((variable_get('islandora_solr_search_boolean', 'user') == 'user') && ((count($values['terms']) -1) != $i)) {
-
-	/*
-        $term['boolean'] = array(
-          '#type' => 'select',
-          '#prefix' => '<div class="islandora-solr-advanced-boolean">',
-          '#suffix' => '</div>',
-          '#default_value' => isset($value['boolean']) ? $value['boolean'] : 'AND',
-          '#options' => array(
-            'AND' => 'AND',
-            'OR' => 'OR',
-            'NOT' => 'NOT'),
-	  '#attributes' => array('class' => array('islandora-solr-search-boolean'))
-        );
-	*/
 
 	/**
 	 * Work-around
@@ -1350,8 +1290,8 @@ function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
 	  $search = str_replace('+00:00', '', gmdate('c', $search_time_u)) . 'Z TO ' . str_replace('+00:00', '', gmdate('c', $search_time_v)) . 'Z';
 
 	  $query_array[] = array(
-				 'search' => "$field:([$search])",
-				 //'search' => "$field:$search",
+				 //'search' => "$field:([$search])",
+				 'search' => "$field:[$search]",
 				 'boolean' => $boolean
 				 );
 	} else {
@@ -1388,6 +1328,9 @@ function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
     }
     $i++;
   }
+
+  dpm($query_array);
+  dpm($query);
 
   // check if query is empty
   /**
