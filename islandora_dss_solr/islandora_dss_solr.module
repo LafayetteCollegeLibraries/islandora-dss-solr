@@ -321,8 +321,6 @@ function islandora_dss_solr($query = NULL) {
     $internal_solr_query = $query;
   }
 
-  dpm($internal_solr_query);
-
   /**
    * Ensure that all queries are sorted by the value of dc.title in ascending order
    * Resolves DSSSM-623
@@ -401,6 +399,21 @@ function islandora_dss_solr($query = NULL) {
 	// This resolves DSS-419
 	$params['sort'] = 'dc.date.sort asc';
       }
+    }
+  }
+
+  /*
+      $dc_date_sort = array_intersect($params['f'], array('cdm.Relation.IsPartOf:"Historical Photograph Collection"',
+							  'cdm.Relation.IsPartOf:"Lafayette Newspaper Collection"',
+  */
+  if(array_intersect($params['f'], array('cdm.Relation.IsPartOf:"Lafayette Newspaper Collection"')) ) {
+
+    if($params['sort'] == 'dc.title desc') {
+
+      $params['sort'] = 'dc.title desc,dc.date.sort asc';
+    } elseif($params['sort'] == 'dc.title asc') {
+
+      $params['sort'] = 'dc.title asc,dc.date.sort asc';
     }
   }
 

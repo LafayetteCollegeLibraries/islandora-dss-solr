@@ -1329,9 +1329,6 @@ function islandora_dss_solr_advanced_search_form_submit($form, &$form_state) {
     $i++;
   }
 
-  dpm($query_array);
-  dpm($query);
-
   // check if query is empty
   /**
    * This ensures that, by default, only all titles are returned
