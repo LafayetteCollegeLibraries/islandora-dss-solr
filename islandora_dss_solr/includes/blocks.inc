@@ -67,26 +67,6 @@ function islandora_dss_solr_current_collection($path='') {
   return NULL;
 }
 
-/**
-
-*/
-
-/*
-$ISLANDORA_DSS_FIELDS = array(
-			      array('dc.contributor' => 'Contributor'),
-			      array('dc.creator' => 'Creator'),
-			      array('dc.date' => 'Date'),
-			      array('dc.description' => 'Description'),
-			      array('dc.format' => 'Format'),
-			      array('dc.language' => 'Language'),
-			      array('dc.publisher' => 'Publisher'),
-			      array('dc.rights' => 'Rights'),
-			      array('dc.source' => 'Source'),
-			      array('dc.subject' => 'Subject'),
-			      array('dc.title' => 'Title'),
-);
-*/
-
 $ISLANDORA_DSS_FIELDS = array('foxml.all.text' => 'Full Text',
 			      'dc.title' => 'Title',
 			      'dc.contributor' => 'Author',
@@ -199,20 +179,13 @@ function islandora_dss_fields_map($collection) {
 							   )
 				    );
 
-  // Ensure that the merge isn't performed for certain collections
-  
-  // Thom: It seems none of the collections should have the merge performed
-  
-  /*if(!in_array($collection, array('eastasia', 'mdl-prints', 'newspaper', 'cap', 'geology-slides', 'mckelvy', 'war-casualties',))) {
-
-    global $ISLANDORA_DSS_FIELDS;
-    $fields = array_merge($ISLANDORA_DSS_FIELDS_MAP[$collection], $ISLANDORA_DSS_FIELDS);
-  }*/
-
-  //return $fields;
   return $ISLANDORA_DSS_FIELDS_MAP[$collection];
 }
 
+/**
+ * Return the solr fields for a given Path
+ *
+ */
 function islandora_dss_solr_fields_for_path($path='') {
 
   $collection = islandora_dss_solr_current_collection($path);
@@ -247,16 +220,6 @@ function islandora_dss_solr_get_fields($path='', $field_type = NULL, $filter = T
   $records = array_merge($records, islandora_dss_solr_fields_for_path($path));
 
   return $records;
-}
-
-/**
- * Deprecated
- * @todo Remove
- *
- */
-function islandora_dss_solr_get_fields_for_collection($collection='') {
-
-  
 }
 
 /**
@@ -363,50 +326,6 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
      *
      */
 
-    //if(preg_match('/cdm.Relation.IsPartOf:"(.+)"/', $collection, $m)) {
-    //if(array_key_exists('foxml.all.text', $query_explode)) {
-    //if(preg_match('/foxml\.all\.text/', $query)) {
-    /*
-    if(false) {
-
-      // Url parameters.
-      $params = $_GET;
-      $collection = $params['f']['0'];
-      $collection = array_pop(explode(':', $collection));
-      preg_match('/"(.+?)"/', $collection, $m);
-      $collection = $m[1];
-
-      $ISLANDORA_DSS_SOLR_RELATION_MAP = array('East Asia Image Collection'=> 'eastasia',
-					       'Lafayette Newspaper Collection'=> 'newspaper',
-					       //'Academic Publications' => 'academic',
-					       'Historical Photograph Collection' => 'cap',
-					       'Marquis de Lafayette Prints Collection' => 'mdl-prints',
-					       'Geology Slide Collection' => 'geology-slides',
-					       //'Administration Archives' => 'administration',
-					       'McKelvy House Photograph Collection' => 'mckelvy',
-					       'Lafayette World War II Casualties' => 'war-casualties',
-					       );
-
-      $collection_fields = array_keys(islandora_dss_fields_map( $ISLANDORA_DSS_SOLR_RELATION_MAP[$collection] ));
-
-      foreach($collection_fields as $collection_field) {
-
-	//eastasia.Subject.OCM:("taiwan" OR "Taiwan") OR 
-	$query = preg_replace("/$collection_field\:\(.+?\) OR /", '', $query);
-
-	if(!preg_match('/Date\./', $collection_field)) {
-
-	  $query_array[] = array(
-				 //'search' => "$collection_field:($search or )",
-				 'search' => "$collection_field:$search",
-				 'boolean' => 'OR'
-				 );
-	}
-      }
-
-    }
-    */
-
     /**
      * Remove the query work-arounds for case-insensitive searches
      * @todo Resolve by reindexing Solr
@@ -419,12 +338,6 @@ function islandora_dss_solr_advanced_search_form($form, &$form_state) {
     $query = preg_replace("/\:\((.+?) OR .+? OR .+?\)/", ':(\1)', $query);
     // This should be deprecated
     $query = preg_replace("/\:\(\"(.+?)\" OR \".+?\"\)/", ':("\1")', $query);
-
-
-    //$query = preg_replace("/\:\((.+?) OR .+?\)/", ':(\1)', $query);
-
-    // For range overrides at the field-level
-    //$query = preg_replace("/\:\[(.+?) TO .+?\]/", ':(\1)', $query);
 
     // For range overrides at the field-level
     // Need to break more complex queries

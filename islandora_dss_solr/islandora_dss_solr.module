@@ -420,6 +420,13 @@ function islandora_dss_solr($query = NULL) {
   // Build and execute Apache Solr query.
   // this populates the GLOBAL!!!!!!!
   $_islandora_solr_queryclass = new IslandoraSolrQueryProcessor();
+  
+  // griffinj
+  // Attempt to store this within the SESSION header
+  //session_start();
+  $_SESSION['islandora_dss_solr_query'] = $internal_solr_query;
+  $_SESSION['islandora_dss_solr_params'] = $params;
+
   $_islandora_solr_queryclass->buildAndExecuteQuery($internal_solr_query, $params);
 
   if (empty($_islandora_solr_queryclass->islandoraSolrResult)) {
