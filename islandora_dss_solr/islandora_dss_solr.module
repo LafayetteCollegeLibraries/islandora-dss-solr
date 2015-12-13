@@ -429,7 +429,7 @@ function islandora_dss_solr($query = NULL) {
   // Clean characters inserted by the browser
   // Resolves DSS-819
   if(array_key_exists('sort', $params)) {
-    $params['sort'] = preg_replace('\+', ' ', $params['sort']);
+    $params['sort'] = preg_replace('/\+/', ' ', $params['sort']);
   }
 
   $_islandora_solr_queryclass->buildAndExecuteQuery($internal_solr_query, $params);
