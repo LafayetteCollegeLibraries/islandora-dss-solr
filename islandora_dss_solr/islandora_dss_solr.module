@@ -423,9 +423,14 @@ function islandora_dss_solr($query = NULL) {
   
   // griffinj
   // Attempt to store this within the SESSION header
-  //session_start();
   $_SESSION['islandora_dss_solr_query'] = $internal_solr_query;
   $_SESSION['islandora_dss_solr_params'] = $params;
+
+  // Clean characters inserted by the browser
+  // Resolves DSS-819
+  if(array_key_exists('sort', $params)) {
+    $params['sort'] = preg_replace('\+', ' ', $params['sort']);
+  }
 
   $_islandora_solr_queryclass->buildAndExecuteQuery($internal_solr_query, $params);
 
