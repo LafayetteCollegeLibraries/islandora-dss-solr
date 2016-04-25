@@ -11,6 +11,60 @@ require_once dirname(__FILE__) . '/theme/theme.inc';
 require_once dirname(__FILE__) . '/includes/blocks.inc';
 
 /**
+ * Utility function for cleaning URL parameters
+ * @todo Deduplicate for .
+ *
+ */
+function islandora_dss_solr_parameters_clean($params) {
+
+  // Search for percent-encoded characters
+  $cleaned_params = $params;
+
+  foreach($params as $param => $param_values) {
+
+    if( is_array($param_values) ) {
+
+      $cleaned_param_values = array();
+
+      foreach($param_values as $param_value) {
+
+	if(preg_match('/%.{2}/', $param_value)) {
+	  $cleaned_param_values[] = urldecode($param_value);
+	} else {
+	  $cleaned_param_values[] = $param_value;
+	}
+      }
+
+      // Clean the parameter names
+      if(preg_match('/%.{2}/', $param)) {
+	$cleaned_param = urldecode($param);
+	$cleaned_params[$cleaned_param] = $cleaned_param_values;
+      } else {
+	$cleaned_params[$param] = $cleaned_param_values;
+      }
+
+    } else {
+      $param_value = $param_values;
+
+      // Clean the parameter value
+      if(preg_match('/%.{2}/', $param_value)) {
+	$cleaned_params[$param] = urldecode($param_value);
+      }
+
+      // Clean the parameter names
+      if(preg_match('/%.{2}/', $param)) {
+	$cleaned_param = urldecode($param);
+	$cleaned_params[$cleaned_param] = $cleaned_param[$param];
+	unset($cleaned_params[$param]);
+      }
+    }
+  }
+
+  $params = $cleaned_params;
+  return $params;
+}
+
+/**
  * Page callback: Islandora Solr.
  *
  * Gathers url parameters, and calls the query builder, which prepares the query
@@ -35,8 +89,10 @@ function islandora_dss_solr($query = NULL) {
   global $_islandora_solr_queryclass;
   drupal_add_css(drupal_get_path('module', 'islandora_solr') . '/css/islandora_solr.theme.css');
 
-  // Url parameters.
+  // URL parameters.
   $params = $_GET;
+
+  $cleaned_params = islandora_dss_solr_parameters_clean($params);
 
   // get profiles
   $primary_profiles = module_invoke_all('islandora_solr_primary_display');
@@ -423,6 +479,8 @@ function islandora_dss_solr($query = NULL) {
   
   // griffinj
   // Attempt to store this within the SESSION header
+  $params = islandora_dss_solr_parameters_clean($params);
+
   $_SESSION['islandora_dss_solr_query'] = $internal_solr_query;
   $_SESSION['islandora_dss_solr_params'] = $params;
 
